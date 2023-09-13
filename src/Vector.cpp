@@ -1,33 +1,22 @@
 #include "Vector.h"
 #include <math.h>
 
-Vector::Vector(float newX, float newY, float newZ, float newW)
+Vector::Vector(const float& newX, const float& newY, const float& newZ, const float& newW)
+	: x(newX), y(newY), z(newZ), w(newW)
 {
-	x = newX;
-	y = newY;
-	z = newZ;
-	w = newW;
 }
 
-Vector Vector::operator*(float multiply)
+Vector Vector::operator*(const float& multiply) const
 {
-	x *= multiply;
-	y *= multiply;
-	z *= multiply;
-	w *= multiply;
-	return *this;
+	return Vector(x * multiply, y * multiply, z * multiply, w * multiply);
 }
 
-Vector Vector::operator+(Vector addVector)
+Vector Vector::operator+(const Vector& addVector) const
 {
-	x += addVector.getX();
-	y += addVector.getY();
-	z += addVector.getZ();
-	w += addVector.getW();
-	return *this;
+	return Vector(x + addVector.getX(), y + addVector.getY(), z + addVector.getZ(), w + addVector.getW());
 }
 
-float Vector::norme()
+float Vector::norme() const
 {
 	return sqrt(x*x+y*y+z*z+w*w);
 }
@@ -35,8 +24,8 @@ float Vector::norme()
 void Vector::normalisation()
 {
 	float norme_ = norme();
-	x = x / norme_;
-	y = y / norme_;
-	z = z / norme_;
-	w = w / norme_;
+	x /= norme_;
+	y /= norme_;
+	z /= norme_;
+	w /= norme_;
 }
