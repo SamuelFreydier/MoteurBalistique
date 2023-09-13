@@ -1,42 +1,62 @@
 #include "Vector.h"
 #include <math.h>
 
-Vector::Vector(float newX, float newY, float newZ, float newW)
+Vector::Vector(const float& newX, const float& newY, const float& newZ, const float& newW)
+	: m_x(newX), m_y(newY), m_z(newZ), m_w(newW)
 {
-	x = newX;
-	y = newY;
-	z = newZ;
-	w = newW;
 }
 
-Vector Vector::operator*(float multiply)
+Vector Vector::operator*(const float& multiply) const
 {
-	x *= multiply;
-	y *= multiply;
-	z *= multiply;
-	w *= multiply;
-	return *this;
+	return Vector(m_x * multiply, m_y * multiply, m_z * multiply, m_w * multiply);
 }
 
-Vector Vector::operator+(Vector addVector)
+Vector Vector::operator+(const Vector& addVector) const
 {
-	x += addVector.getX();
-	y += addVector.getY();
-	z += addVector.getZ();
-	w += addVector.getW();
-	return *this;
+	return Vector(m_x + addVector.getX(), m_y + addVector.getY(), m_z + addVector.getZ(), m_w + addVector.getW());
 }
 
-float Vector::norme()
+float Vector::norme() const
 {
-	return sqrt(x*x+y*y+z*z+w*w);
+	return sqrt(m_x*m_x+m_y*m_y+m_z*m_z+m_w*m_w);
 }
 
 void Vector::normalisation()
 {
-	float norme_ = norme();
-	x = x / norme_;
-	y = y / norme_;
-	z = z / norme_;
-	w = w / norme_;
+	float normeVar = norme();
+
+	if (norme != 0) 
+	{
+		m_x /= normeVar;
+		m_y /= normeVar;
+		m_z /= normeVar;
+		m_w /= normeVar;
+	}
+}
+
+Vector& Vector::operator=(const Vector& vector)
+{
+	m_x = vector.m_x;
+	m_y = vector.m_y;
+	m_z = vector.m_z;
+	m_w = vector.m_w;
+
+	return *this;
+}
+
+Vector& Vector::operator+=(const Vector& vector)
+{
+	*this = *this + vector;
+
+	return *this;
+}
+
+bool Vector::operator==(const Vector& vector) const
+{
+	return m_x == vector.m_x && m_y == vector.m_y && m_z == vector.m_z && m_w == vector.m_w;
+}
+
+bool Vector::operator!=(const Vector& vector) const
+{
+	return !(*this == vector);
 }
