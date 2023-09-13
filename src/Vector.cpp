@@ -16,16 +16,16 @@ Vector Vector::operator+(const Vector& addVector) const
 	return Vector(m_x + addVector.getX(), m_y + addVector.getY(), m_z + addVector.getZ(), m_w + addVector.getW());
 }
 
-float Vector::norme() const
+float Vector::norm() const
 {
 	return sqrt(m_x*m_x+m_y*m_y+m_z*m_z+m_w*m_w);
 }
 
-void Vector::normalisation()
+void Vector::normalize()
 {
-	float normeVar = norme();
+	float normeVar = norm();
 
-	if (norme != 0) 
+	if (norm != 0) 
 	{
 		m_x /= normeVar;
 		m_y /= normeVar;

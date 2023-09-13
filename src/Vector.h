@@ -1,8 +1,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include "glm/vec2.hpp"
-#include "glm/vec3.hpp"
+#include <ofMain.h>
 
 class Vector
 {
@@ -19,8 +18,10 @@ public:
 	const float& getZ() const { return m_z; };
 	const float& getW() const { return m_w; };
 
-	glm::vec2 v2() { return glm::vec2(m_x, m_y); };
-	glm::vec3 v3() { return glm::vec3(m_x, m_y, m_z); };
+	glm::vec1 v1() const { return glm::vec1(m_x); }
+	glm::vec2 v2() const { return glm::vec2(m_x, m_y); };
+	glm::vec3 v3() const { return glm::vec3(m_x, m_y, m_z); };
+	glm::vec4 v4() const { return glm::vec4(m_x, m_y, m_z, m_w); }
 	
 	Vector operator*(const float& multiply) const;
 	Vector operator+(const Vector& addVector) const;
@@ -29,8 +30,8 @@ public:
 	bool operator==(const Vector& vector) const;
 	bool operator!=(const Vector& vector) const;
 
-	float norme() const;
-	void normalisation();
+	float norm() const;
+	void normalize();
 };
 
 #endif
