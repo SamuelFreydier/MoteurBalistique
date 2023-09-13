@@ -19,8 +19,13 @@ public:
 	glm::vec2 v2() { return glm::vec2(x, y); };
 	glm::vec3 v3() { return glm::vec3(x, y, z); };
 	
-	Vector operator* (const float& multiply) const;
-	Vector operator+ (const Vector& addVector) const;
+	Vector operator*(const float& multiply) const;
+	Vector operator+(const Vector& addVector) const;
+	Vector& operator=(const Vector& vector);
+	Vector& operator+=(const Vector& vector);
+	bool operator==(const Vector& vector) const;
+	bool operator!=(const Vector& vector) const;
+
 	float norme() const;
 	void normalisation();
 };

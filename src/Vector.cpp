@@ -29,3 +29,30 @@ void Vector::normalisation()
 	z /= norme_;
 	w /= norme_;
 }
+
+Vector& Vector::operator=(const Vector& vector)
+{
+	x = vector.x;
+	y = vector.y;
+	z = vector.z;
+	w = vector.w;
+
+	return *this;
+}
+
+Vector& Vector::operator+=(const Vector& vector)
+{
+	*this = *this + vector;
+
+	return *this;
+}
+
+bool Vector::operator==(const Vector& vector) const
+{
+	return x == vector.x && y == vector.y && z == vector.z && w == vector.w;
+}
+
+bool Vector::operator!=(const Vector& vector) const
+{
+	return !(*this == vector);
+}
