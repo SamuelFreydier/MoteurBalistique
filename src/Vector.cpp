@@ -143,3 +143,18 @@ bool Vector::operator!=( const Vector& vector ) const
     return !( *this == vector );
 }
 
+void Vector::show( std::ostream& out ) const
+{
+    out << "(";
+
+    for( int cptCoord = 0; cptCoord < m_dimension; cptCoord++ )
+    {
+        out << m_coordinates[ cptCoord ];
+        if( cptCoord != m_dimension - 1 )
+        {
+            out << ", ";
+        }
+    }
+
+    out << ")" << std::endl;
+}

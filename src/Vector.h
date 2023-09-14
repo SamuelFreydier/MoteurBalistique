@@ -48,6 +48,8 @@ public:
 
     float norm() const;
     void normalize();
+
+    void show( std::ostream& out = std::cout ) const;
 };
 
 #endif
