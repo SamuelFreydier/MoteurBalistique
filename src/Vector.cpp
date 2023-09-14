@@ -1,62 +1,82 @@
 #include "Vector.h"
 #include <math.h>
 
-Vector::Vector(const float& newX, const float& newY, const float& newZ, const float& newW)
-	: m_x(newX), m_y(newY), m_z(newZ), m_w(newW)
+Vector::Vector( const float& newX, const float& newY, const float& newZ, const float& newW )
+    : m_x( newX ), m_y( newY ), m_z( newZ ), m_w( newW )
 {
 }
 
-Vector Vector::operator*(const float& multiply) const
+Vector Vector::operator*( const float& value ) const
 {
-	return Vector(m_x * multiply, m_y * multiply, m_z * multiply, m_w * multiply);
+    return Vector( m_x * value, m_y * value, m_z * value, m_w * value );
 }
 
-Vector Vector::operator+(const Vector& addVector) const
+/**
+ * @brief Produit vectoriel (ignore w)
+ * @param vector 
+ * @return 
+*/
+Vector Vector::operator*( const Vector& vector ) const
 {
-	return Vector(m_x + addVector.getX(), m_y + addVector.getY(), m_z + addVector.getZ(), m_w + addVector.getW());
+    return Vector( m_y * vector.m_z - m_z * vector.m_y, m_z * vector.m_x - m_x * vector.m_z, m_x * vector.m_y - m_y * vector.m_x );
+}
+
+/**
+ * @brief Produit scalaire
+ * @param vector 
+ * @return 
+*/
+float Vector::dot( const Vector& vector ) const
+{
+    return m_x * vector.m_x + m_y * vector.m_y + m_z * vector.m_z + m_w * vector.m_w;
+}
+
+Vector Vector::operator+( const Vector& vector ) const
+{
+    return Vector( m_x + vector.getX(), m_y + vector.getY(), m_z + vector.getZ(), m_w + vector.getW() );
 }
 
 float Vector::norm() const
 {
-	return sqrt(m_x*m_x+m_y*m_y+m_z*m_z+m_w*m_w);
+    return sqrt( m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w );
 }
 
 void Vector::normalize()
 {
-	float normeVar = norm();
+    float vctNorm = norm();
 
-	if (norm != 0) 
-	{
-		m_x /= normeVar;
-		m_y /= normeVar;
-		m_z /= normeVar;
-		m_w /= normeVar;
-	}
+    if( vctNorm != 0 )
+    {
+        m_x /= vctNorm;
+        m_y /= vctNorm;
+        m_z /= vctNorm;
+        m_w /= vctNorm;
+    }
 }
 
-Vector& Vector::operator=(const Vector& vector)
+Vector& Vector::operator=( const Vector& vector )
 {
-	m_x = vector.m_x;
-	m_y = vector.m_y;
-	m_z = vector.m_z;
-	m_w = vector.m_w;
+    m_x = vector.m_x;
+    m_y = vector.m_y;
+    m_z = vector.m_z;
+    m_w = vector.m_w;
 
-	return *this;
+    return *this;
 }
 
-Vector& Vector::operator+=(const Vector& vector)
+Vector& Vector::operator+=( const Vector& vector )
 {
-	*this = *this + vector;
+    *this = *this + vector;
 
-	return *this;
+    return *this;
 }
 
-bool Vector::operator==(const Vector& vector) const
+bool Vector::operator==( const Vector& vector ) const
 {
-	return m_x == vector.m_x && m_y == vector.m_y && m_z == vector.m_z && m_w == vector.m_w;
+    return m_x == vector.m_x && m_y == vector.m_y && m_z == vector.m_z && m_w == vector.m_w;
 }
 
-bool Vector::operator!=(const Vector& vector) const
+bool Vector::operator!=( const Vector& vector ) const
 {
-	return !(*this == vector);
+    return !( *this == vector );
 }
