@@ -8,10 +8,22 @@ void ofApp::setup()
 
     accelVec.show();
 
-    Matrix newMatrix( 5, 5 );
+    Matrix newMatrix( 3, 3 );
+    Matrix secondMatrix( 3, 5 );
+    float matrixInit[] = { 2, 5, 6,
+                           6, 5, 4,
+                           4, 9, 8 };
+    float secondMatrixInit[] = { 8, 7, 4, 1, 2,
+                                 3, 2, 2, 2, 7,
+                                 8, 9, 2, 5, 6 };
+    newMatrix.setMatrix( matrixInit );
     newMatrix.show();
-    newMatrix.setIdentity();
-    newMatrix.show();
+    secondMatrix.setMatrix( secondMatrixInit );
+    secondMatrix.show();
+    Matrix result = newMatrix * secondMatrix;
+
+    result.show();
+
 
 }
 

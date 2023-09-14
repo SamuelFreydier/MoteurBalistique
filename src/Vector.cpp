@@ -33,6 +33,13 @@ Vector Vector::operator*( const float& value ) const
     return newVector;
 }
 
+Vector& Vector::operator*=( const float& value )
+{
+    *this = *this * value;
+
+    return *this;
+}
+
 /**
  * @brief Produit vectoriel (que pour des vecteurs 3D)
  * @param vector 
