@@ -1,24 +1,55 @@
 #include "Vector.h"
 #include <math.h>
 
-Vector::Vector( const float& newX, const float& newY, const float& newZ, const float& newW )
-    : m_x( newX ), m_y( newY ), m_z( newZ ), m_w( newW )
+Vector::Vector( const std::vector<float>& coordinates )
+    : m_dimension(coordinates.size())
 {
+    m_coordinates.reserve( m_dimension );
+    for( const float& coordinate : coordinates )
+    {
+        m_coordinates.emplace_back( coordinate );
+    }
+}
+
+Vector::Vector( const size_t& dimension )
+    : m_dimension( dimension )
+{
+    m_coordinates.reserve( m_dimension );
+    for( int cptDim = 0; cptDim < m_dimension; cptDim++ ) 
+    {
+        m_coordinates.emplace_back( 0.0 );
+    }
 }
 
 Vector Vector::operator*( const float& value ) const
 {
-    return Vector( m_x * value, m_y * value, m_z * value, m_w * value );
+    Vector newVector( m_dimension );
+
+    for( int coordId = 0; coordId < m_dimension; coordId++ ) 
+    {
+        newVector[ coordId ] = m_coordinates[ coordId ] * value;
+    }
+
+    return newVector;
 }
 
 /**
- * @brief Produit vectoriel (ignore w)
+ * @brief Produit vectoriel (que pour des vecteurs 3D)
  * @param vector 
  * @return 
 */
 Vector Vector::operator*( const Vector& vector ) const
 {
-    return Vector( m_y * vector.m_z - m_z * vector.m_y, m_z * vector.m_x - m_x * vector.m_z, m_x * vector.m_y - m_y * vector.m_x );
+    Vector vctResult( 3 );
+
+    if( m_dimension >= 3 && vector.m_dimension >= 3 )
+    {
+        vctResult[ 0 ] = m_coordinates[ 1 ] * vector[ 2 ] - m_coordinates[ 2 ] * vector[ 1 ];
+        vctResult[ 1 ] = m_coordinates[ 2 ] * vector[ 0 ] - m_coordinates[ 0 ] * vector[ 2 ];
+        vctResult[ 2 ] = m_coordinates[ 0 ] * vector[ 1 ] - m_coordinates[ 1 ] * vector[ 0 ];
+    }
+
+    return vctResult;
 }
 
 /**
@@ -26,19 +57,40 @@ Vector Vector::operator*( const Vector& vector ) const
  * @param vector 
  * @return 
 */
-float Vector::dot( const Vector& vector ) const
+float Vector::dotProduct( const Vector& vector ) const
 {
-    return m_x * vector.m_x + m_y * vector.m_y + m_z * vector.m_z + m_w * vector.m_w;
+    float dotResult = 0.0;
+
+    for( int coordId = 0; coordId < m_dimension; coordId++ )
+    {
+        dotResult += m_coordinates[ coordId ] * vector[ coordId ];
+    }
+
+    return dotResult;
 }
 
 Vector Vector::operator+( const Vector& vector ) const
 {
-    return Vector( m_x + vector.getX(), m_y + vector.getY(), m_z + vector.getZ(), m_w + vector.getW() );
+    Vector newVector( m_dimension );
+
+    for( int coordId = 0; coordId < m_dimension; coordId++ )
+    {
+        newVector[ coordId ] = m_coordinates[ coordId ] + vector[ coordId ];
+    }
+
+    return newVector;
 }
 
 float Vector::norm() const
 {
-    return sqrt( m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w );
+    float coordSum = 0.0;
+
+    for( int coordId = 0; coordId < m_dimension; coordId++ )
+    {
+        coordSum += m_coordinates[ coordId ] * m_coordinates[ coordId ];
+    }
+
+    return sqrt( coordSum );
 }
 
 void Vector::normalize()
@@ -47,19 +99,19 @@ void Vector::normalize()
 
     if( vctNorm != 0 )
     {
-        m_x /= vctNorm;
-        m_y /= vctNorm;
-        m_z /= vctNorm;
-        m_w /= vctNorm;
+        for( int coordId = 0; coordId < m_dimension; coordId++ )
+        {
+            m_coordinates[ coordId ] /= vctNorm;
+        }
     }
 }
 
 Vector& Vector::operator=( const Vector& vector )
 {
-    m_x = vector.m_x;
-    m_y = vector.m_y;
-    m_z = vector.m_z;
-    m_w = vector.m_w;
+    for( int coordId = 0; coordId < m_dimension; coordId++ )
+    {
+        m_coordinates[ coordId ] = vector[ coordId ];
+    }
 
     return *this;
 }
@@ -73,10 +125,21 @@ Vector& Vector::operator+=( const Vector& vector )
 
 bool Vector::operator==( const Vector& vector ) const
 {
-    return m_x == vector.m_x && m_y == vector.m_y && m_z == vector.m_z && m_w == vector.m_w;
+    bool isEqual = true;
+
+    for( int coordId = 0; coordId < m_dimension && isEqual == true; coordId++ )
+    {
+        if( m_coordinates[ coordId ] != vector[ coordId ] )
+        {
+            isEqual = false;
+        }
+    }
+
+    return isEqual;
 }
 
 bool Vector::operator!=( const Vector& vector ) const
 {
     return !( *this == vector );
 }
+

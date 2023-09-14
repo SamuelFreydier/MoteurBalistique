@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Vector.h"
+#include "Matrix.h"
 
 class ofApp : public ofBaseApp
 {
@@ -23,11 +23,11 @@ class ofApp : public ofBaseApp
     void dragEvent( ofDragInfo dragInfo );
     void gotMessage( ofMessage msg );
 
-    Vector moveVec = Vector( 1, 0, 0, 0 );
-    Vector accelVec = Vector( 1.0f, 0.0f, 0.0f, 0.0f );
-    Vector freinVec = Vector( -1.0f, 0.0f, 0.0f, 0.0f );
-    Vector accelVecVert = Vector( 0.0f, 1.0f, 0.0f, 0.0f );
-    Vector freinVecVert = Vector( 0.0f, -1.0f, 0.0f, 0.0f );
-    Vector pos = Vector( 0.0f, 100.0f, 0.0f, 0.0f );
+    Vector moveVec = Vector( { 1, 0, 0, 0 } );
+    Vector accelVec = Vector( { 1.0f, 0.0f, 0.0f, 0.0f } );
+    Vector freinVec = Vector( { -1.0f, 0.0f, 0.0f, 0.0f } );
+    Vector accelVecVert = Vector( { 0.0f, 1.0f, 0.0f, 0.0f } );
+    Vector freinVecVert = Vector( { 0.0f, -1.0f, 0.0f, 0.0f } );
+    Vector pos = Vector( { 0.0f, 100.0f, 0.0f, 0.0f } );
     ofSpherePrimitive sphere_;
 };

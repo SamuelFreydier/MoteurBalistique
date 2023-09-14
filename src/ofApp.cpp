@@ -6,6 +6,11 @@ void ofApp::setup()
     ofSetColor( 0, 255, 150 );
     sphere_ = ofSpherePrimitive();
 
+    Matrix newMatrix( 5, 5 );
+    newMatrix.show();
+    newMatrix.setIdentity();
+    newMatrix.show();
+
 }
 
 //--------------------------------------------------------------
