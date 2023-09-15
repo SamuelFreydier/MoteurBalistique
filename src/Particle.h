@@ -5,26 +5,31 @@
 
 class Particle
 {
-    private:
+ private:
     float m_massReverse;
-    float m_velocity;
-    float m_acceleration;
+    Vector m_initialVelocity;
+
+    Vector m_velocity;
+    Vector m_acceleration;
     Vector m_position;
 
-    public:
-    Particle( float mass, float velocity, float acceleration, Vector position );
+ public:
+    Particle( const float& mass, const Vector& velocity, const Vector& acceleration, const Vector& position );
 
-    const float GetMassReverse() const { return m_massReverse; }
-    void SetMassReverse( const float& mass ) { m_massReverse = 1 / mass; }
+    const Vector& getMassReverse() const { return m_massReverse; }
+    void setMassReverse( const float& mass ) { m_massReverse = 1 / mass; }
 
-    const float GetVelocity() const { return m_velocity; }
-    void SetVelocity( const float& velocity ) { m_acceleration = velocity; }
+    const Vector& getVelocity() const { return m_velocity; }
+    void setVelocity( const Vector& velocity ) { m_acceleration = velocity; }
 
-    const float GetAcceleration() const { return m_acceleration; }
-    void SetAcceleration( const float& acceleration ) { m_acceleration = acceleration; }
+    const Vector& getAcceleration() const { return m_acceleration; }
+    void setAcceleration( const Vector& acceleration ) { m_acceleration = acceleration; }
 
-    const Vector GetPosition() const { return m_position; }
-    void SetPosition( const Vector& position ) { m_position = position; }
+    const Vector& getPosition() const { return m_position; }
+    void setPosition( const Vector& position ) { m_position = position; }
+
+    void update( const float& time );
+    void draw() const;
 };
 
 #endif

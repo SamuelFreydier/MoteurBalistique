@@ -3,12 +3,14 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
+    startTime = std::chrono::steady_clock::now();
+    impulse = 0.0f;
     ofSetColor( 0, 255, 150 );
-    sphere_ = ofSpherePrimitive();
 
+    /*
     accelVec.show();
 
-    Matrix newMatrix( 3, 3 );
+    Matrix newMatrix(3, 3);
     Matrix secondMatrix( 3, 5 );
     float matrixInit[] = { 2, 5, 6,
                            6, 5, 4,
@@ -23,23 +25,26 @@ void ofApp::setup()
     Matrix result = newMatrix * secondMatrix;
 
     result.show();
-
-
+    */
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
-
-    pos = pos + moveVec;
-    sphere_.setPosition( pos.v3() );
-
+    endTime = std::chrono::steady_clock::now();
+    std::chrono::duration<float> elapsed{ endTime - startTime };
+    startTime = endTime;
+    if( ofGetMousePressed( OF_MOUSE_BUTTON_LEFT ) )
+    {
+        impulse += 1.0f;
+    }
+    Engine::getInstance()->update( std::chrono::duration_cast< std::chrono::milliseconds >( elapsed ).count() / 100.0 );
 }
 
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-    sphere_.draw();
+    Engine::getInstance()->drawParticles();
 }
 
 //--------------------------------------------------------------
@@ -94,13 +99,18 @@ void ofApp::mouseDragged( int x, int y, int button )
 //--------------------------------------------------------------
 void ofApp::mousePressed( int x, int y, int button )
 {
-
+    impulse += 0.1f;
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased( int x, int y, int button )
 {
+    float shootingAngle = atan2( ofGetWindowHeight() - y, x );
 
+    std::cout << "Shooting Angle : " << shootingAngle << " / Impulse : " << impulse << std::endl;
+
+    Engine::getInstance()->shootParticle( shootingAngle, impulse );
+    impulse = 0.0f;
 }
 
 //--------------------------------------------------------------

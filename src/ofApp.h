@@ -2,11 +2,12 @@
 
 #include "ofMain.h"
 #include "Matrix.h"
+#include "Engine.h"
 
 class ofApp : public ofBaseApp
 {
 
-    public:
+public:
     void setup();
     void update();
     void draw();
@@ -30,4 +31,10 @@ class ofApp : public ofBaseApp
     Vector freinVecVert = Vector( { 0.0f, -1.0f, 0.0f, 0.0f } );
     Vector pos = Vector( { 0.0f, 100.0f, 0.0f, 0.0f } );
     ofSpherePrimitive sphere_;
+
+    float impulse;
+    float previousTime;
+    std::chrono::steady_clock::time_point startTime;
+    std::chrono::steady_clock::time_point endTime;
+
 };
