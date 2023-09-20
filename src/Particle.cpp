@@ -11,9 +11,6 @@ void Particle::update( const float& deltaTime )
     m_velocity[ 0 ] += deltaTime * m_acceleration.getX();
     m_velocity[ 1 ] += deltaTime * m_acceleration.getY();
 
-    //m_position[ 0 ] += ( ( m_velocity.getX() + m_initialVelocity.getX() ) / 2 ) * deltaTime;
-    //m_position[ 1 ] += ( ( m_velocity.getY() + m_initialVelocity.getY() ) / 2 ) * deltaTime;
-
     m_position[0] += deltaTime * m_velocity.getX();
     m_position[1] += deltaTime * m_velocity.getY();
 }
