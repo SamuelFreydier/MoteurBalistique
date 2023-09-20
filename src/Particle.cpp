@@ -2,7 +2,7 @@
 #include "Engine.h"
 
 Particle::Particle( const float& mass, const Vector& velocity, const Vector& acceleration, const Vector& position )
-    : m_massReverse( 1 / mass ), m_initialVelocity( velocity ), m_velocity( velocity ), m_acceleration( acceleration ), m_position( position )
+    : m_massReverse( 1 / mass ), m_velocity( velocity ), m_acceleration( acceleration ), m_position( position )
 {
 
 }

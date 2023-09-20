@@ -7,7 +7,6 @@ class Particle
 {
 private:
     float m_massReverse;
-    Vector m_initialVelocity;
 
     Vector m_velocity;
     Vector m_acceleration;
