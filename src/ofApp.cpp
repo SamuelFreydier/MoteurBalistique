@@ -31,9 +31,11 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::update()
 {
+    // calcul du delta time
     endTime = std::chrono::steady_clock::now();
     std::chrono::duration<float> elapsed{ endTime - startTime };
     startTime = endTime;
+    // a chaque frame où la souris reste appuyee, on incrémente impulse
     if( ofGetMousePressed( OF_MOUSE_BUTTON_LEFT ) )
     {
         impulse += 1.0f;
@@ -50,31 +52,6 @@ void ofApp::draw()
 //--------------------------------------------------------------
 void ofApp::keyPressed( int key )
 {
-    switch( key ) {
-        case 'd':
-            if( moveVec.getX() < 3 ) {
-                moveVec = moveVec + accelVec;
-            }
-
-            break;
-        case 'q':
-            if( moveVec.getX() > -3 ) {
-                moveVec = moveVec + freinVec;
-            }
-            break;
-        case 'z':
-            if( moveVec.getY() > -2 ) {
-                moveVec = moveVec + freinVecVert;
-            }
-            break;
-        case 's':
-            if( moveVec.getY() < 2 ) {
-                moveVec = moveVec + accelVecVert;
-            }
-            break;
-        default:
-            break;
-    }
 
 }
 
@@ -105,10 +82,11 @@ void ofApp::mousePressed( int x, int y, int button )
 //--------------------------------------------------------------
 void ofApp::mouseReleased( int x, int y, int button )
 {
+    // on determine l'angle de lancer
     float shootingAngle = atan2( ofGetWindowHeight() - y, x );
-
+    // on affiche dans la console l'angle et l'impulsion
     std::cout << "Shooting Angle : " << shootingAngle << " / Impulse : " << impulse << std::endl;
-
+    // on lance la particule avec l'angle et l'impulsion détermines
     Engine::getInstance()->shootParticle( shootingAngle, impulse );
     impulse = 0.0f;
 }

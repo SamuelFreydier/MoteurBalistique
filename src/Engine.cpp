@@ -17,7 +17,7 @@ void Engine::shootParticle( const float& initialAngle, const float& initialSpeed
 {
     float xVelocity = initialSpeed * cos( initialAngle );
     float yVelocity = initialSpeed * sin( initialAngle );
-
+    // l'axe y etant dirige vers le bas, il faut l'inverser afin de bien lancer la particule
     Vector initialVelocity( { xVelocity, -yVelocity } );
 
     Particle newParticle( 1.0, initialVelocity, s_gravity, Vector( { 0.0, static_cast<float>(ofGetWindowHeight()), 0.0}));

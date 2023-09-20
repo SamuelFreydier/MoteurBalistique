@@ -1,6 +1,7 @@
 #include "Vector.h"
 #include <math.h>
 
+// constructeurs
 Vector::Vector( const std::vector<float>& coordinates )
     : m_dimension(coordinates.size())
 {
@@ -21,6 +22,11 @@ Vector::Vector( const size_t& dimension )
     }
 }
 
+/**
+* @brief produit par un scalaire
+* @param float
+* @return
+*/
 Vector Vector::operator*( const float& value ) const
 {
     Vector newVector( m_dimension );
@@ -33,6 +39,11 @@ Vector Vector::operator*( const float& value ) const
     return newVector;
 }
 
+/**
+* @brief produit par un scalaire
+* @param float
+* @return
+*/
 Vector& Vector::operator*=( const float& value )
 {
     *this = *this * value;
@@ -76,6 +87,11 @@ float Vector::dotProduct( const Vector& vector ) const
     return dotResult;
 }
 
+/**
+* @brief addition de deux vecteurs
+* @param vector
+* @return
+*/
 Vector Vector::operator+( const Vector& vector ) const
 {
     Vector newVector( m_dimension );
@@ -88,6 +104,10 @@ Vector Vector::operator+( const Vector& vector ) const
     return newVector;
 }
 
+/**
+* @brief calcul de la norme
+* 
+*/
 float Vector::norm() const
 {
     float coordSum = 0.0;
@@ -100,6 +120,9 @@ float Vector::norm() const
     return sqrt( coordSum );
 }
 
+/**
+* @brief normalise le vecteur
+*/
 void Vector::normalize()
 {
     float vctNorm = norm();
@@ -113,6 +136,11 @@ void Vector::normalize()
     }
 }
 
+/**
+* @brief surchage de l'operateur egal
+* @param vector
+* @return
+*/
 Vector& Vector::operator=( const Vector& vector )
 {
     for( int coordId = 0; coordId < m_dimension; coordId++ )
@@ -123,6 +151,11 @@ Vector& Vector::operator=( const Vector& vector )
     return *this;
 }
 
+/**
+* @brief surchage de l'addition
+* @param vector
+* @return
+*/
 Vector& Vector::operator+=( const Vector& vector )
 {
     *this = *this + vector;
@@ -130,6 +163,11 @@ Vector& Vector::operator+=( const Vector& vector )
     return *this;
 }
 
+/**
+* @brief Test d'egalite
+* @param vector
+* @return
+*/
 bool Vector::operator==( const Vector& vector ) const
 {
     bool isEqual = true;

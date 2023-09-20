@@ -16,7 +16,7 @@ class Particle
  public:
     Particle( const float& mass, const Vector& velocity, const Vector& acceleration, const Vector& position );
 
-    const Vector& getMassReverse() const { return m_massReverse; }
+    const float getMassReverse() const { return m_massReverse; }
     void setMassReverse( const float& mass ) { m_massReverse = 1 / mass; }
 
     const Vector& getVelocity() const { return m_velocity; }

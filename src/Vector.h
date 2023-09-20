@@ -19,6 +19,7 @@ public:
     const float& operator[]( const size_t& coordIndex ) const { return m_coordinates[ coordIndex ]; }
     float& operator[]( const size_t& coordIndex ) { return m_coordinates[ coordIndex ]; }
 
+    // getters
     const float& getX() const { return m_coordinates[ 0 ]; }
     const float& getY() const { return m_coordinates[ 1 ]; }
     const float& getZ() const { return m_coordinates[ 2 ]; }
@@ -41,6 +42,7 @@ public:
     // Produit scalaire
     float dotProduct( const Vector& vector ) const;
 
+    // surcharges d'operateurs
     Vector operator+( const Vector& vector ) const;
     Vector& operator=( const Vector& vector );
     Vector& operator+=( const Vector& vector );
