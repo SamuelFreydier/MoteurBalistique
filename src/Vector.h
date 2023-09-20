@@ -50,6 +50,7 @@ public:
     bool operator!=( const Vector& vector ) const;
 
     float norm() const;
+    Vector normalized() const;
     void normalize();
 
     void show( std::ostream& out = std::cout ) const;

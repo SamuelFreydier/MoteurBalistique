@@ -120,20 +120,30 @@ float Vector::norm() const
     return sqrt( coordSum );
 }
 
+Vector Vector::normalized() const
+{
+    Vector vectNorm = Vector(*this);
+
+    float thisNorm = norm();
+
+    if (thisNorm != 0)
+    {
+        for (int i = 0; i < m_dimension; i++)
+        {
+            vectNorm[i] /= thisNorm;
+        }
+    }
+
+    return vectNorm;
+}
+
 /**
 * @brief normalise le vecteur
 */
 void Vector::normalize()
 {
-    float vctNorm = norm();
-
-    if( vctNorm != 0 )
-    {
-        for( int coordId = 0; coordId < m_dimension; coordId++ )
-        {
-            m_coordinates[ coordId ] /= vctNorm;
-        }
-    }
+    // Réutilisation de code pour réduire la redondance malgré une légère perte de performance
+    *this = normalized();
 }
 
 /**
