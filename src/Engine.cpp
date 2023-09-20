@@ -27,9 +27,14 @@ void Engine::shootParticle( const float& initialAngle, const float& initialSpeed
 
 void Engine::update( const float& time )
 {
-    for( Particle& currParticle : m_particles )
+    for(int i=0; i<m_particles.size(); i++ )
     {
-        currParticle.update( time );
+        m_particles.at(i).update(time);
+        // on suppriem les particules qui sont sorties en bas ou a droite
+        if (m_particles.at(i).getPosition().getX() > ofGetWindowWidth()+5 || m_particles.at(i).getPosition().getY() > ofGetWindowHeight()+5) {
+            m_particles.erase(m_particles.begin() + i);
+            i--;
+        }
     }
 }
 
