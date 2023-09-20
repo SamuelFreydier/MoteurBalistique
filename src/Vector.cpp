@@ -3,7 +3,7 @@
 
 // constructeurs
 Vector::Vector( const std::vector<float>& coordinates )
-    : m_dimension(coordinates.size())
+    : m_dimension( coordinates.size() )
 {
     m_coordinates.reserve( m_dimension );
     for( const float& coordinate : coordinates )
@@ -12,11 +12,11 @@ Vector::Vector( const std::vector<float>& coordinates )
     }
 }
 
-Vector::Vector( const size_t& dimension )
+Vector::Vector( const int& dimension )
     : m_dimension( dimension )
 {
     m_coordinates.reserve( m_dimension );
-    for( int cptDim = 0; cptDim < m_dimension; cptDim++ ) 
+    for( int cptDim = 0; cptDim < m_dimension; cptDim++ )
     {
         m_coordinates.emplace_back( 0.0 );
     }
@@ -31,7 +31,7 @@ Vector Vector::operator*( const float& value ) const
 {
     Vector newVector( m_dimension );
 
-    for( int coordId = 0; coordId < m_dimension; coordId++ ) 
+    for( int coordId = 0; coordId < m_dimension; coordId++ )
     {
         newVector[ coordId ] = m_coordinates[ coordId ] * value;
     }
@@ -53,8 +53,8 @@ Vector& Vector::operator*=( const float& value )
 
 /**
  * @brief Produit vectoriel (que pour des vecteurs 3D)
- * @param vector 
- * @return 
+ * @param vector
+ * @return
 */
 Vector Vector::operator*( const Vector& vector ) const
 {
@@ -72,8 +72,8 @@ Vector Vector::operator*( const Vector& vector ) const
 
 /**
  * @brief Produit scalaire
- * @param vector 
- * @return 
+ * @param vector
+ * @return
 */
 float Vector::dotProduct( const Vector& vector ) const
 {
@@ -106,7 +106,7 @@ Vector Vector::operator+( const Vector& vector ) const
 
 /**
 * @brief calcul de la norme
-* 
+*
 */
 float Vector::norm() const
 {
@@ -122,15 +122,15 @@ float Vector::norm() const
 
 Vector Vector::normalized() const
 {
-    Vector vectNorm = Vector(*this);
+    Vector vectNorm = Vector( *this );
 
     float thisNorm = norm();
 
-    if (thisNorm != 0)
+    if( thisNorm != 0 )
     {
-        for (int i = 0; i < m_dimension; i++)
+        for( int i = 0; i < m_dimension; i++ )
         {
-            vectNorm[i] /= thisNorm;
+            vectNorm[ i ] /= thisNorm;
         }
     }
 

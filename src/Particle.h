@@ -5,7 +5,7 @@
 
 class Particle
 {
- private:
+private:
     float m_massReverse;
     Vector m_initialVelocity;
 
@@ -13,7 +13,7 @@ class Particle
     Vector m_acceleration;
     Vector m_position;
 
- public:
+public:
     Particle( const float& mass, const Vector& velocity, const Vector& acceleration, const Vector& position );
 
     const float& getMassReverse() const { return m_massReverse; }

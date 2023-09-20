@@ -31,7 +31,7 @@ public:
     void setIdentity();
     void setZero();
 
-    void show(std::ostream& out = std::cout) const;
+    void show( std::ostream& out = std::cout ) const;
 };
 
 #endif

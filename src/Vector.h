@@ -9,15 +9,15 @@ class Vector
 {
 private:
     std::vector<float> m_coordinates;
-    size_t m_dimension;
+    int m_dimension;
 public:
     Vector( const std::vector<float>& coordinates );
-    Vector( const size_t& dimension = DEFAULT_VCT_DIMENSION );
+    Vector( const int& dimension = DEFAULT_VCT_DIMENSION );
 
-    const size_t& getDimension() const { return m_dimension; }
+    const int& getDimension() const { return m_dimension; }
     const std::vector<float>& getCoordinates() const { return m_coordinates; }
-    const float& operator[]( const size_t& coordIndex ) const { return m_coordinates[ coordIndex ]; }
-    float& operator[]( const size_t& coordIndex ) { return m_coordinates[ coordIndex ]; }
+    const float& operator[]( const int& coordIndex ) const { return m_coordinates[ coordIndex ]; }
+    float& operator[]( const int& coordIndex ) { return m_coordinates[ coordIndex ]; }
 
     // getters
     const float& getX() const { return m_coordinates[ 0 ]; }

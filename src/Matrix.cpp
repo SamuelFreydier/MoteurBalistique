@@ -5,7 +5,7 @@ Matrix::Matrix( const size_t& nbRows, const size_t& nbCols )
 {
     m_matrix.reserve( m_cols );
 
-    for( int cptCol = 0; cptCol < m_cols; cptCol++ ) 
+    for( int cptCol = 0; cptCol < m_cols; cptCol++ )
     {
         m_matrix.emplace_back( Vector( m_rows ) );
     }
@@ -85,8 +85,8 @@ Matrix Matrix::operator*( const float& value ) const
 
 /**
  * @brief Produit matriciel
- * @param matrix 
- * @return 
+ * @param matrix
+ * @return
 */
 Matrix Matrix::operator*( const Matrix& matrix ) const
 {

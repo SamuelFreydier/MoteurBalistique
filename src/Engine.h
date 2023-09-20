@@ -11,6 +11,7 @@ private:
 
     std::vector<Particle> m_particles;
     static Vector s_gravity;
+    static float s_damping;
 protected:
     Engine() = default;
 public:
@@ -21,6 +22,7 @@ public:
 
     const std::vector<Particle>& getParticles() const { return m_particles; }
     static const Vector& getGravity() { return s_gravity; }
+    static const float& getDamping() { return s_damping; }
 
     void shootParticle( const float& initialAngle, const float& initialSpeed );
     void update( const float& time );
