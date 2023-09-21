@@ -24,7 +24,7 @@ void ofApp::setup()
 
     m_gui.setup( m_mainGroup );
 
-    startTime = std::chrono::steady_clock::now();
+    m_startTime = std::chrono::steady_clock::now();
     ofSetColor( 0, 255, 150 );
     
     m_fireball = new Particle( 3.0, true );
@@ -39,9 +39,9 @@ void ofApp::update()
     Engine::getInstance()->setDamping( m_dampingSlider );
 
     // calcul du delta time
-    endTime = std::chrono::steady_clock::now();
-    std::chrono::duration<float> elapsed{ endTime - startTime };
-    startTime = endTime;
+    m_endTime = std::chrono::steady_clock::now();
+    std::chrono::duration<float> elapsed{ m_endTime - m_startTime };
+    m_startTime = m_endTime;
 
     Engine::getInstance()->update( std::chrono::duration_cast< std::chrono::milliseconds >( elapsed ).count() / 100.0 );
 }

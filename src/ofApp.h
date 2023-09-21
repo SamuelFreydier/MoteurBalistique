@@ -44,10 +44,8 @@ public:
     Particle* m_fireball;
     Particle* m_ball;
 
-    ofSpherePrimitive sphere_;
-
-    float previousTime;
-    std::chrono::steady_clock::time_point startTime;
-    std::chrono::steady_clock::time_point endTime;
+    float m_previousTime;
+    std::chrono::steady_clock::time_point m_startTime;
+    std::chrono::steady_clock::time_point m_endTime;
 
 };

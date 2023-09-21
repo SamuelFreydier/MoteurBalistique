@@ -1,6 +1,6 @@
 #include "Matrix.h"
 
-Matrix::Matrix( const size_t& nbRows, const size_t& nbCols )
+Matrix::Matrix( const int& nbRows, const int& nbCols )
     : m_rows( nbRows ), m_cols( nbCols )
 {
     m_matrix.reserve( m_cols );
