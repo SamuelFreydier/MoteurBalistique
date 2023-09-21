@@ -18,6 +18,7 @@ void ofApp::setup()
     m_particleConfig.add( m_impulseSlider.set( "Impulse", 100, 1, 500 ) );
     m_particleConfig.add( m_massSlider.set( "Mass", 1, 1, 10 ) );
     m_particleConfig.add( m_hasTrailToggle.set( "Has Trail", false ) );
+    m_particleConfig.add( m_colorSlider.set( "Color", ofVec3f( 100, 130, 150 ), ofVec3f( 0, 0, 0 ), ofVec3f( 255, 255, 255 ) ) );
 
     m_mainGroup.add( m_worldForces );
     m_mainGroup.add( m_particleConfig );
@@ -86,7 +87,7 @@ void ofApp::mousePressed( int x, int y, int button )
     // on affiche dans la console l'angle et l'impulsion
     std::cout << "Shooting Angle : " << shootingAngle << " / Impulse : " << m_impulseSlider << std::endl;
     // on lance la particule avec l'angle et l'impulsion détermines
-    Engine::getInstance()->shootParticle( shootingAngle, m_impulseSlider, m_massSlider, m_hasTrailToggle );
+    Engine::getInstance()->shootParticle( shootingAngle, m_impulseSlider, m_massSlider, m_hasTrailToggle, Vector( { m_colorSlider->x, m_colorSlider->y, m_colorSlider->z } ) );
 }
 
 //--------------------------------------------------------------

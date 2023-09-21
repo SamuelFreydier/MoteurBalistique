@@ -28,7 +28,7 @@ public:
     static const float& getDamping() { return s_damping; }
     static void setDamping( const float& damping ) { s_damping = damping; }
 
-    void shootParticle( const float& initialAngle, const float& initialSpeed, const float& mass = 1.0, bool hasTrail = false );
+    void shootParticle( const float& initialAngle, const float& initialSpeed, const float& mass = 1.0, bool hasTrail = false, const Vector& color = Vector( { 255, 0, 0 } ) );
     void update( const float& time );
     void drawParticles() const;
 };

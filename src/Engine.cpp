@@ -14,14 +14,14 @@ Engine* Engine::getInstance()
     return s_engine;
 }
 
-void Engine::shootParticle( const float& initialAngle, const float& initialSpeed, const float& mass, bool hasTrail )
+void Engine::shootParticle( const float& initialAngle, const float& initialSpeed, const float& mass, bool hasTrail, const Vector& color )
 {
     float xVelocity = initialSpeed * cos( initialAngle );
     float yVelocity = initialSpeed * sin( initialAngle );
     // l'axe y etant dirige vers le bas, il faut l'inverser afin de bien lancer la particule
     Vector initialVelocity( { xVelocity, -yVelocity } );
 
-    Particle newParticle( mass, hasTrail, initialVelocity, s_gravity, Vector( { 0.0, static_cast< float >( ofGetWindowHeight() ), 0.0 } ) );
+    Particle newParticle( mass, hasTrail, initialVelocity, s_gravity, Vector( { 0.0, static_cast< float >( ofGetWindowHeight() ), 0.0 } ), color );
 
     m_particles.push_back( newParticle );
 }

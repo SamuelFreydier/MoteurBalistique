@@ -40,6 +40,7 @@ public:
     ofParameter<float> m_impulseSlider;
     ofParameter<float> m_massSlider;
     ofParameter<bool> m_hasTrailToggle;
+    ofParameter<ofVec3f> m_colorSlider;
 
     Particle* m_fireball;
     Particle* m_ball;
