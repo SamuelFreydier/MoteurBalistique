@@ -1,8 +1,14 @@
 #include "Particle.h"
 #include "Engine.h"
 
-Particle::Particle( const float& mass, const Vector& velocity, const Vector& acceleration, const Vector& position )
-    : m_massReverse( 1 / mass ), m_velocity( velocity ), m_acceleration( acceleration ), m_position( position )
+Particle::Particle( const float& mass, bool hasTrail, const Vector& velocity, const Vector& acceleration, const Vector& position)
+    : m_massReverse( 1 / mass ), m_hasTrail( hasTrail ), m_velocity( velocity ), m_acceleration( acceleration ), m_position( position )
+{
+
+}
+
+Particle::Particle( const Particle& particle )
+    : Particle(particle.getMass(), particle.hasTrail(), particle.getVelocity(), particle.getAcceleration(), particle.getPosition() )
 {
 
 }

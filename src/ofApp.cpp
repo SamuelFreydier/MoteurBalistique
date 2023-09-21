@@ -1,45 +1,44 @@
 #include "ofApp.h"
 
+ofApp::~ofApp()
+{
+    delete m_fireball;
+    delete m_ball;
+}
+
 //--------------------------------------------------------------
 void ofApp::setup()
 {
+    // Setup GUI
+    m_sliderGroup.setName( "Forces" );
+    m_sliderGroup.add( m_impulseSlider.set( "Impulse", 100, 1, 500 ) );
+    m_sliderGroup.add( m_gravitySlider.set( "Gravity", 9.81, 1, 20 ) );
+    m_sliderGroup.add( m_massSlider.set( "Mass", 1, 1, 10 ) );
+    m_sliderGroup.add( m_dampingSlider.set( "Damping", 0.94, 0.5, 1 ) );
+    
+    m_gui.setup( m_sliderGroup );
+
+    m_gui.add( m_hasTrailToggle.setup( "Has Trail", false ) );
+
     startTime = std::chrono::steady_clock::now();
-    impulse = 0.0f;
     ofSetColor( 0, 255, 150 );
-
-    /*
-    accelVec.show();
-
-    Matrix newMatrix(3, 3);
-    Matrix secondMatrix( 3, 5 );
-    float matrixInit[] = { 2, 5, 6,
-                           6, 5, 4,
-                           4, 9, 8 };
-    float secondMatrixInit[] = { 8, 7, 4, 1, 2,
-                                 3, 2, 2, 2, 7,
-                                 8, 9, 2, 5, 6 };
-    newMatrix.setMatrix( matrixInit );
-    newMatrix.show();
-    secondMatrix.setMatrix( secondMatrixInit );
-    secondMatrix.show();
-    Matrix result = newMatrix * secondMatrix;
-
-    result.show();
-    */
+    
+    m_fireball = new Particle( 3.0, true );
+    m_ball = new Particle( 1.0, false );
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
+    // Mise à jour des forces configurées
+    Engine::getInstance()->setGravity( Vector( { 0.0, m_gravitySlider } ) );
+    Engine::getInstance()->setDamping( m_dampingSlider );
+
     // calcul du delta time
     endTime = std::chrono::steady_clock::now();
     std::chrono::duration<float> elapsed{ endTime - startTime };
     startTime = endTime;
-    // a chaque frame où la souris reste appuyee, on incrémente impulse
-    if( ofGetMousePressed( OF_MOUSE_BUTTON_LEFT ) )
-    {
-        impulse += 1.0f;
-    }
+
     Engine::getInstance()->update( std::chrono::duration_cast< std::chrono::milliseconds >( elapsed ).count() / 100.0 );
 }
 
@@ -47,6 +46,8 @@ void ofApp::update()
 void ofApp::draw()
 {
     Engine::getInstance()->drawParticles();
+
+    m_gui.draw();
 }
 
 //--------------------------------------------------------------
@@ -76,19 +77,18 @@ void ofApp::mouseDragged( int x, int y, int button )
 //--------------------------------------------------------------
 void ofApp::mousePressed( int x, int y, int button )
 {
-    impulse += 0.1f;
+    // on determine l'angle de lancer
+    float shootingAngle = atan2( ofGetWindowHeight() - y, x );
+    // on affiche dans la console l'angle et l'impulsion
+    std::cout << "Shooting Angle : " << shootingAngle << " / Impulse : " << m_impulseSlider << std::endl;
+    // on lance la particule avec l'angle et l'impulsion détermines
+    Engine::getInstance()->shootParticle( shootingAngle, m_impulseSlider, m_massSlider, m_hasTrailToggle );
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased( int x, int y, int button )
 {
-    // on determine l'angle de lancer
-    float shootingAngle = atan2( ofGetWindowHeight() - y, x );
-    // on affiche dans la console l'angle et l'impulsion
-    std::cout << "Shooting Angle : " << shootingAngle << " / Impulse : " << impulse << std::endl;
-    // on lance la particule avec l'angle et l'impulsion détermines
-    Engine::getInstance()->shootParticle( shootingAngle, impulse );
-    impulse = 0.0f;
+    
 }
 
 //--------------------------------------------------------------

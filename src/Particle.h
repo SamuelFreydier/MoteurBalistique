@@ -11,11 +11,16 @@ private:
     Vector m_velocity;
     Vector m_acceleration;
     Vector m_position;
+    Vector m_color;
+
+    bool m_hasTrail;
 
 public:
-    Particle( const float& mass, const Vector& velocity, const Vector& acceleration, const Vector& position );
+    Particle( const float& mass = 1.0, bool hasTrail = false, const Vector& velocity = Vector({0.0, 0.0, 0.0}), const Vector& acceleration = Vector( { 0.0, 0.0, 0.0 } ), const Vector& position = Vector( { 0.0, 0.0, 0.0 } ) );
+    Particle( const Particle& particle );
 
     const float& getMassReverse() const { return m_massReverse; }
+    const float& getMass() const { return 1 / m_massReverse; }
     void setMassReverse( const float& mass ) { m_massReverse = 1 / mass; }
 
     const Vector& getVelocity() const { return m_velocity; }
@@ -26,6 +31,8 @@ public:
 
     const Vector& getPosition() const { return m_position; }
     void setPosition( const Vector& position ) { m_position = position; }
+
+    bool hasTrail() const { return m_hasTrail; }
 
     void update( const float& time );
     void draw() const;

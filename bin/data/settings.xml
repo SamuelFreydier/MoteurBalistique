@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<group>
+	<Impulse>440.12</Impulse>
+	<Gravity>9.8</Gravity>
+	<Mass>5.86</Mass>
+	<Damping>0.955</Damping>
+	<Has_Trail>0</Has_Trail>
+</group>

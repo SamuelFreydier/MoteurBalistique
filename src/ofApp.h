@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxGui.h"
 #include "Matrix.h"
 #include "Engine.h"
 
@@ -8,6 +9,8 @@ class ofApp : public ofBaseApp
 {
 
 public:
+    ~ofApp() override;
+
     void setup();
     void update();
     void draw();
@@ -24,15 +27,22 @@ public:
     void dragEvent( ofDragInfo dragInfo );
     void gotMessage( ofMessage msg );
 
-    Vector moveVec = Vector( { 1, 0, 0, 0 } );
-    Vector accelVec = Vector( { 1.0f, 0.0f, 0.0f, 0.0f } );
-    Vector freinVec = Vector( { -1.0f, 0.0f, 0.0f, 0.0f } );
-    Vector accelVecVert = Vector( { 0.0f, 1.0f, 0.0f, 0.0f } );
-    Vector freinVecVert = Vector( { 0.0f, -1.0f, 0.0f, 0.0f } );
-    Vector pos = Vector( { 0.0f, 100.0f, 0.0f, 0.0f } );
+    // Interface (GUI)
+    ofxPanel m_gui;
+
+    // Pour avoir un champ au lieu d'un slider => utiliser ofxFloatField
+    ofParameterGroup m_sliderGroup;
+    ofParameter<float> m_impulseSlider;
+    ofParameter<float> m_gravitySlider;
+    ofParameter<float> m_massSlider;
+    ofParameter<float> m_dampingSlider;
+    ofxToggle m_hasTrailToggle;
+
+    Particle* m_fireball;
+    Particle* m_ball;
+
     ofSpherePrimitive sphere_;
 
-    float impulse;
     float previousTime;
     std::chrono::steady_clock::time_point startTime;
     std::chrono::steady_clock::time_point endTime;
