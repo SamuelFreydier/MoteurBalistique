@@ -10,15 +10,19 @@ ofApp::~ofApp()
 void ofApp::setup()
 {
     // Setup GUI
-    m_sliderGroup.setName( "Forces" );
-    m_sliderGroup.add( m_impulseSlider.set( "Impulse", 100, 1, 500 ) );
-    m_sliderGroup.add( m_gravitySlider.set( "Gravity", 9.81, 1, 20 ) );
-    m_sliderGroup.add( m_massSlider.set( "Mass", 1, 1, 10 ) );
-    m_sliderGroup.add( m_dampingSlider.set( "Damping", 0.94, 0.5, 1 ) );
+    m_worldForces.setName( "World Forces" );
+    m_worldForces.add( m_gravitySlider.set( "Gravity", 9.81, 1, 20 ) );
+    m_worldForces.add( m_dampingSlider.set( "Damping", 0.94, 0.5, 1 ) );
     
-    m_gui.setup( m_sliderGroup );
+    m_particleConfig.setName( "Particle Configuration" );
+    m_particleConfig.add( m_impulseSlider.set( "Impulse", 100, 1, 500 ) );
+    m_particleConfig.add( m_massSlider.set( "Mass", 1, 1, 10 ) );
+    m_particleConfig.add( m_hasTrailToggle.set( "Has Trail", false ) );
 
-    m_gui.add( m_hasTrailToggle.setup( "Has Trail", false ) );
+    m_mainGroup.add( m_worldForces );
+    m_mainGroup.add( m_particleConfig );
+
+    m_gui.setup( m_mainGroup );
 
     startTime = std::chrono::steady_clock::now();
     ofSetColor( 0, 255, 150 );

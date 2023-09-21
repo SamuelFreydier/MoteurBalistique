@@ -31,12 +31,15 @@ public:
     ofxPanel m_gui;
 
     // Pour avoir un champ au lieu d'un slider => utiliser ofxFloatField
-    ofParameterGroup m_sliderGroup;
-    ofParameter<float> m_impulseSlider;
+    ofParameterGroup m_mainGroup;
+    
+    ofParameterGroup m_worldForces;
     ofParameter<float> m_gravitySlider;
-    ofParameter<float> m_massSlider;
     ofParameter<float> m_dampingSlider;
-    ofxToggle m_hasTrailToggle;
+    ofParameterGroup m_particleConfig;
+    ofParameter<float> m_impulseSlider;
+    ofParameter<float> m_massSlider;
+    ofParameter<bool> m_hasTrailToggle;
 
     Particle* m_fireball;
     Particle* m_ball;
