@@ -104,6 +104,7 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Fireball.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\Engine.cpp" />
@@ -122,6 +123,7 @@
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxToggle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Fireball.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Matrix.h" />

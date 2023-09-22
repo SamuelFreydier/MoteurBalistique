@@ -104,6 +104,16 @@ Vector Vector::operator+( const Vector& vector ) const
     return newVector;
 }
 
+Vector Vector::operator-() const
+{
+    return *this * -1;
+}
+
+Vector Vector::operator-( const Vector& vector ) const
+{
+    return *this + ( -vector );
+}
+
 /**
 * @brief calcul de la norme
 *
@@ -196,6 +206,19 @@ bool Vector::operator==( const Vector& vector ) const
 bool Vector::operator!=( const Vector& vector ) const
 {
     return !( *this == vector );
+}
+
+float Vector::distance( const Vector& vector ) const
+{
+    float sum = 0;
+    float distance;
+
+    for( int coord = 0; coord < m_dimension; coord++ )
+    {
+        sum += pow( vector[ coord ] - m_coordinates[ coord ], 2 );
+    }
+
+    return sqrt( sum );
 }
 
 void Vector::show( std::ostream& out ) const

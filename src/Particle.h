@@ -5,8 +5,9 @@
 
 class Particle
 {
-private:
+protected:
     float m_massReverse;
+    float m_radius;
 
     Vector m_velocity;
     Vector m_acceleration;
@@ -15,15 +16,26 @@ private:
 
     bool m_hasTrail;
 
+    // Facteur permettant de réduire la taille de la particule (< 1) ou de l'agrandir (> 1)
+    float m_sizeModificator = 1.0;
+
+    // Passe à true pour donner l'instruction à l'Engine de le détruire
+    bool m_destroyedLater = false;
+
 public:
-    Particle( const float& mass = 1.0, bool hasTrail = false, const Vector& velocity = Vector( { 0.0, 0.0, 0.0 } ), const Vector& acceleration = Vector( { 0.0, 0.0, 0.0 } ), const Vector& position = Vector( { 0.0, 0.0, 0.0 } ), const Vector& color = Vector( { 255, 0, 0 } ) );
+    Particle( const float& mass = 1.0, const float& radius = 1.0, bool hasTrail = false, const Vector& velocity = Vector( { 0.0, 0.0, 0.0 } ), const Vector& acceleration = Vector( { 0.0, 0.0, 0.0 } ), const Vector& position = Vector( { 0.0, 0.0, 0.0 } ), const Vector& color = Vector( { 255, 0, 0 } ) );
     Particle( const Particle& particle );
 
+    // Accesseurs et Mutateurs
     const float& getMassReverse() const { return m_massReverse; }
-    const float& getMass() const { return 1 / m_massReverse; }
+    float getMass() const { return 1 / m_massReverse; }
     void setMassReverse( const float& mass ) { m_massReverse = 1 / mass; }
 
+    const float& getRadius() const { return m_radius; }
+    void setRadius( const float& radius ) { m_radius = radius; }
+
     const Vector& getVelocity() const { return m_velocity; }
+    Vector getNegativeVelocity() const;
     void setVelocity( const Vector& velocity ) { m_acceleration = velocity; }
 
     const Vector& getAcceleration() const { return m_acceleration; }
@@ -35,10 +47,17 @@ public:
     const Vector& getColor() const { return m_color; }
     void setColor( const Vector& color ) { m_color = color; }
 
+    const float& getSizeModificator() const { return m_sizeModificator; }
+    void setSizeModificator( const float& sizeModificator ) { m_sizeModificator = sizeModificator; }
+
+    bool IsDead() const { return m_destroyedLater; }
+
     bool hasTrail() const { return m_hasTrail; }
 
-    void update( const float& time );
+    // Mise à jour et affichage à chaque frame
+    virtual void update( const float& deltaTime );
     void draw() const;
+    virtual void clicked() {};
 };
 
 #endif

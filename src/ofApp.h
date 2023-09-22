@@ -7,10 +7,7 @@
 
 class ofApp : public ofBaseApp
 {
-
 public:
-    ~ofApp() override;
-
     void setup();
     void update();
     void draw();
@@ -37,16 +34,15 @@ public:
     ofParameter<float> m_gravitySlider;
     ofParameter<float> m_dampingSlider;
     ofParameterGroup m_particleConfig;
+    ofParameter<bool> m_isShootingTrigger;
     ofParameter<float> m_impulseSlider;
     ofParameter<float> m_massSlider;
-    ofParameter<bool> m_hasTrailToggle;
+    ofParameter<float> m_radiusSlider;
+    ofParameter<bool> m_isFireballToggle;
     ofParameter<ofVec3f> m_colorSlider;
+    ofParameter<int> m_colorShiftSlider;
 
-    Particle* m_fireball;
-    Particle* m_ball;
-
-    float m_previousTime;
+    // Calcul du temps passé à chaque frame
     std::chrono::steady_clock::time_point m_startTime;
     std::chrono::steady_clock::time_point m_endTime;
-
 };

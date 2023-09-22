@@ -44,6 +44,8 @@ public:
 
     // surcharges d'operateurs
     Vector operator+( const Vector& vector ) const;
+    Vector operator-() const;
+    Vector operator-( const Vector& vector ) const;
     Vector& operator=( const Vector& vector );
     Vector& operator+=( const Vector& vector );
     bool operator==( const Vector& vector ) const;
@@ -52,6 +54,7 @@ public:
     float norm() const;
     Vector normalized() const;
     void normalize();
+    float distance( const Vector& vector ) const;
 
     void show( std::ostream& out = std::cout ) const;
 };
