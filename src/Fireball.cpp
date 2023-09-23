@@ -13,29 +13,40 @@ Fireball::Fireball( const Fireball& fireball )
 
 }
 
+
+/**
+ * @brief Comportement normal de particule + création de particules pour générer la trainée de la boule de feu
+ * @param deltaTime 
+*/
 void Fireball::update( const float& deltaTime )
 {
     Vector lastPosition( getPosition() );
 
+    // Comportement normal de Particule
     Particle::update( deltaTime );
 
     int nbAshfalls = rand() % 2 + 3; // Entre 3 et 4 retombées de cendres
 
+    // Pour chaque particule de cendre (composant la trainée)
     for( int ashfallIdx = 0; ashfallIdx < nbAshfalls; ashfallIdx++ )
     {
+        // Calcul de sa couleur (proche de celle de la boule de feu)
         Vector colorShift( Engine::randshiftColor( m_color, m_colorShift ) );
 
+        // Calcul de la position d'apparition
+        // newPosition = le point situé à l'intersection entre la périphérie du cercle de la boule de feu à l'instant t et la droite reliant la boule à t-1 et la boule à t
         float traveledDistance = lastPosition.distance( getPosition() );
         Vector positionShift( getPosition() - lastPosition );
         positionShift *= 1 - m_radius / traveledDistance;
-
         Vector newPosition( lastPosition + positionShift );
 
+        // La position est aléatoire à + ou - pi/2 de décalage par rapport à newPosition (la particule va apparaître aléatoirement sur un arc de cercle dont le milieu est newPosition)
         float angle = atan2( getPosition().getY() - newPosition.getY(), getPosition().getX() - newPosition.getX() ) + PI;
         angle +=  ( rand() % ( int ) ( PI * 100 + 1 ) ) / 100.0 - PI / 2;
         newPosition[ 0 ] += cos( angle ) * m_radius;
         newPosition[ 1 ] += sin( angle ) * m_radius;
 
+        // Création de la particule (plus petite que la boule de feu d'origine)
         ParticlePtr ashfall = std::make_shared<Particle>( getMass() * 0.1, getRadius() * 0.3, Vector( { 0, 0, 0 } ), getAcceleration(), newPosition, colorShift );
 
         // Disparition progressive de la trainée de la boule de feu
@@ -44,11 +55,19 @@ void Fireball::update( const float& deltaTime )
     }
 }
 
+
+/**
+ * @brief Fait exploser la boule de feu à la détection du clic
+*/
 void Fireball::clicked()
 {
     explode();
 }
 
+
+/**
+ * @brief Explosion de la boule de feu en n plus petites boules de feu partant dans toutes les directions
+*/
 void Fireball::explode()
 {
     float angleStep = PI * 2 / m_nbExplosionProjectiles;
@@ -59,5 +78,6 @@ void Fireball::explode()
         Engine::getInstance()->shootParticle( getPosition(), angleProjection, getVelocity().norm(), getMass() * 0.4, getRadius() * 0.4, m_color, true );
     }
 
+    // On laisse la responsabilité à l'Engine de détruire la boule
     m_destroyedLater = true;
 }

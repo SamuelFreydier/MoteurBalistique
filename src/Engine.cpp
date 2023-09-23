@@ -5,6 +5,10 @@ Vector Engine::s_gravity( { 0.0, 9.81f } );
 float Engine::s_damping = 0.94;
 int Engine::s_colorShift = 0;
 
+/**
+ * @brief Récupération de l'instance du Singleton
+ * @return 
+*/
 Engine* Engine::getInstance()
 {
     if( s_engine == nullptr )
@@ -15,6 +19,17 @@ Engine* Engine::getInstance()
     return s_engine;
 }
 
+
+/**
+ * @brief Tire une particule à une certaine position, avec un certain angle et une certaine pulsion
+ * @param initialPos 
+ * @param initialAngle 
+ * @param initialSpeed 
+ * @param mass 
+ * @param radius 
+ * @param color 
+ * @param isFireball 
+*/
 void Engine::shootParticle( const Vector& initialPos, const float& initialAngle, const float& initialSpeed, const float& mass, const float& radius, const Vector& color, bool isFireball )
 {
     float xVelocity = initialSpeed * cos( initialAngle );
@@ -37,13 +52,22 @@ void Engine::shootParticle( const Vector& initialPos, const float& initialAngle,
     m_particles.push_back( newParticle );
 }
 
-
+/**
+ * @brief Mise à jour de la physique des particules en fonction du temps écoulé depuis la dernière frame
+ * @param deltaTime 
+*/
 void Engine::update( const float& deltaTime )
 {
     updateParticleList( m_particles, deltaTime );
     updateParticleList( m_vanillaParticles, deltaTime );
 }
 
+
+/**
+ * @brief Mise à jour de la physique des particules D'UNE LISTE PRECISE
+ * @param particleList 
+ * @param deltaTime 
+*/
 void Engine::updateParticleList( std::list<ParticlePtr>& particleList, const float& deltaTime )
 {
     std::list<ParticlePtr>::iterator particleIterator = particleList.begin();
@@ -63,6 +87,10 @@ void Engine::updateParticleList( std::list<ParticlePtr>& particleList, const flo
     }
 }
 
+
+/**
+ * @brief Dessine les particules
+*/
 void Engine::drawParticles() const
 {
     for( const ParticlePtr& currParticle : m_particles )
@@ -76,6 +104,13 @@ void Engine::drawParticles() const
     }
 }
 
+
+/**
+ * @brief Calcule une nouvelle valeur aléatoire pour un canal de couleur (R, G ou B) entre 0 et 255, sans dépasser un décalage égal à shiftAmount
+ * @param colorChannel 
+ * @param shiftAmount 
+ * @return 
+*/
 float Engine::randshiftColorChannel( const float& colorChannel, const int& shiftAmount )
 {
     float newColorChannel = colorChannel + rand() % ( shiftAmount * 2 + 1 ) - shiftAmount;
@@ -86,6 +121,13 @@ float Engine::randshiftColorChannel( const float& colorChannel, const int& shift
     return newColorChannel;
 }
 
+
+/**
+ * @brief Calcule une nouvelle couleur RGB aléatoire à partir d'une couleur existante. Utilise la méthode randshiftColorChannel.
+ * @param color 
+ * @param shiftAmount 
+ * @return 
+*/
 Vector Engine::randshiftColor( const Vector& color, const int& shiftAmount )
 {
     Vector newColor( color );
@@ -98,6 +140,13 @@ Vector Engine::randshiftColor( const Vector& color, const int& shiftAmount )
     return newColor;
 }
 
+
+/**
+ * @brief Gère le comportement des particules face à un clic de souris.
+ * @param x 
+ * @param y 
+ * @return 
+*/
 bool Engine::clickedParticle( const float& x, const float& y )
 {
     bool clicked = false;
@@ -111,7 +160,7 @@ bool Engine::clickedParticle( const float& x, const float& y )
             clicked = true;
             ( *particleIterator )->clicked();
         }
-        if( ( *particleIterator )->IsDead() )
+        if( ( *particleIterator )->ToBeDestroyed() )
         {
             particleIterator = m_particles.erase( particleIterator );
         }

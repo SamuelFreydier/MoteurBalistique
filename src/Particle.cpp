@@ -13,6 +13,10 @@ Particle::Particle( const Particle& particle )
 
 }
 
+/**
+ * @brief Récupère l'opposé de la vélocité
+ * @return 
+*/
 Vector Particle::getNegativeVelocity() const
 {
     Vector negativeVelocity( m_velocity );
@@ -25,6 +29,10 @@ Vector Particle::getNegativeVelocity() const
     return negativeVelocity;
 }
 
+/**
+ * @brief Calcul de la nouvelle vélocité et de la nouvelle position à partir de l'accélération via l'intégration d'Euler + Modification de la taille.
+ * @param deltaTime 
+*/
 void Particle::update( const float& deltaTime )
 {
     // Vélocité
@@ -39,6 +47,10 @@ void Particle::update( const float& deltaTime )
     m_radius *= m_sizeModificator;
 }
 
+
+/**
+ * @brief Dessine la particule sous forme de sphère
+*/
 void Particle::draw() const
 {
     ofSpherePrimitive graphicParticle;

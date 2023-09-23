@@ -48,7 +48,7 @@ public:
     const float& getSizeModificator() const { return m_sizeModificator; }
     void setSizeModificator( const float& sizeModificator ) { m_sizeModificator = sizeModificator; }
 
-    bool IsDead() const { return m_destroyedLater; }
+    bool ToBeDestroyed() const { return m_destroyedLater; }
 
     // Mise à jour et affichage à chaque frame
     virtual void update( const float& deltaTime );

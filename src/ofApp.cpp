@@ -42,14 +42,17 @@ void ofApp::update()
     std::chrono::duration<float> elapsed{ m_endTime - m_startTime };
     m_startTime = m_endTime;
 
+    // Mise à jour physique
     Engine::getInstance()->update( std::chrono::duration_cast< std::chrono::milliseconds >( elapsed ).count() / 100.0 );
 }
 
 //--------------------------------------------------------------
 void ofApp::draw()
 {
+    // Mise à jour graphique
     Engine::getInstance()->drawParticles();
 
+    // Affichage de l'UI
     m_gui.draw();
 }
 
@@ -80,6 +83,7 @@ void ofApp::mouseDragged( int x, int y, int button )
 //--------------------------------------------------------------
 void ofApp::mousePressed( int x, int y, int button )
 {
+    // Si on a cliqué sur une particule, on ne tire pas de particule
     if( Engine::getInstance()->clickedParticle( x, y ) == false && m_isShootingTrigger == true )
     {
         // on determine l'angle de lancer

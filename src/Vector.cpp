@@ -130,6 +130,11 @@ float Vector::norm() const
     return sqrt( coordSum );
 }
 
+
+/**
+ * @brief Renvoie le vecteur en version normalisée
+ * @return 
+*/
 Vector Vector::normalized() const
 {
     Vector vectNorm = Vector( *this );
@@ -208,6 +213,11 @@ bool Vector::operator!=( const Vector& vector ) const
     return !( *this == vector );
 }
 
+/**
+ * @brief Calcule la distance entre deux vecteurs
+ * @param vector 
+ * @return 
+*/
 float Vector::distance( const Vector& vector ) const
 {
     float sum = 0;
@@ -221,6 +231,11 @@ float Vector::distance( const Vector& vector ) const
     return sqrt( sum );
 }
 
+
+/**
+ * @brief Affiche le vecteur dans le terminal
+ * @param out 
+*/
 void Vector::show( std::ostream& out ) const
 {
     out << "(";
