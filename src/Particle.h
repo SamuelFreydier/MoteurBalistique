@@ -14,8 +14,6 @@ protected:
     Vector m_position;
     Vector m_color;
 
-    bool m_hasTrail;
-
     // Facteur permettant de réduire la taille de la particule (< 1) ou de l'agrandir (> 1)
     float m_sizeModificator = 1.0;
 
@@ -23,7 +21,7 @@ protected:
     bool m_destroyedLater = false;
 
 public:
-    Particle( const float& mass = 1.0, const float& radius = 1.0, bool hasTrail = false, const Vector& velocity = Vector( { 0.0, 0.0, 0.0 } ), const Vector& acceleration = Vector( { 0.0, 0.0, 0.0 } ), const Vector& position = Vector( { 0.0, 0.0, 0.0 } ), const Vector& color = Vector( { 255, 0, 0 } ) );
+    Particle( const float& mass = 1.0, const float& radius = 1.0, const Vector& velocity = Vector( { 0.0, 0.0, 0.0 } ), const Vector& acceleration = Vector( { 0.0, 0.0, 0.0 } ), const Vector& position = Vector( { 0.0, 0.0, 0.0 } ), const Vector& color = Vector( { 255, 0, 0 } ) );
     Particle( const Particle& particle );
 
     // Accesseurs et Mutateurs
@@ -51,8 +49,6 @@ public:
     void setSizeModificator( const float& sizeModificator ) { m_sizeModificator = sizeModificator; }
 
     bool IsDead() const { return m_destroyedLater; }
-
-    bool hasTrail() const { return m_hasTrail; }
 
     // Mise à jour et affichage à chaque frame
     virtual void update( const float& deltaTime );

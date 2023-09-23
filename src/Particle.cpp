@@ -1,14 +1,14 @@
 #include "Particle.h"
 #include "Engine.h"
 
-Particle::Particle( const float& mass, const float& radius, bool hasTrail, const Vector& velocity, const Vector& acceleration, const Vector& position, const Vector& color )
-    : m_massReverse( 1 / mass ), m_radius( radius ), m_hasTrail( hasTrail ), m_velocity( velocity ), m_acceleration( acceleration ), m_position( position ), m_color( color )
+Particle::Particle( const float& mass, const float& radius, const Vector& velocity, const Vector& acceleration, const Vector& position, const Vector& color )
+    : m_massReverse( 1 / mass ), m_radius( radius ), m_velocity( velocity ), m_acceleration( acceleration ), m_position( position ), m_color( color )
 {
 
 }
 
 Particle::Particle( const Particle& particle )
-    : Particle(particle.getMass(), particle.getRadius(), particle.hasTrail(), particle.getVelocity(), particle.getAcceleration(), particle.getPosition(), particle.getColor() )
+    : Particle(particle.getMass(), particle.getRadius(), particle.getVelocity(), particle.getAcceleration(), particle.getPosition(), particle.getColor() )
 {
 
 }

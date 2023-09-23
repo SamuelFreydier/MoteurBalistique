@@ -14,8 +14,14 @@ private:
     std::list<ParticlePtr> m_particles;
     // Particules qui ne font rien de spécial (pas de réaction au clic) => typiquement les trainées des boules de feu
     std::list<ParticlePtr> m_vanillaParticles;
+    
+    // Gravité
     static Vector s_gravity;
+
+    // Frottement
     static float s_damping;
+
+    // Variation des couleurs
     static int s_colorShift;
 protected:
     Engine() = default;
@@ -45,12 +51,17 @@ public:
     static float randshiftColorChannel( const float& colorChannel, const int& shiftAmount );
     static Vector randshiftColor( const Vector& color, const int& shiftAmount );
 
-    void shootParticle( const Vector& initialPos, const float& initialAngle, const float& initialSpeed, const float& mass = 1.0, const float& radius = 1.0, bool hasTrail = false, const Vector& color = Vector( { 255, 0, 0 } ), bool isFireball = false );
+    // Tire une nouvelle particule depuis une position et avec un certain angle et une certaine force
+    void shootParticle( const Vector& initialPos, const float& initialAngle, const float& initialSpeed, const float& mass = 1.0, const float& radius = 1.0, const Vector& color = Vector( { 255, 0, 0 } ), bool isFireball = false );
+   
+    // Mise à jour PHYSIQUE des particules
     void update( const float& deltaTime );
     void updateParticleList( std::list<ParticlePtr>& particleList, const float& deltaTime );
+
+    // Mise à jour GRAPHIQUE des particules
     void drawParticles() const;
 
-    // False si rien n'a été cliqué
+    // Déclenche une action si une particule est présente à l'endroit d'un clic souris. Renvoie false si rien n'a été cliqué.
     bool clickedParticle( const float& x, const float& y );
 };
 

@@ -15,7 +15,7 @@ Engine* Engine::getInstance()
     return s_engine;
 }
 
-void Engine::shootParticle( const Vector& initialPos, const float& initialAngle, const float& initialSpeed, const float& mass, const float& radius, bool hasTrail, const Vector& color, bool isFireball )
+void Engine::shootParticle( const Vector& initialPos, const float& initialAngle, const float& initialSpeed, const float& mass, const float& radius, const Vector& color, bool isFireball )
 {
     float xVelocity = initialSpeed * cos( initialAngle );
     float yVelocity = initialSpeed * sin( initialAngle );
@@ -27,11 +27,11 @@ void Engine::shootParticle( const Vector& initialPos, const float& initialAngle,
     ParticlePtr newParticle = nullptr;
     if( isFireball == true )
     {
-        newParticle = std::make_shared<Fireball>( mass, radius, hasTrail, initialVelocity, s_gravity, initialPos, color, s_colorShift );
+        newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, s_gravity, initialPos, color, s_colorShift );
     }
     else
     {
-        newParticle = std::make_shared<Particle>( mass, radius, hasTrail, initialVelocity, s_gravity, initialPos, color );
+        newParticle = std::make_shared<Particle>( mass, radius, initialVelocity, s_gravity, initialPos, color );
     }
 
     m_particles.push_back( newParticle );

@@ -1,8 +1,8 @@
 #include "Fireball.h"
 #include "Engine.h"
 
-Fireball::Fireball( const float& mass, const float& radius, bool hasTrail, const Vector& velocity, const Vector& acceleration, const Vector& position, const Vector& color, const int& colorShift )
-    : Particle( mass, radius, hasTrail, velocity, acceleration, position, color ), m_colorShift( colorShift )
+Fireball::Fireball( const float& mass, const float& radius, const Vector& velocity, const Vector& acceleration, const Vector& position, const Vector& color, const int& colorShift )
+    : Particle( mass, radius, velocity, acceleration, position, color ), m_colorShift( colorShift )
 {
 
 }
@@ -36,7 +36,7 @@ void Fireball::update( const float& deltaTime )
         newPosition[ 0 ] += cos( angle ) * m_radius;
         newPosition[ 1 ] += sin( angle ) * m_radius;
 
-        ParticlePtr ashfall = std::make_shared<Particle>( getMass() * 0.1, getRadius() * 0.3, false, Vector( { 0, 0, 0 } ), getAcceleration(), newPosition, colorShift );
+        ParticlePtr ashfall = std::make_shared<Particle>( getMass() * 0.1, getRadius() * 0.3, Vector( { 0, 0, 0 } ), getAcceleration(), newPosition, colorShift );
 
         // Disparition progressive de la trainée de la boule de feu
         ashfall->setSizeModificator( ( rand() % 8 + 85 ) / 100.0 );
@@ -56,7 +56,7 @@ void Fireball::explode()
     // Une itération = un débris qui part dans une direction
     for( float angleProjection = 0.0; angleProjection < 2 * PI; angleProjection += angleStep )
     {
-        Engine::getInstance()->shootParticle( getPosition(), angleProjection, getVelocity().norm(), getMass() * 0.4, getRadius() * 0.4, true, m_color, true );
+        Engine::getInstance()->shootParticle( getPosition(), angleProjection, getVelocity().norm(), getMass() * 0.4, getRadius() * 0.4, m_color, true );
     }
 
     m_destroyedLater = true;

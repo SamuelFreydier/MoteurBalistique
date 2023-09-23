@@ -88,7 +88,7 @@ void ofApp::mousePressed( int x, int y, int button )
         std::cout << "Shooting Angle : " << shootingAngle << " / Impulse : " << m_impulseSlider << std::endl;
 
         // on lance la particule avec l'angle et l'impulsion détermines
-        Engine::getInstance()->shootParticle( Vector( { 0.0, static_cast< float >( ofGetWindowHeight() ), 0.0 } ), shootingAngle, m_impulseSlider, m_massSlider, m_radiusSlider, m_isFireballToggle, Vector( { m_colorSlider->x, m_colorSlider->y, m_colorSlider->z } ), m_isFireballToggle );
+        Engine::getInstance()->shootParticle( Vector( { 0.0, static_cast< float >( ofGetWindowHeight() ), 0.0 } ), shootingAngle, m_impulseSlider, m_massSlider, m_radiusSlider, Vector( { m_colorSlider->x, m_colorSlider->y, m_colorSlider->z } ), m_isFireballToggle );
     }
 }
 
