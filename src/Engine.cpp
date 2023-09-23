@@ -47,6 +47,7 @@ void Engine::update( const float& deltaTime )
 void Engine::updateParticleList( std::list<ParticlePtr>& particleList, const float& deltaTime )
 {
     std::list<ParticlePtr>::iterator particleIterator = particleList.begin();
+
     while( particleIterator != particleList.end() )
     {
         ( *particleIterator )->update( deltaTime );
@@ -102,7 +103,7 @@ bool Engine::clickedParticle( const float& x, const float& y )
     bool clicked = false;
     std::list<ParticlePtr>::iterator particleIterator = m_particles.begin();
 
-    while( particleIterator != m_particles.end() )
+    while( particleIterator != m_particles.end() && clicked == false )
     {
         if( ( (*particleIterator)->getPosition().getX() - ( *particleIterator )->getRadius() < x && ( *particleIterator )->getPosition().getX() + ( *particleIterator )->getRadius() > x )
             && ( ( *particleIterator )->getPosition().getY() - ( *particleIterator )->getRadius() < y && ( *particleIterator )->getPosition().getY() + ( *particleIterator )->getRadius() > y ) )
