@@ -38,7 +38,7 @@ void Engine::shootParticle( const Vector& initialPos, const float& initialAngle,
     Vector initialVelocity( { xVelocity, -yVelocity } );
 
     // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
-    // Pour ce TP je voulais juste faire ma boule de feu parce que c'est le fun, fait que j'm'en balance
+    // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps
     ParticlePtr newParticle = nullptr;
     if( isFireball == true )
     {
