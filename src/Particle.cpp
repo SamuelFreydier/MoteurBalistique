@@ -14,22 +14,6 @@ Particle::Particle( const Particle& particle )
 }
 
 /**
- * @brief Récupère l'opposé de la vélocité
- * @return 
-*/
-Vector Particle::getNegativeVelocity() const
-{
-    Vector negativeVelocity( m_velocity );
-
-    for( int coord = 0; coord < negativeVelocity.getDimension(); coord++ )
-    {
-        negativeVelocity[ coord ] *= -1;
-    }
-
-    return negativeVelocity;
-}
-
-/**
  * @brief Calcul de la nouvelle vélocité et de la nouvelle position à partir de l'accélération via l'intégration d'Euler + Modification de la taille.
  * @param deltaTime 
 */

@@ -33,7 +33,6 @@ public:
     void setRadius( const float& radius ) { m_radius = radius; }
 
     const Vector& getVelocity() const { return m_velocity; }
-    Vector getNegativeVelocity() const;
     void setVelocity( const Vector& velocity ) { m_acceleration = velocity; }
 
     const Vector& getAcceleration() const { return m_acceleration; }
