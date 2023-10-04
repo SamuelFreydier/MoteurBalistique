@@ -1,7 +1,7 @@
 #include "Engine.h"
 
 Engine* Engine::s_engine = nullptr;
-Vector Engine::s_gravity( { 0.0, 9.81f } );
+Vector Engine::s_gravity( { 0.0, 9.81f, 0.0 } );
 float Engine::s_damping = 0.94;
 int Engine::s_colorShift = 0;
 
@@ -34,8 +34,10 @@ void Engine::shootParticle( const Vector& initialPos, const float& initialAngle,
 {
     float xVelocity = initialSpeed * cos( initialAngle );
     float yVelocity = initialSpeed * sin( initialAngle );
+    float zVelocity = 0;
+
     // l'axe y etant dirige vers le bas, il faut l'inverser afin de bien lancer la particule
-    Vector initialVelocity( { xVelocity, -yVelocity } );
+    Vector initialVelocity( { xVelocity, -yVelocity, zVelocity } );
 
     // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
     // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps

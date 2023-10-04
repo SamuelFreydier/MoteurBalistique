@@ -20,12 +20,10 @@ Particle::Particle( const Particle& particle )
 void Particle::update( const float& deltaTime )
 {
     // Vélocité
-    m_velocity[ 0 ] = m_velocity[ 0 ] * pow( Engine::getInstance()->getDamping(), deltaTime ) + deltaTime * m_acceleration.getX();
-    m_velocity[ 1 ] = m_velocity[ 1 ] * pow( Engine::getInstance()->getDamping(), deltaTime ) + deltaTime * m_acceleration.getY();
-
+    m_velocity = m_velocity * pow(Engine::getInstance()->getDamping(), deltaTime) + m_acceleration * deltaTime;
+    
     // Position
-    m_position[ 0 ] += deltaTime * m_velocity.getX();
-    m_position[ 1 ] += deltaTime * m_velocity.getY();
+    m_position += m_velocity * deltaTime; 
 
     // Taille
     m_radius *= m_sizeModificator;
