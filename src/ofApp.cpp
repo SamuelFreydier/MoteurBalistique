@@ -25,6 +25,9 @@ void ofApp::setup()
 
     m_gui.setup( m_mainGroup );
 
+    // Initialisation des coordonnées du point d'origine du référentiel cartésien
+    Engine::getInstance()->getReferential().setPointOrigine(200, ofGetScreenHeight() - 50);
+
     // Setup calcul de deltaTime
     m_startTime = std::chrono::steady_clock::now();
 }
@@ -49,6 +52,9 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
+    // Dessiner le référentiel cartésien
+    Engine::getInstance()->getReferential().drawReferential();
+
     // Mise à jour graphique
     Engine::getInstance()->drawParticles();
 

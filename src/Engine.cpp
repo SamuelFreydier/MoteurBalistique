@@ -4,6 +4,7 @@ Engine* Engine::s_engine = nullptr;
 Vector Engine::s_gravity( { 0.0, 9.81f } );
 float Engine::s_damping = 0.94;
 int Engine::s_colorShift = 0;
+Referential Engine::s_referential = Referential();
 
 /**
  * @brief Récupération de l'instance du Singleton
