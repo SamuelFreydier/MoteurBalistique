@@ -28,6 +28,10 @@ class Engine
         // Variation des couleurs
         static int s_colorShift;
 
+
+        // à interpreter comme un nombre binaire sur 3 bits, bits 1 = clic gauche, bits 2 = clic scroll, bits 3 = clic droit donc les valeurs possibles sont comprises entre 0 et 7
+        static int s_mouseButtonPressed;
+
     protected:
         Engine() = default;
 
@@ -54,7 +58,10 @@ class Engine
         static void setDamping( const float& damping ) { s_damping = damping; }
 
         static const int& getColorShift() { return s_colorShift; }
-        static void setColorShift( const int& colorShift ) { s_colorShift = colorShift; } 
+        static void setColorShift( const int& colorShift ) { s_colorShift = colorShift; }
+
+        static const int& getMouseButtonPressed() { return s_mouseButtonPressed; }
+        static void setMouseButtonPressed(const int& valeurPlusOuMoins) { s_mouseButtonPressed += valeurPlusOuMoins; }
 
         static float randshiftColorChannel( const float& colorChannel, const int& shiftAmount );
         static Vector randshiftColor( const Vector& color, const int& shiftAmount );

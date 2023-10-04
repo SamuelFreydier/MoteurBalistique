@@ -83,23 +83,58 @@ void ofApp::mouseMoved( int x, int y )
 //--------------------------------------------------------------
 void ofApp::mouseDragged( int x, int y, int button )
 {
+    const int mouseButtonPressed = Engine::getInstance()->getMouseButtonPressed();
+    if (mouseButtonPressed == 0 || mouseButtonPressed == 2 || mouseButtonPressed == 4 || mouseButtonPressed == 6) // bouton du clic gauche de la souris pas appuyé
+    {
+        /*
+        if (startPositionDragClicDroit && startDragOriginPosition) // si ces éléments existent bel et bien
+        {
+            monReferentiel->dragOrigin(x, y, startPositionDragClicDroit, startDragOriginPosition);
+        }*/
+    }
+    else // au minimum le clic gauche appuyé
+    {
 
+        /*
+        if (draggerVisee) // si cet élément existe bel et bien
+        {
+            // visée pour lancer boule
+            std::cout << "button : " << button << "\n";
+            draggerVisee->updateActualDragPosition(x, y);
+        }
+        */
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed( int x, int y, int button )
 {
+    if (button == 0) // clic gauche
+    {
+        Engine::getInstance()->setMouseButtonPressed(1);
+    }
+    else if (button == 1) // clic molette
+    {
+        Engine::getInstance()->setMouseButtonPressed(2);
+    }
+    else if (button == 2) // clic droit
+    {
+        Engine::getInstance()->setMouseButtonPressed(4);
+    }
+
+
     // Si on a cliqué sur une particule, on ne tire pas de particule
-    if( Engine::getInstance()->clickedParticle( x, y ) == false && m_isShootingTrigger == true )
+    if (Engine::getInstance()->clickedParticle(x, y) == false && m_isShootingTrigger == true)
     {
         // on determine l'angle de lancer
-        float shootingAngle = atan2( ofGetWindowHeight() - y, x );
+        float shootingAngle = atan2(ofGetWindowHeight() - y, x);
         // on affiche dans la console l'angle et l'impulsion
         std::cout << "Shooting Angle : " << shootingAngle << " / Impulse : " << m_impulseSlider << std::endl;
 
         // on lance la particule avec l'angle et l'impulsion détermines
-        Engine::getInstance()->shootParticle( Vector( { 0.0, static_cast< float >( ofGetWindowHeight() ), 0.0 } ), shootingAngle, m_impulseSlider, m_massSlider, m_radiusSlider, Vector( { m_colorSlider->x, m_colorSlider->y, m_colorSlider->z } ), m_isFireballToggle );
+        Engine::getInstance()->shootParticle(Vector({ 0.0, static_cast<float>(ofGetWindowHeight()), 0.0 }), shootingAngle, m_impulseSlider, m_massSlider, m_radiusSlider, Vector({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), m_isFireballToggle);
     }
+
 }
 
 //--------------------------------------------------------------
