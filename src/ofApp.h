@@ -9,7 +9,7 @@ class ofApp : public ofBaseApp
 {
 public:
     void setup();
-    void integrate();
+    void update();
     void draw();
 
     void keyPressed( int key );

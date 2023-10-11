@@ -54,7 +54,7 @@ public:
     void shootParticle( const Vector3& initialPos, const float& initialAngle, const float& initialSpeed, const float& mass = 1.0, const float& radius = 1.0, const Vector3& color = Vector3( { 255, 0, 0 } ), bool isFireball = false );
    
     // Mise à jour PHYSIQUE des particules
-    void integrate( const float& deltaTime );
+    void update( const float& deltaTime );
 
     // Nettoyage des particules non visibles
     void cleanup();
