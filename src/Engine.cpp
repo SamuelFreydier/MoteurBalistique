@@ -162,7 +162,7 @@ bool Engine::clickedParticle( const float& x, const float& y )
             clicked = true;
             ( *particleIterator )->clicked();
         }
-        if( ( *particleIterator )->ToBeDestroyed() )
+        if( ( *particleIterator )->toBeDestroyed() )
         {
             particleIterator = m_particles.erase( particleIterator );
         }

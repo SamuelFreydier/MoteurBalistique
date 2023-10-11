@@ -128,6 +128,7 @@
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Matrix.h" />
     <ClInclude Include="src\Particle.h" />
+    <ClInclude Include="src\ParticleForceGenerators\ParticleForceGenerator.h" />
     <ClInclude Include="src\Vector.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxBaseGui.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxButton.h" />
