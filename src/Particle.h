@@ -20,6 +20,9 @@ protected:
     // Passe à true pour donner l'instruction à l'Engine de le détruire
     bool m_destroyedLater = false;
 
+    // Force résultante sur la particule
+    Vector m_accumForce;
+
 public:
     Particle( const float& mass = 1.0, const float& radius = 1.0, const Vector& velocity = Vector( { 0.0, 0.0, 0.0 } ), const Vector& acceleration = Vector( { 0.0, 0.0, 0.0 } ), const Vector& position = Vector( { 0.0, 0.0, 0.0 } ), const Vector& color = Vector( { 255, 0, 0 } ) );
     Particle( const Particle& particle );
@@ -47,7 +50,11 @@ public:
     const float& getSizeModificator() const { return m_sizeModificator; }
     void setSizeModificator( const float& sizeModificator ) { m_sizeModificator = sizeModificator; }
 
-    bool ToBeDestroyed() const { return m_destroyedLater; }
+    bool toBeDestroyed() const { return m_destroyedLater; }
+
+    // Gestion des forces
+    void addForce( const Vector& forceVector );
+    void clearAccum();
 
     // Mise à jour et affichage à chaque frame
     virtual void update( const float& deltaTime );

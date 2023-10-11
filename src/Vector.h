@@ -51,6 +51,9 @@ public:
     bool operator==( const Vector& vector ) const;
     bool operator!=( const Vector& vector ) const;
 
+    // Nettoyage
+    void clear();
+
     float norm() const;
     Vector normalized() const;
     void normalize();

@@ -114,6 +114,14 @@ Vector Vector::operator-( const Vector& vector ) const
     return *this + ( -vector );
 }
 
+void Vector::clear()
+{
+    for( float& coordinate : m_coordinates )
+    {
+        coordinate = 0.f;
+    }
+}
+
 /**
 * @brief calcul de la norme
 *
