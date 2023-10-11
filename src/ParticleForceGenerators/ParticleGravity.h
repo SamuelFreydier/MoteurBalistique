@@ -3,6 +3,7 @@
 
 #include "ParticleForceGenerator.h"
 
+// Générateur de gravité
 class ParticleGravity : public ParticleForceGenerator
 {
 private:
