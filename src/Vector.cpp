@@ -110,6 +110,13 @@ Vector3 Vector3::operator-( const Vector3& vector ) const
     return *this + ( -vector );
 }
 
+Vector3& Vector3::operator-=( const Vector3& vector )
+{
+    *this = *this - vector;
+
+    return *this;
+}
+
 void Vector3::clear()
 {
     x = y = z = 0;
