@@ -56,6 +56,9 @@ public:
     // Mise à jour PHYSIQUE des particules
     void update( const float& deltaTime );
 
+    // Nettoyage des particules non visibles
+    void cleanup();
+
     // Mise à jour GRAPHIQUE des particules
     void drawParticles() const;
 

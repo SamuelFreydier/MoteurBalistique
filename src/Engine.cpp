@@ -77,12 +77,23 @@ void Engine::update( const float& deltaTime )
     // Nettoyage du registre
     m_particleForceRegistry.clear();
 
+    // Mise à jour physique de chaque particule
+    for( ParticlePtr& particle : m_particles )
+    {
+        particle->update( deltaTime );
+    }
+
+    // Nettoyage des particules inutiles
+    cleanup();
+}
+
+void Engine::cleanup()
+{
     std::list<ParticlePtr>::iterator particleIterator = m_particles.begin();
 
     while( particleIterator != m_particles.end() )
     {
-        ( *particleIterator )->update( deltaTime );
-        // on supprime les particules qui sont sorties en bas ou a droite
+        // Si la particule est sortie de l'écran ou est trop petite => Suppression
         if( ( ( *particleIterator )->getPosition().getX() > ofGetWindowWidth() + 5 || ( *particleIterator )->getPosition().getY() > ofGetWindowHeight() + 5 )
             || ( *particleIterator )->getRadius() <= 3.0 ) {
             particleIterator = m_particles.erase( particleIterator );
