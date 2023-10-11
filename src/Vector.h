@@ -3,6 +3,7 @@
 
 #include <ofMain.h>
 
+// Un vecteur de dimension 3 => (x, y, z)
 class Vector3
 {
 public:

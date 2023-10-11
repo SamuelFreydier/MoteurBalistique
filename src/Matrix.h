@@ -7,6 +7,7 @@
 #include "Vector.h"
 #include <array>
 
+// Une matrice de dimension 3x3
 class Matrix3
 {
 private:
