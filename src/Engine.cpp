@@ -87,6 +87,10 @@ void Engine::update( const float& deltaTime )
     cleanup();
 }
 
+
+/**
+ * @brief Supprime les particules sorties de l'écran ou trop petites
+*/
 void Engine::cleanup()
 {
     std::list<ParticlePtr>::iterator particleIterator = m_particles.begin();
