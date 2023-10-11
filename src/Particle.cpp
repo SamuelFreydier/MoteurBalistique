@@ -37,8 +37,11 @@ void Particle::clearAccum()
 */
 void Particle::update( const float& deltaTime )
 {
+    // Accélération
+    m_acceleration = m_accumForce / getMass();
+
     // Vélocité
-    m_velocity = m_velocity * pow(Engine::getInstance()->getDamping(), deltaTime) + m_accumForce * deltaTime;
+    m_velocity = m_velocity * pow(Engine::getInstance()->getDamping(), deltaTime) + m_acceleration * deltaTime;
     
     // Position
     m_position += m_velocity * deltaTime; 

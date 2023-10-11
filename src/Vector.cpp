@@ -52,6 +52,36 @@ Vector& Vector::operator*=( const float& value )
 }
 
 /**
+ * @brief Division par un scalaire
+ * @param value 
+ * @return 
+*/
+Vector Vector::operator/( const float& value ) const
+{
+    Vector newVector( m_dimension );
+
+    for( int coordId = 0; coordId < m_dimension; coordId++ )
+    {
+        newVector[ coordId ] = m_coordinates[ coordId ] / value;
+    }
+
+    return newVector;
+}
+
+
+/**
+ * @brief Division par un scalaire
+ * @param value 
+ * @return 
+*/
+Vector& Vector::operator/=( const float& value )
+{
+    *this = *this / value;
+
+    return *this;
+}
+
+/**
  * @brief Produit vectoriel (que pour des vecteurs 3D)
  * @param vector
  * @return

@@ -36,6 +36,10 @@ public:
     Vector operator*( const float& value ) const;
     Vector& operator*=( const float& value );
 
+    // Division par un scalaire
+    Vector operator/( const float& value ) const;
+    Vector& operator/=( const float& value );
+
     // Produit vectoriel
     Vector operator*( const Vector& vector ) const;
 
