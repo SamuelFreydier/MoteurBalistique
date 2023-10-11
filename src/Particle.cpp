@@ -36,7 +36,7 @@ void Particle::clearAccum()
  * @brief Calcul de la nouvelle vélocité et de la nouvelle position à partir de l'accélération via l'intégration d'Euler + Modification de la taille.
  * @param deltaTime
 */
-void Particle::update( const float& deltaTime )
+void Particle::integrate( const float& deltaTime )
 {
     // Accélération
     m_acceleration = m_accumForce / getMass();

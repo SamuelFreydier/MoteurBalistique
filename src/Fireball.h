@@ -15,7 +15,7 @@ public:
     const float& getColorShift() const { return m_colorShift; }
     void setColorShift( const float& colorShift ) { m_colorShift = colorShift; }
 
-    void update( const float& deltaTime ) override;
+    void integrate( const float& deltaTime ) override;
     void clicked() override;
     void explode();
 };

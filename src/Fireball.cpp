@@ -18,12 +18,12 @@ Fireball::Fireball( const Fireball& fireball )
  * @brief Comportement normal de particule + création de particules pour générer la trainée de la boule de feu
  * @param deltaTime 
 */
-void Fireball::update( const float& deltaTime )
+void Fireball::integrate( const float& deltaTime )
 {
     Vector3 lastPosition( getPosition() );
 
     // Comportement normal de Particule
-    Particle::update( deltaTime );
+    Particle::integrate( deltaTime );
 
     int nbAshfalls = rand() % 2 + 3; // Entre 3 et 4 retombées de cendres
 

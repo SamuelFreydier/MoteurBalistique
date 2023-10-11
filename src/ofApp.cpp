@@ -30,7 +30,7 @@ void ofApp::setup()
 }
 
 //--------------------------------------------------------------
-void ofApp::update()
+void ofApp::integrate()
 {
     // Mise à jour des forces configurées
     Engine::getInstance()->setGravity( Vector3( { 0.0, m_gravitySlider, 0.0 } ) );
@@ -43,7 +43,7 @@ void ofApp::update()
     m_startTime = m_endTime;
 
     // Mise à jour physique
-    Engine::getInstance()->update( std::chrono::duration_cast< std::chrono::milliseconds >( elapsed ).count() / 100.0 );
+    Engine::getInstance()->integrate( std::chrono::duration_cast< std::chrono::milliseconds >( elapsed ).count() / 100.0 );
 }
 
 //--------------------------------------------------------------
