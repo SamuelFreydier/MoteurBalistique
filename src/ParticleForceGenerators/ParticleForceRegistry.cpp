@@ -34,6 +34,31 @@ void ParticleForceRegistry::remove( std::shared_ptr<Particle> particle, std::sha
 }
 
 /**
+ * @brief Retrait de toutes les associations liées à la particule passée en paramètre
+ * @param particle 
+*/
+void ParticleForceRegistry::remove( std::shared_ptr<Particle> particle )
+{
+    Registry::iterator registryIterator = m_registry.begin();
+
+    // Parcours de toutes les associations
+    while( registryIterator != m_registry.end() )
+    {
+        // Si l'association a été trouvée
+        if( ( *registryIterator ).particle == particle )
+        {
+            // On la supprime
+            registryIterator = m_registry.erase( registryIterator );
+        }
+        else
+        {
+            registryIterator++;
+        }
+    }
+}
+
+
+/**
  * @brief Suppression du registre (mais pas des forces/générateurs qui y étaient contenus)
 */
 void ParticleForceRegistry::clear()

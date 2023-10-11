@@ -24,7 +24,7 @@ protected:
     Vector m_accumForce;
 
 public:
-    Particle( const float& mass = 1.0, const float& radius = 1.0, const Vector& velocity = Vector( { 0.0, 0.0, 0.0 } ), const Vector& acceleration = Vector( { 0.0, 0.0, 0.0 } ), const Vector& position = Vector( { 0.0, 0.0, 0.0 } ), const Vector& color = Vector( { 255, 0, 0 } ) );
+    Particle( const float& mass = 1.0, const float& radius = 1.0, const Vector& velocity = Vector( { 0.0, 0.0, 0.0 } ), const Vector& position = Vector( { 0.0, 0.0, 0.0 } ), const Vector& color = Vector( { 255, 0, 0 } ) );
     Particle( const Particle& particle );
 
     // Accesseurs et Mutateurs

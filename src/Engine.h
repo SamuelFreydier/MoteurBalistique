@@ -1,6 +1,8 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#include "ParticleForceGenerators/ParticleForceRegistry.h"
+#include "ParticleForceGenerators/ParticleGravity.h"
 #include "Fireball.h"
 
 using ParticlePtr = std::shared_ptr<Particle>;
@@ -12,11 +14,12 @@ private:
     static Engine* s_engine;
 
     std::list<ParticlePtr> m_particles;
-    // Particules qui ne font rien de spécial (pas de réaction au clic) => typiquement les trainées des boules de feu
-    std::list<ParticlePtr> m_vanillaParticles;
     
-    // Gravité
-    static Vector s_gravity;
+    // Registre (associations particule / générateur de force) => Gère gravité/frottements/ressorts
+    ParticleForceRegistry m_particleForceRegistry;
+
+    // Gravité mise à jour selon les paramètres utilisateur
+    Vector m_gravity;
 
     // Frottement
     static float s_damping;
@@ -24,7 +27,7 @@ private:
     // Variation des couleurs
     static int s_colorShift;
 protected:
-    Engine() = default;
+    Engine();
 public:
     Engine( Engine& ) = delete;
     void operator=( const Engine& ) = delete;
@@ -35,12 +38,8 @@ public:
     void addParticle( ParticlePtr particle ) { m_particles.push_back( particle ); }
     void deleteParticle( ParticlePtr particle ) { m_particles.remove( particle ); }
 
-    const std::list<ParticlePtr>& getVanillaParticles() const { return m_vanillaParticles; }
-    void addVanillaParticle( ParticlePtr particle ) { m_vanillaParticles.push_back( particle ); }
-    void deleteVanillaParticle( ParticlePtr particle ) { m_vanillaParticles.remove( particle ); }
-    
-    static const Vector& getGravity() { return s_gravity; }
-    static void setGravity( const Vector& gravity ) { s_gravity = gravity; }
+    const Vector& getGravity() const { return m_gravity; }
+    void setGravity( const Vector& gravity ) { m_gravity = gravity; }
 
     static const float& getDamping() { return s_damping; }
     static void setDamping( const float& damping ) { s_damping = damping; }
@@ -56,7 +55,6 @@ public:
    
     // Mise à jour PHYSIQUE des particules
     void update( const float& deltaTime );
-    void updateParticleList( std::list<ParticlePtr>& particleList, const float& deltaTime );
 
     // Mise à jour GRAPHIQUE des particules
     void drawParticles() const;

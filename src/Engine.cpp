@@ -1,9 +1,13 @@
 #include "Engine.h"
 
 Engine* Engine::s_engine = nullptr;
-Vector Engine::s_gravity( { 0.0, 9.81f, 0.0 } );
 float Engine::s_damping = 0.94;
 int Engine::s_colorShift = 0;
+
+Engine::Engine()
+    : m_gravity( DEFAULT_VCT_DIMENSION )
+{
+}
 
 /**
  * @brief Récupération de l'instance du Singleton
@@ -44,11 +48,11 @@ void Engine::shootParticle( const Vector& initialPos, const float& initialAngle,
     ParticlePtr newParticle = nullptr;
     if( isFireball == true )
     {
-        newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, s_gravity, initialPos, color, s_colorShift );
+        newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, initialPos, color, s_colorShift );
     }
     else
     {
-        newParticle = std::make_shared<Particle>( mass, radius, initialVelocity, s_gravity, initialPos, color );
+        newParticle = std::make_shared<Particle>( mass, radius, initialVelocity, initialPos, color );
     }
 
     m_particles.push_back( newParticle );
@@ -60,27 +64,28 @@ void Engine::shootParticle( const Vector& initialPos, const float& initialAngle,
 */
 void Engine::update( const float& deltaTime )
 {
-    updateParticleList( m_particles, deltaTime );
-    updateParticleList( m_vanillaParticles, deltaTime );
-}
+    // Ajout des forces au registre
+    for( ParticlePtr& particle : m_particles )
+    {
+        // Gravité
+        m_particleForceRegistry.add( particle, std::make_shared<ParticleGravity>( m_gravity ) );
+    }
 
+    // Mise à jour des forces
+    m_particleForceRegistry.updateForces( deltaTime );
 
-/**
- * @brief Mise à jour de la physique des particules D'UNE LISTE PRECISE
- * @param particleList 
- * @param deltaTime 
-*/
-void Engine::updateParticleList( std::list<ParticlePtr>& particleList, const float& deltaTime )
-{
-    std::list<ParticlePtr>::iterator particleIterator = particleList.begin();
+    // Nettoyage du registre
+    m_particleForceRegistry.clear();
 
-    while( particleIterator != particleList.end() )
+    std::list<ParticlePtr>::iterator particleIterator = m_particles.begin();
+
+    while( particleIterator != m_particles.end() )
     {
         ( *particleIterator )->update( deltaTime );
         // on supprime les particules qui sont sorties en bas ou a droite
         if( ( ( *particleIterator )->getPosition().getX() > ofGetWindowWidth() + 5 || ( *particleIterator )->getPosition().getY() > ofGetWindowHeight() + 5 )
             || ( *particleIterator )->getRadius() <= 3.0 ) {
-            particleIterator = particleList.erase( particleIterator );
+            particleIterator = m_particles.erase( particleIterator );
         }
         else
         {
@@ -98,11 +103,6 @@ void Engine::drawParticles() const
     for( const ParticlePtr& currParticle : m_particles )
     {
         currParticle->draw();
-    }
-
-    for( const ParticlePtr& currVanillaParticle : m_vanillaParticles )
-    {
-        currVanillaParticle->draw();
     }
 }
 

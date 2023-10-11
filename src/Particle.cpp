@@ -1,14 +1,14 @@
 #include "Particle.h"
 #include "Engine.h"
 
-Particle::Particle( const float& mass, const float& radius, const Vector& velocity, const Vector& acceleration, const Vector& position, const Vector& color )
-    : m_massReverse( 1 / mass ), m_radius( radius ), m_velocity( velocity ), m_acceleration( acceleration ), m_position( position ), m_color( color ), m_accumForce( Vector( DEFAULT_VCT_DIMENSION ) )
+Particle::Particle( const float& mass, const float& radius, const Vector& velocity, const Vector& position, const Vector& color )
+    : m_massReverse( 1 / mass ), m_radius( radius ), m_velocity( velocity ), m_acceleration( DEFAULT_VCT_DIMENSION ), m_position( position ), m_color( color ), m_accumForce( Vector( DEFAULT_VCT_DIMENSION ) )
 {
 
 }
 
 Particle::Particle( const Particle& particle )
-    : Particle(particle.getMass(), particle.getRadius(), particle.getVelocity(), particle.getAcceleration(), particle.getPosition(), particle.getColor() )
+    : Particle(particle.getMass(), particle.getRadius(), particle.getVelocity(), particle.getPosition(), particle.getColor() )
 {
     m_accumForce = particle.m_accumForce;
 }
@@ -38,13 +38,16 @@ void Particle::clearAccum()
 void Particle::update( const float& deltaTime )
 {
     // Vélocité
-    m_velocity = m_velocity * pow(Engine::getInstance()->getDamping(), deltaTime) + m_acceleration * deltaTime;
+    m_velocity = m_velocity * pow(Engine::getInstance()->getDamping(), deltaTime) + m_accumForce * deltaTime;
     
     // Position
     m_position += m_velocity * deltaTime; 
 
     // Taille
     m_radius *= m_sizeModificator;
+
+    // Nettoyage du vecteur d'accumulation de forces
+    clearAccum();
 }
 
 

@@ -33,7 +33,7 @@ void ofApp::setup()
 void ofApp::update()
 {
     // Mise à jour des forces configurées
-    Engine::getInstance()->setGravity( Vector( { 0.0, m_gravitySlider, 0.0} ) );
+    Engine::getInstance()->setGravity( Vector( { 0.0, m_gravitySlider, 0.0 } ) );
     Engine::getInstance()->setDamping( m_dampingSlider );
     Engine::getInstance()->setColorShift( m_colorShiftSlider );
 

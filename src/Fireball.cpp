@@ -1,8 +1,8 @@
 #include "Fireball.h"
 #include "Engine.h"
 
-Fireball::Fireball( const float& mass, const float& radius, const Vector& velocity, const Vector& acceleration, const Vector& position, const Vector& color, const int& colorShift )
-    : Particle( mass, radius, velocity, acceleration, position, color ), m_colorShift( colorShift )
+Fireball::Fireball( const float& mass, const float& radius, const Vector& velocity, const Vector& position, const Vector& color, const int& colorShift )
+    : Particle( mass, radius, velocity, position, color ), m_colorShift( colorShift )
 {
 
 }
@@ -47,11 +47,11 @@ void Fireball::update( const float& deltaTime )
         newPosition[ 1 ] += sin( angle ) * m_radius;
 
         // Création de la particule (plus petite que la boule de feu d'origine)
-        ParticlePtr ashfall = std::make_shared<Particle>( getMass() * 0.1, getRadius() * 0.3, Vector( { 0, 0, 0 } ), getAcceleration(), newPosition, colorShift );
+        ParticlePtr ashfall = std::make_shared<Particle>( getMass() * 0.1, getRadius() * 0.3, Vector( { 0, 0, 0 } ), newPosition, colorShift );
 
         // Disparition progressive de la trainée de la boule de feu
         ashfall->setSizeModificator( ( rand() % 8 + 85 ) / 100.0 );
-        Engine::getInstance()->addVanillaParticle( ashfall );
+        Engine::getInstance()->addParticle( ashfall );
     }
 }
 
