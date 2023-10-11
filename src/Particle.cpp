@@ -1,8 +1,8 @@
 #include "Particle.h"
 #include "Engine.h"
 
-Particle::Particle( const float& mass, const float& radius, const Vector& velocity, const Vector& position, const Vector& color )
-    : m_massReverse( 1 / mass ), m_radius( radius ), m_velocity( velocity ), m_acceleration( DEFAULT_VCT_DIMENSION ), m_position( position ), m_color( color ), m_accumForce( Vector( DEFAULT_VCT_DIMENSION ) )
+Particle::Particle( const float& mass, const float& radius, const Vector3& velocity, const Vector3& position, const Vector3& color )
+    : m_massReverse( 1 / mass ), m_radius( radius ), m_velocity( velocity ), m_position( position ), m_color( color )
 {
 
 }
@@ -10,6 +10,7 @@ Particle::Particle( const float& mass, const float& radius, const Vector& veloci
 Particle::Particle( const Particle& particle )
     : Particle(particle.getMass(), particle.getRadius(), particle.getVelocity(), particle.getPosition(), particle.getColor() )
 {
+    m_acceleration = particle.m_acceleration;
     m_accumForce = particle.m_accumForce;
 }
 
@@ -17,7 +18,7 @@ Particle::Particle( const Particle& particle )
  * @brief Ajoute la force forceVector au vecteur d'accumulation m_accumForce
  * @param forceVector 
 */
-void Particle::addForce( const Vector& forceVector )
+void Particle::addForce( const Vector3& forceVector )
 {
     m_accumForce += forceVector;
 }

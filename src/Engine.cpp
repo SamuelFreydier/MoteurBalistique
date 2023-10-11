@@ -4,10 +4,6 @@ Engine* Engine::s_engine = nullptr;
 float Engine::s_damping = 0.94;
 int Engine::s_colorShift = 0;
 
-Engine::Engine()
-    : m_gravity( DEFAULT_VCT_DIMENSION )
-{
-}
 
 /**
  * @brief Récupération de l'instance du Singleton
@@ -34,14 +30,14 @@ Engine* Engine::getInstance()
  * @param color 
  * @param isFireball 
 */
-void Engine::shootParticle( const Vector& initialPos, const float& initialAngle, const float& initialSpeed, const float& mass, const float& radius, const Vector& color, bool isFireball )
+void Engine::shootParticle( const Vector3& initialPos, const float& initialAngle, const float& initialSpeed, const float& mass, const float& radius, const Vector3& color, bool isFireball )
 {
     float xVelocity = initialSpeed * cos( initialAngle );
     float yVelocity = initialSpeed * sin( initialAngle );
     float zVelocity = 0;
 
     // l'axe y etant dirige vers le bas, il faut l'inverser afin de bien lancer la particule
-    Vector initialVelocity( { xVelocity, -yVelocity, zVelocity } );
+    Vector3 initialVelocity( { xVelocity, -yVelocity, zVelocity } );
 
     // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
     // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps
@@ -145,14 +141,13 @@ float Engine::randshiftColorChannel( const float& colorChannel, const int& shift
  * @param shiftAmount 
  * @return 
 */
-Vector Engine::randshiftColor( const Vector& color, const int& shiftAmount )
+Vector3 Engine::randshiftColor( const Vector3& color, const int& shiftAmount )
 {
-    Vector newColor( color );
+    Vector3 newColor( color );
 
-    for( int channelIdx = 0; channelIdx < newColor.getDimension(); channelIdx++ )
-    {
-        newColor[ channelIdx ] = randshiftColorChannel( newColor[ channelIdx ], shiftAmount );
-    }
+    newColor.x = randshiftColorChannel( newColor.getX(), shiftAmount );
+    newColor.y = randshiftColorChannel( newColor.getY(), shiftAmount );
+    newColor.z = randshiftColorChannel( newColor.getZ(), shiftAmount );
 
     return newColor;
 }

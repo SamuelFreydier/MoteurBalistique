@@ -1,6 +1,6 @@
 #include "ParticleGravity.h"
 
-ParticleGravity::ParticleGravity( const Vector& gravity )
+ParticleGravity::ParticleGravity( const Vector3& gravity )
     : m_gravity( gravity )
 {
 

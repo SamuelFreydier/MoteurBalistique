@@ -1,124 +1,132 @@
 #include "Matrix.h"
 
-Matrix::Matrix( const int& nbRows, const int& nbCols )
-    : m_rows( nbRows ), m_cols( nbCols )
+Matrix3::Matrix3( const std::array<float, MATRIX_3_SIZE>& matrixArray )
+    : m_matrix( matrixArray )
 {
-    m_matrix.reserve( m_cols );
-
-    for( int cptCol = 0; cptCol < m_cols; cptCol++ )
-    {
-        m_matrix.emplace_back( Vector( m_rows ) );
-    }
 }
 
-Matrix::Matrix( const Matrix& matrix )
-    : Matrix( matrix.m_rows, matrix.m_cols )
+Matrix3::Matrix3( const Matrix3& matrix )
+    : Matrix3( matrix.m_matrix )
 {
-    for( int cptRow = 0; cptRow < m_rows; cptRow++ )
-    {
-        for( int cptCol = 0; cptCol < m_cols; cptCol++ )
-        {
-            m_matrix[ cptCol ][ cptRow ] = matrix[ cptCol ][ cptRow ];
-        }
-    }
 }
 
-void Matrix::setMatrix( float values[] )
+/**
+ * @brief Affectation à la matrice identité
+*/
+void Matrix3::setIdentity()
 {
-    m_matrix.clear();
-    m_matrix.reserve( m_cols );
+    clear();
 
-    for( int cptCol = 0; cptCol < m_cols; cptCol++ )
-    {
-        m_matrix.emplace_back( Vector( m_rows ) );
-    }
-
-    for( int cptRow = 0; cptRow < m_rows; cptRow++ )
-    {
-        for( int cptCol = 0; cptCol < m_cols; cptCol++ )
-        {
-            m_matrix[ cptCol ][ cptRow ] = values[ cptRow * m_cols + cptCol ];
-        }
-    }
+    m_matrix[ 0 ] = m_matrix[ 4 ] = m_matrix[ 8 ] = 1;
 }
 
-void Matrix::setIdentity()
+/**
+ * @brief Affectation à la matrice nulle
+*/
+void Matrix3::clear()
 {
-    for( int cptRow = 0; cptRow < m_rows; cptRow++ )
-    {
-        for( int cptCol = 0; cptCol < m_cols; cptCol++ )
-        {
-            if( cptRow == cptCol )
-            {
-                m_matrix[ cptCol ][ cptRow ] = 1.0;
-            }
-            else
-            {
-                m_matrix[ cptCol ][ cptRow ] = 0.0;
-            }
-        }
-    }
+    m_matrix = {};
 }
 
-void Matrix::setZero()
-{
-    for( int cptRow = 0; cptRow < m_rows; cptRow++ )
-    {
-        for( int cptCol = 0; cptCol < m_cols; cptCol++ )
-        {
-            m_matrix[ cptCol ][ cptRow ] = 0.0;
-        }
-    }
-}
 
-Matrix Matrix::operator*( const float& value ) const
+/**
+ * @brief Multiplication par un scalaire
+ * @param value 
+ * @return 
+*/
+Matrix3 Matrix3::operator*( const float& value ) const
 {
-    Matrix newMatrix( *this );
+    Matrix3 newMatrix( *this );
 
-    for( Vector& col : newMatrix.m_matrix )
+    for( float& matrixElement : newMatrix.m_matrix )
     {
-        col *= value;
+        matrixElement *= value;
     }
 
     return newMatrix;
 }
 
 /**
- * @brief Produit matriciel
+ * @brief Transforme le vecteur par la matrice courante
+ * @param vector 
+ * @return 
+*/
+Vector3 Matrix3::operator*( const Vector3& vector ) const
+{
+    return Vector3(
+        vector.getX() * m_matrix[ 0 ] + vector.getY() * m_matrix[ 1 ] + vector.getZ() * m_matrix[ 2 ],
+        vector.getX() * m_matrix[ 3 ] + vector.getY() * m_matrix[ 4 ] + vector.getZ() * m_matrix[ 5 ],
+        vector.getX() * m_matrix[ 6 ] + vector.getY() * m_matrix[ 7 ] + vector.getZ() * m_matrix[ 8 ]
+    );
+}
+
+Vector3 Matrix3::transform( const Vector3& vector ) const
+{
+    return ( *this ) * vector;
+}
+
+/**
+ * @brief Produit matriciel. Hardcodé car il n'est jamais prévu de le changer => Quelques gains minimes de performance.
  * @param matrix
  * @return
 */
-Matrix Matrix::operator*( const Matrix& matrix ) const
+Matrix3 Matrix3::operator*( const Matrix3& other ) const
 {
-    // TODO ? => Ici, on pourrait renvoyer une exception si les conditions de la multiplication matricielle ne sont pas validées
-    // Pour le moment, on renvoie juste la matrice nulle
-    Matrix newMatrix( m_rows, matrix.m_cols );
+    return Matrix3( {
+        m_matrix[ 0 ] * other.m_matrix[ 0 ] + m_matrix[ 1 ] * other.m_matrix[ 3 ] + m_matrix[ 2 ] * other.m_matrix[ 6 ],
+        m_matrix[ 0 ] * other.m_matrix[ 1 ] + m_matrix[ 1 ] * other.m_matrix[ 4 ] + m_matrix[ 2 ] * other.m_matrix[ 7 ],
+        m_matrix[ 0 ] * other.m_matrix[ 2 ] + m_matrix[ 1 ] * other.m_matrix[ 5 ] + m_matrix[ 2 ] * other.m_matrix[ 8 ],
 
-    // Verif nbCol de matrice A = nbLignes de matrice B
-    if( m_cols == matrix.m_rows )
-    {
-        for( int cptRow = 0; cptRow < m_rows; cptRow++ )
-        {
-            for( int cptCol = 0; cptCol < matrix.m_cols; cptCol++ )
-            {
-                for( int cptCalcul = 0; cptCalcul < m_cols; cptCalcul++ )
-                {
-                    newMatrix[ cptCol ][ cptRow ] += m_matrix[ cptCalcul ][ cptRow ] * matrix[ cptCol ][ cptCalcul ];
-                }
-            }
-        }
-    }
+        m_matrix[ 3 ] * other.m_matrix[ 0 ] + m_matrix[ 4 ] * other.m_matrix[ 3 ] + m_matrix[ 5 ] * other.m_matrix[ 6 ],
+        m_matrix[ 3 ] * other.m_matrix[ 1 ] + m_matrix[ 4 ] * other.m_matrix[ 4 ] + m_matrix[ 5 ] * other.m_matrix[ 7 ],
+        m_matrix[ 3 ] * other.m_matrix[ 2 ] + m_matrix[ 4 ] * other.m_matrix[ 5 ] + m_matrix[ 5 ] * other.m_matrix[ 8 ],
 
-    return newMatrix;
+        m_matrix[ 6 ] * other.m_matrix[ 0 ] + m_matrix[ 7 ] * other.m_matrix[ 3 ] + m_matrix[ 8 ] * other.m_matrix[ 6 ],
+        m_matrix[ 6 ] * other.m_matrix[ 1 ] + m_matrix[ 7 ] * other.m_matrix[ 4 ] + m_matrix[ 8 ] * other.m_matrix[ 7 ],
+        m_matrix[ 6 ] * other.m_matrix[ 2 ] + m_matrix[ 7 ] * other.m_matrix[ 5 ] + m_matrix[ 8 ] * other.m_matrix[ 8 ]
+                    } );
 }
 
-void Matrix::show( std::ostream& out ) const
+
+/**
+ * @brief Produit matriciel.
+ * @param other 
+ * @return 
+*/
+Matrix3& Matrix3::operator*=( const Matrix3& other )
 {
-    for( int cptRow = 0; cptRow < m_rows; cptRow++ )
+    *this = *this * other;
+    return *this;
+}
+
+
+/**
+ * @brief Affectation à une Matrice à 3 dimensions
+ * @param other 
+ * @return 
+*/
+Matrix3& Matrix3::operator=( const Matrix3& other )
+{
+    for( int matrixIndex = 0; matrixIndex < MATRIX_3_SIZE; matrixIndex++ )
     {
-        for( int cptCol = 0; cptCol < m_cols; cptCol++ )
+        m_matrix[ matrixIndex ] = other[ matrixIndex ];
+    }
+
+    return *this;
+}
+
+
+/**
+ * @brief Affichage de la matrice
+ * @param out 
+*/
+void Matrix3::show( std::ostream& out ) const
+{
+    for( int cptRow = 0; cptRow < 3; cptRow++ )
+    {
+        for( int cptCol = 0; cptCol < 3; cptCol++ )
         {
-            out << m_matrix[ cptCol ][ cptRow ] << " ";
+            out << m_matrix[ cptRow * 3 + cptCol ] << " ";
         }
         out << std::endl;
     }

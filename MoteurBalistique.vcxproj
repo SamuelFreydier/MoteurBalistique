@@ -111,6 +111,7 @@
     <ClCompile Include="src\Matrix.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleForceRegistry.cpp" />
+    <ClCompile Include="src\ParticleForceGenerators\ParticleFriction.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleGravity.cpp" />
     <ClCompile Include="src\Vector.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxBaseGui.cpp" />
@@ -132,6 +133,7 @@
     <ClInclude Include="src\Particle.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleForceGenerator.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleForceRegistry.h" />
+    <ClInclude Include="src\ParticleForceGenerators\ParticleFriction.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleGravity.h" />
     <ClInclude Include="src\Vector.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxBaseGui.h" />

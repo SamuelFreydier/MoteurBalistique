@@ -1,35 +1,41 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include "Vector.h"
-#include <vector>
+#define MATRIX_3_SIZE 9
+#define MATRIX_4_SIZE 12
 
-class Matrix
+#include "Vector.h"
+#include <array>
+
+class Matrix3
 {
 private:
-    // On considère une matrice composée de vecteurs colonnes
-    std::vector<Vector> m_matrix;
+    // Une matrice = un tableau 1 dimension
+    std::array<float, MATRIX_3_SIZE> m_matrix;
 
-    int m_rows; // = m_dimension sur tous les Vector de la Matrix
-    int m_cols;
 public:
-    Matrix( const int& nbRows, const int& nbCols );
-    Matrix( const Matrix& matrix );
-
-    // Getters
-    const int& getNbRows() const { return m_rows; }
-    const int& getNbColumns() const { return m_cols; }
+    Matrix3( const std::array<float, MATRIX_3_SIZE>& matrixArray = {} );
+    Matrix3( const Matrix3& matrix );
 
     // Setters
-    void setMatrix( float values[] );
+    void setMatrix( const std::array<float, MATRIX_3_SIZE>& matrix ) { m_matrix = matrix; }
+    void setMatrix( const Matrix3& matrix ) { m_matrix = matrix.m_matrix; }
 
-    const Vector& operator[]( const int& vectorIndex ) const { return m_matrix[ vectorIndex ]; }
-    Vector& operator[]( const int& vectorIndex ) { return m_matrix[ vectorIndex ]; }
-    Matrix operator*( const float& value ) const;
-    Matrix operator*( const Matrix& matrix ) const;
+    const float& operator[]( const int& vectorIndex ) const { return m_matrix[ vectorIndex ]; }
+    float& operator[]( const int& vectorIndex ) { return m_matrix[ vectorIndex ]; }
+
+    // Opérations
+    Matrix3 operator*( const float& value ) const;
+    Vector3 operator*( const Vector3& vector ) const;
+    Vector3 transform( const Vector3& vector ) const;
+
+    Matrix3 operator*( const Matrix3& other ) const;
+    Matrix3& operator*=( const Matrix3& other );
+
+    Matrix3& operator=( const Matrix3& other );
 
     void setIdentity();
-    void setZero();
+    void clear();
 
     void show( std::ostream& out = std::cout ) const;
 };
