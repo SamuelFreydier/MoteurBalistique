@@ -17,7 +17,7 @@ private:
     float m_restLength;
 
 public:
-    ParticleBungee( const std::shared_ptr<Particle>& otherParticle, const float& springConstant, const float& restLength );
+    ParticleBungee(const std::shared_ptr<Particle>& otherParticle, const float& springConstant, const float& restLength);
 
     virtual void updateForce( std::shared_ptr<Particle> particle, float duration ) override;
 };

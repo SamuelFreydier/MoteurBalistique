@@ -2,7 +2,7 @@
 #include "Engine.h"
 
 Particle::Particle( const float& mass, const float& radius, const Vector3& velocity, const Vector3& position, const Vector3& color )
-    : m_massReverse( 1 / mass ), m_radius( radius ), m_velocity( velocity ), m_position( position ), m_color( color )
+    : m_inverseMass( 1 / mass ), m_radius( radius ), m_velocity( velocity ), m_position( position ), m_color( color )
 {
 
 }

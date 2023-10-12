@@ -6,7 +6,7 @@
 class Particle
 {
 protected:
-    float m_massReverse;
+    float m_inverseMass;
     float m_radius;
 
     Vector3 m_velocity;
@@ -28,9 +28,9 @@ public:
     Particle( const Particle& particle );
 
     // Accesseurs et Mutateurs
-    const float& getMassReverse() const { return m_massReverse; }
-    float getMass() const { return 1 / m_massReverse; }
-    void setMassReverse( const float& mass ) { m_massReverse = 1 / mass; }
+    const float& getInverseMass() const { return m_inverseMass; }
+    float getMass() const { return 1 / m_inverseMass; }
+    void setMassReverse( const float& mass ) { m_inverseMass = 1 / mass; }
 
     const float& getRadius() const { return m_radius; }
     void setRadius( const float& radius ) { m_radius = radius; }
