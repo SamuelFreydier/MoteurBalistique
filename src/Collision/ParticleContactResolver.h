@@ -1,0 +1,25 @@
+#ifndef PARTICLECONTACTRESOLVER_H
+#define PARTICLECONTACTRESOLVER_H
+
+#include "ParticleContact.h"
+
+/**
+ * @brief Gère la résolution de toutes les collisions de particule
+*/
+class ParticleContactResolver
+{
+protected:
+    // Nombre d'itérations maximum
+    int m_iterations;
+
+    // Nombre d'itérations actuel
+    int m_iterationsUsed;
+
+public:
+    ParticleContactResolver( const int& iterations );
+
+    void setIterations( const int& iterations ) { m_iterations = iterations; }
+    void resolveContacts( std::vector<ParticleContact>& contactArray, const int& numContacts, const float& duration );
+};
+
+#endif
