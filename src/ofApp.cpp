@@ -6,6 +6,9 @@ void ofApp::setup()
     // Setup random generator
     srand( time( NULL ) );
 
+    // Setup Engine
+    Engine::getInstance( 20 );
+
     // Setup GUI
     m_worldForces.setName( "World Forces" );
     m_worldForces.add( m_gravitySlider.set( "Gravity", 9.81, 1, 20 ) );
@@ -43,7 +46,7 @@ void ofApp::update()
     m_startTime = m_endTime;
 
     // Mise à jour physique
-    Engine::getInstance()->update( std::chrono::duration_cast< std::chrono::milliseconds >( elapsed ).count() / 100.0 );
+    Engine::getInstance()->runPhysics( std::chrono::duration_cast< std::chrono::milliseconds >( elapsed ).count() / 100.0 );
 }
 
 //--------------------------------------------------------------

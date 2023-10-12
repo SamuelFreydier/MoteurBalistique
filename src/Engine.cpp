@@ -6,14 +6,27 @@ int Engine::s_colorShift = 0;
 
 
 /**
+ * @brief Crée un moteur permettant de gérer jusqu'à un maximum de collisions par frame.
+ * Il est également possible de spécifier un nombre d'itérations à suivre pour la résolution des collisions.
+ * Par défaut => 2 fois le nombre de collisions détectées
+ * @param maxContacts 
+ * @param iterations 
+*/
+Engine::Engine( const int& maxContacts, const int& iterations )
+    : m_contactResolver( iterations ), m_maxContacts( maxContacts )
+{
+    m_calculateIterations = ( iterations == 0 );
+}
+
+/**
  * @brief Récupération de l'instance du Singleton
  * @return 
 */
-Engine* Engine::getInstance()
+Engine* Engine::getInstance( const int& maxContacts, const int& iterations )
 {
     if( s_engine == nullptr )
     {
-        s_engine = new Engine();
+        s_engine = new Engine( maxContacts, iterations );
     }
 
     return s_engine;
@@ -55,10 +68,35 @@ void Engine::shootParticle( const Vector3& initialPos, const float& initialAngle
 }
 
 /**
+ * @brief Appelle chaque générateur de collisions pour signaler leurs collisions
+ * @return Nombre de collisions générées
+*/
+int Engine::generateContacts()
+{
+    int limit = m_maxContacts;
+    Contacts::iterator nextContactIterator = m_contacts.begin();
+
+    for( ContactGenerators::iterator gen = m_contactGenerators.begin(); gen != m_contactGenerators.end(); gen++ )
+    {
+        int used = ( *gen )->addContact( ( *nextContactIterator ), limit );
+        limit -= used;
+        nextContactIterator += used;
+
+        // Plus de collision possible.
+        if( limit <= 0 )
+        {
+            break;
+        }
+    }
+
+    return m_maxContacts - limit;
+}
+
+/**
  * @brief Mise à jour de la physique des particules en fonction du temps écoulé depuis la dernière frame
  * @param deltaTime 
 */
-void Engine::update( const float& deltaTime )
+void Engine::runPhysics( const float& deltaTime )
 {
     // Ajout des forces au registre
     for( ParticlePtr& particle : m_particles )
@@ -77,6 +115,21 @@ void Engine::update( const float& deltaTime )
     for( ParticlePtr& particle : m_particles )
     {
         particle->integrate( deltaTime );
+    }
+
+    // Génération des collisions
+    int usedContacts = generateContacts();
+
+    // Traitement des collisions
+    if( usedContacts > 0 )
+    {
+        if( m_calculateIterations )
+        {
+            // Généralement on prend nbIterations = 2 * nbCollisions par convention
+            m_contactResolver.setIterations( usedContacts * 2 );
+        }
+
+        m_contactResolver.resolveContacts( m_contacts, usedContacts, deltaTime );
     }
 
     // Nettoyage des particules inutiles
