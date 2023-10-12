@@ -104,8 +104,11 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Collision\ParticleCable.cpp" />
     <ClCompile Include="src\Collision\ParticleContact.cpp" />
     <ClCompile Include="src\Collision\ParticleContactResolver.cpp" />
+    <ClCompile Include="src\Collision\ParticleLink.cpp" />
+    <ClCompile Include="src\Collision\ParticleRod.cpp" />
     <ClCompile Include="src\Fireball.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
@@ -132,8 +135,12 @@
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxToggle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Collision\ParticleCable.h" />
     <ClInclude Include="src\Collision\ParticleContact.h" />
+    <ClInclude Include="src\Collision\ParticleContactGenerator.h" />
     <ClInclude Include="src\Collision\ParticleContactResolver.h" />
+    <ClInclude Include="src\Collision\ParticleLink.h" />
+    <ClInclude Include="src\Collision\ParticleRod.h" />
     <ClInclude Include="src\Fireball.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\Engine.h" />

@@ -8,6 +8,8 @@
 */
 class ParticleContact
 {
+    friend class ParticleContactResolver;
+
 public:
     // Particules impliquées dans le contact. La seconde particule est à nullptr si la collision est entre l'objet et la scène
     std::shared_ptr<Particle> m_particles[ 2 ];
@@ -21,7 +23,7 @@ public:
     // Profondeur de la pénétration au contact
     float m_penetration;
 
-public:
+protected:
     // Résolution du contact pour la vélocité et l'interpénétration
     void resolve( const float& duration );
 
