@@ -60,8 +60,8 @@ class Engine
         static const int& getColorShift() { return s_colorShift; }
         static void setColorShift( const int& colorShift ) { s_colorShift = colorShift; }
 
-        static const int& getMouseButtonPressed() { return s_mouseButtonPressed; }
-        static void setMouseButtonPressed(const int& valeurPlusOuMoins) { s_mouseButtonPressed += valeurPlusOuMoins; }
+        //static const int& getMouseButtonPressed() { return s_mouseButtonPressed; }
+        //static void setMouseButtonPressed(const int& valeurPlusOuMoins) { s_mouseButtonPressed += valeurPlusOuMoins; }
 
         static float randshiftColorChannel( const float& colorChannel, const int& shiftAmount );
         static Vector randshiftColor( const Vector& color, const int& shiftAmount );
@@ -78,6 +78,9 @@ class Engine
 
         // Déclenche une action si une particule est présente à l'endroit d'un clic souris. Renvoie false si rien n'a été cliqué.
         bool clickedParticle( const float& x, const float& y );
+
+        // l'indice 0 correspond au clic gauche, le 1 au clic scroll et le 2 au clic droit, dsl c'est en public, c'est moche mais c'est comme ça haha
+        static bool s_boolsMouseButtonPressed[3];
 };
 
 #endif

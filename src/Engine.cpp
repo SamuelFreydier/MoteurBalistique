@@ -5,7 +5,7 @@ Vector Engine::s_gravity( { 0.0, 9.81f } );
 float Engine::s_damping = 0.94;
 int Engine::s_colorShift = 0;
 Referential Engine::s_referential = Referential();
-int Engine::s_mouseButtonPressed = 0;
+bool Engine::s_boolsMouseButtonPressed[3] = { false, false, false };
 
 /**
  * @brief Récupération de l'instance du Singleton
