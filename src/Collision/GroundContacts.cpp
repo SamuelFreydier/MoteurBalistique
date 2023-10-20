@@ -15,7 +15,7 @@ int GroundContacts::addContact( ParticleContact* contact, const int& limit ) con
         float floorHeight = ofGetWindowHeight();
         if( y + particleRadius > floorHeight )
         {
-            contact->m_contactNormal = Vector3( 0, -1, 0 );
+            contact->m_contactNormal = Vector3( 0, 1, 0 );
             contact->m_particles[ 0 ] = *particleIterator;
             contact->m_particles[ 1 ] = nullptr;
             contact->m_penetration = y + particleRadius - floorHeight;
