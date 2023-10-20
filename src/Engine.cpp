@@ -15,7 +15,19 @@ int Engine::s_colorShift = 0;
 Engine::Engine( const int& maxContacts, const int& iterations )
     : m_contactResolver( iterations ), m_maxContacts( maxContacts )
 {
+    m_contacts = new ParticleContact[ maxContacts ];
     m_calculateIterations = ( iterations == 0 );
+}
+
+Engine::~Engine()
+{
+    while( !m_particles.empty() )
+    {
+        delete m_particles.back();
+        m_particles.pop_back();
+    }
+
+    delete[] m_contacts;
 }
 
 /**
@@ -54,14 +66,14 @@ void Engine::shootParticle( const Vector3& initialPos, const float& initialAngle
 
     // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
     // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps
-    ParticlePtr newParticle = nullptr;
+    Particle* newParticle = nullptr;
     if( isFireball == true )
     {
-        newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, initialPos, color, s_colorShift );
+        newParticle = new Fireball( mass, radius, initialVelocity, initialPos, color, s_colorShift );
     }
     else
     {
-        newParticle = std::make_shared<Particle>( mass, radius, initialVelocity, initialPos, color );
+        newParticle = new Particle( mass, radius, initialVelocity, initialPos, color );
     }
 
     m_particles.push_back( newParticle );
@@ -73,14 +85,19 @@ void Engine::shootParticle( const Vector3& initialPos, const float& initialAngle
 */
 int Engine::generateContacts()
 {
+    if( m_contacts == nullptr )
+    {
+        return 0;
+    }
+
     int limit = m_maxContacts;
-    Contacts::iterator nextContactIterator = m_contacts.begin();
+    ParticleContact* nextContact = m_contacts;
 
     for( ContactGenerators::iterator gen = m_contactGenerators.begin(); gen != m_contactGenerators.end(); gen++ )
     {
-        int used = ( *gen )->addContact( ( *nextContactIterator ), limit );
+        int used = ( *gen )->addContact( nextContact, limit );
         limit -= used;
-        nextContactIterator += used;
+        nextContact += used;
 
         // Plus de collision possible.
         if( limit <= 0 )
@@ -99,10 +116,10 @@ int Engine::generateContacts()
 void Engine::runPhysics( const float& deltaTime )
 {
     // Ajout des forces au registre
-    for( ParticlePtr& particle : m_particles )
+    for( Particle* particle : m_particles )
     {
         // Gravité
-        m_particleForceRegistry.add( particle, std::make_shared<ParticleGravity>( m_gravity ) );
+        m_particleForceRegistry.add( particle, new ParticleGravity( m_gravity ) );
     }
 
     // Mise à jour des forces
@@ -112,7 +129,7 @@ void Engine::runPhysics( const float& deltaTime )
     m_particleForceRegistry.clear();
 
     // Mise à jour physique de chaque particule
-    for( ParticlePtr& particle : m_particles )
+    for( Particle* particle : m_particles )
     {
         particle->integrate( deltaTime );
     }
@@ -133,7 +150,7 @@ void Engine::runPhysics( const float& deltaTime )
     }
 
     // Nettoyage des particules inutiles
-    cleanup();
+    //cleanup();
 }
 
 
@@ -142,7 +159,7 @@ void Engine::runPhysics( const float& deltaTime )
 */
 void Engine::cleanup()
 {
-    std::list<ParticlePtr>::iterator particleIterator = m_particles.begin();
+    std::vector<Particle*>::iterator particleIterator = m_particles.begin();
 
     while( particleIterator != m_particles.end() )
     {
@@ -164,7 +181,7 @@ void Engine::cleanup()
 */
 void Engine::drawParticles() const
 {
-    for( const ParticlePtr& currParticle : m_particles )
+    for( Particle* currParticle : m_particles )
     {
         currParticle->draw();
     }
@@ -215,7 +232,7 @@ Vector3 Engine::randshiftColor( const Vector3& color, const int& shiftAmount )
 bool Engine::clickedParticle( const float& x, const float& y )
 {
     bool clicked = false;
-    std::list<ParticlePtr>::iterator particleIterator = m_particles.begin();
+    std::vector<Particle*>::iterator particleIterator = m_particles.begin();
 
     while( particleIterator != m_particles.end() && clicked == false )
     {

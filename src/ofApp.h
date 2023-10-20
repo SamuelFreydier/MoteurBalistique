@@ -4,6 +4,7 @@
 #include "ofxGui.h"
 #include "Matrix.h"
 #include "Engine.h"
+#include "Collision/GroundContacts.h"
 
 class ofApp : public ofBaseApp
 {
@@ -45,4 +46,7 @@ public:
     // Calcul du temps passé à chaque frame
     std::chrono::steady_clock::time_point m_startTime;
     std::chrono::steady_clock::time_point m_endTime;
+
+    // Générateur de sol
+    GroundContacts groundContactGenerator;
 };

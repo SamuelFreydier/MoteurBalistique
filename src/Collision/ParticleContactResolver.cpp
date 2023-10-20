@@ -11,7 +11,7 @@ ParticleContactResolver::ParticleContactResolver( const int& iterations )
  * @param numContacts 
  * @param duration 
 */
-void ParticleContactResolver::resolveContacts( std::vector<std::shared_ptr<ParticleContact>>& contactArray, const int& numContacts, const float& duration )
+void ParticleContactResolver::resolveContacts( ParticleContact* contactArray, const int& numContacts, const float& duration )
 {
     int index;
 
@@ -25,9 +25,9 @@ void ParticleContactResolver::resolveContacts( std::vector<std::shared_ptr<Parti
 
         for( index = 0; index < numContacts; index++ )
         {
-            float sepVelocity = contactArray[ index ]->calculateSeparatingVelocity();
+            float sepVelocity = contactArray[ index ].calculateSeparatingVelocity();
             if( sepVelocity < max &&
-                ( sepVelocity < 0 || contactArray[ index ]->m_penetration > 0 ) )
+                ( sepVelocity < 0 || contactArray[ index ].m_penetration > 0 ) )
             {
                 max = sepVelocity;
                 maxIndex = index;
@@ -41,7 +41,7 @@ void ParticleContactResolver::resolveContacts( std::vector<std::shared_ptr<Parti
         }
 
         // Résolution de la collision
-        contactArray[ maxIndex ]->resolve( duration );
+        contactArray[ maxIndex ].resolve( duration );
 
         m_iterationsUsed++;
     }

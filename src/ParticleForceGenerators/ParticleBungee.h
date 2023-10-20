@@ -8,7 +8,7 @@ class ParticleBungee : public ParticleForceGenerator
 {
 private:
     // Particule à l'autre bout du ressort
-    std::shared_ptr<Particle> m_otherParticle;
+    Particle* m_otherParticle;
 
     // Constante d'élasticité
     float m_springConstant;
@@ -17,9 +17,9 @@ private:
     float m_restLength;
 
 public:
-    ParticleBungee(const std::shared_ptr<Particle>& otherParticle, const float& springConstant, const float& restLength);
+    ParticleBungee( Particle* otherParticle, const float& springConstant, const float& restLength);
 
-    virtual void updateForce( std::shared_ptr<Particle> particle, float duration ) override;
+    virtual void updateForce( Particle* particle, float duration ) override;
 };
 
 #endif

@@ -47,7 +47,7 @@ void Fireball::integrate( const float& deltaTime )
         newPosition.y += sin( angle ) * m_radius;
 
         // Création de la particule (plus petite que la boule de feu d'origine)
-        ParticlePtr ashfall = std::make_shared<Particle>( getMass() * 0.1, getRadius() * 0.3, Vector3( { 0, 0, 0 } ), newPosition, colorShift );
+        Particle* ashfall = new Particle( getMass() * 0.1, getRadius() * 0.3, Vector3( { 0, 0, 0 } ), newPosition, colorShift );
 
         // Disparition progressive de la trainée de la boule de feu
         ashfall->setSizeModificator( ( rand() % 8 + 85 ) / 100.0 );

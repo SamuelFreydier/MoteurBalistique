@@ -5,7 +5,7 @@
  * @param particle 
  * @param forceGenerator 
 */
-void ParticleForceRegistry::add( std::shared_ptr<Particle> particle, std::shared_ptr<ParticleForceGenerator> forceGenerator )
+void ParticleForceRegistry::add( Particle* particle, ParticleForceGenerator* forceGenerator )
 {
     m_registry.push_back( ParticleForceRegistration( { particle, forceGenerator } ) );
 }
@@ -15,7 +15,7 @@ void ParticleForceRegistry::add( std::shared_ptr<Particle> particle, std::shared
  * @param particle 
  * @param forceGenerator 
 */
-void ParticleForceRegistry::remove( std::shared_ptr<Particle> particle, std::shared_ptr<ParticleForceGenerator> forceGenerator )
+void ParticleForceRegistry::remove( Particle* particle, ParticleForceGenerator* forceGenerator )
 {
     Registry::iterator registryIterator;
     bool registrationFound = false;
@@ -37,7 +37,7 @@ void ParticleForceRegistry::remove( std::shared_ptr<Particle> particle, std::sha
  * @brief Retrait de toutes les associations liées à la particule passée en paramètre
  * @param particle 
 */
-void ParticleForceRegistry::remove( std::shared_ptr<Particle> particle )
+void ParticleForceRegistry::remove( Particle* particle )
 {
     Registry::iterator registryIterator = m_registry.begin();
 

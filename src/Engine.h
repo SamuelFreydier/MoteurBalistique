@@ -7,19 +7,17 @@
 #include "Collision/ParticleContactResolver.h"
 #include "Collision/ParticleContactGenerator.h"
 
-using ParticlePtr = std::shared_ptr<Particle>;
-
 class Engine
 {
 public:
-    typedef std::vector<std::shared_ptr<ParticleContactGenerator>> ContactGenerators;
-    typedef std::vector<std::shared_ptr<ParticleContact>> Contacts;
+    typedef std::vector<ParticleContactGenerator*> ContactGenerators;
+    typedef std::vector<Particle*> Particles;
 
 private:
     // Singleton
     static Engine* s_engine;
 
-    std::list<ParticlePtr> m_particles;
+    Particles m_particles;
     
     // Registre (associations particule / générateur de force) => Gère gravité/frottements/ressorts
     ParticleForceRegistry m_particleForceRegistry;
@@ -34,7 +32,7 @@ private:
     ContactGenerators m_contactGenerators;
 
     // Liste des collisions
-    Contacts m_contacts;
+    ParticleContact* m_contacts;
 
     // Nombre maximal de collisions autorisées
     int m_maxContacts;
@@ -49,6 +47,7 @@ private:
     static int s_colorShift;
 protected:
     Engine( const int& maxContacts, const int& iterations = 0 );
+    ~Engine();
 
 public:
     Engine( Engine& ) = delete;
@@ -61,6 +60,7 @@ public:
    
     // Appelle les générateurs de collision pour signaler les collisions. Retourne le nombre de collisions générées.
     int generateContacts();
+    void addContactGenerator( ParticleContactGenerator* contactGenerator ) { m_contactGenerators.push_back( contactGenerator ); }
 
     // Mise à jour PHYSIQUE des particules
     void runPhysics( const float& deltaTime );
@@ -74,9 +74,8 @@ public:
     // Déclenche une action si une particule est présente à l'endroit d'un clic souris. Renvoie false si rien n'a été cliqué.
     bool clickedParticle( const float& x, const float& y );
 
-    const std::list<ParticlePtr>& getParticles() const { return m_particles; }
-    void addParticle( ParticlePtr particle ) { m_particles.push_back( particle ); }
-    void deleteParticle( ParticlePtr particle ) { m_particles.remove( particle ); }
+    std::vector<Particle*>& getParticles() { return m_particles; }
+    void addParticle( Particle* particle ) { m_particles.push_back( particle ); }
 
     const Vector3& getGravity() const { return m_gravity; }
     void setGravity( const Vector3& gravity ) { m_gravity = gravity; }

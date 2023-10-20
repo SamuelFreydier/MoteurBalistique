@@ -11,7 +11,7 @@ class ParticleLink : public ParticleContactGenerator
 {
 public:
     // Paire de particules connectées
-    std::shared_ptr<Particle> m_particles[ 2 ];
+    Particle* m_particles[ 2 ];
 
 protected:
     float currentLength() const;
@@ -23,7 +23,7 @@ public:
      * @param limit (>= 1)
      * @return 0 si le lien est serein. 1 si une collision est nécessaire.
     */
-    virtual int addContact( std::shared_ptr<ParticleContact> contact, const int& limit ) const = 0;
+    virtual int addContact( ParticleContact* contact, const int& limit ) const = 0;
 };
 
 #endif

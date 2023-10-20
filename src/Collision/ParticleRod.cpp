@@ -6,7 +6,7 @@
 * @param limit (>= 1)
 * @return 0 si la tige n'est pas menacée par un rapprochement ou un éloignement. 1 si une collision est nécessaire.
 */
-int ParticleRod::addContact( std::shared_ptr<ParticleContact> contact, const int& limit ) const
+int ParticleRod::addContact( ParticleContact* contact, const int& limit ) const
 {
     // Longueur du câble
     float currentLen = currentLength();

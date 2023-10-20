@@ -14,9 +14,10 @@ Particle::Particle( const Particle& particle )
     m_accumForce = particle.m_accumForce;
 }
 
+
 /**
  * @brief Ajoute la force forceVector au vecteur d'accumulation m_accumForce
- * @param forceVector 
+ * @param forceVector
 */
 void Particle::addForce( const Vector3& forceVector )
 {

@@ -9,7 +9,7 @@
 class ParticleContactGenerator
 {
 public:
-    virtual int addContact( std::shared_ptr<ParticleContact> contact, const int& limit ) const = 0;
+    virtual int addContact( ParticleContact* contact, const int& limit ) const = 0;
 };
 
 #endif

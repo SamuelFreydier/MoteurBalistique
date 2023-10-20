@@ -54,6 +54,10 @@ void ParticleContact::resolveVelocity( const float& duration )
 
     float deltaVelocity = newSepVelocity - separatingVelocity;
 
+    std::cout << "New Sep Velocity: " << newSepVelocity << '\n';
+    std::cout << "Separating Velocity : " << separatingVelocity << '\n';
+    std::cout << "Delta Velocity: " << deltaVelocity << '\n';
+
     // Application des changements de vélocité à chaque objet proportionnellement à leur masse
     // Plus grande masse => Moins de changement
     float totalInverseMass = m_particles[ 0 ]->getInverseMass();

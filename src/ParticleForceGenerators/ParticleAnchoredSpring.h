@@ -8,7 +8,7 @@ class ParticleAnchoredSpring : public ParticleForceGenerator
 {
 private:
     // Ancre
-    std::shared_ptr<Vector3> m_anchor;
+    Vector3* m_anchor;
 
     // Constante d'élasticité
     float m_springConstant;
@@ -17,9 +17,9 @@ private:
     float m_restLength;
 
 public:
-    ParticleAnchoredSpring( const std::shared_ptr<Vector3>& anchor, const float& springConstant, const float& restLength );
+    ParticleAnchoredSpring( Vector3* anchor, const float& springConstant, const float& restLength );
 
-    virtual void updateForce( std::shared_ptr<Particle> particle, float duration ) override;
+    virtual void updateForce( Particle* particle, float duration ) override;
 };
 
 #endif

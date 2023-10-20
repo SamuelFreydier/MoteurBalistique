@@ -6,7 +6,7 @@
  * @param springConstant 
  * @param restLength 
 */
-ParticleSpring::ParticleSpring( const std::shared_ptr<Particle>& other, const float& springConstant, const float& restLength )
+ParticleSpring::ParticleSpring( Particle* other, const float& springConstant, const float& restLength )
     : m_otherParticle( other ), m_springConstant( springConstant ), m_restLength( restLength )
 {
 }
@@ -16,7 +16,7 @@ ParticleSpring::ParticleSpring( const std::shared_ptr<Particle>& other, const fl
  * @param particle 
  * @param duration 
 */
-void ParticleSpring::updateForce( std::shared_ptr<Particle> particle, float duration )
+void ParticleSpring::updateForce( Particle* particle, float duration )
 {
     // Vecteur du ressort
     Vector3 force( particle->getPosition() );

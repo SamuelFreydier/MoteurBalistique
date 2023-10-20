@@ -6,8 +6,18 @@ void ofApp::setup()
     // Setup random generator
     srand( time( NULL ) );
 
-    // Setup Engine
-    Engine::getInstance( 20 );
+    // Setup App
+    int particleCount = 10;
+    Engine::getInstance( particleCount * 100 );
+
+    /*for( int i = 0; i < particleCount; i++ )
+    {
+        Engine::getInstance()->addParticle( new Particle() );
+    }*/
+
+    groundContactGenerator.init( &Engine::getInstance()->getParticles() );
+    Engine::getInstance()->addContactGenerator( &groundContactGenerator );
+
 
     // Setup GUI
     m_worldForces.setName( "World Forces" );

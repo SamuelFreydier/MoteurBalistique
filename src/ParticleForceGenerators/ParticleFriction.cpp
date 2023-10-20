@@ -9,7 +9,7 @@ ParticleFriction::ParticleFriction( const float& frictionCoefficient, const Vect
     // Au lieu de passer la gravité, passer directement la force normale ?
 }
 
-void ParticleFriction::updateForce( std::shared_ptr<Particle> particle, float duration )
+void ParticleFriction::updateForce( Particle* particle, float duration )
 {
     
 }

@@ -7,7 +7,7 @@
 class ParticleForceGenerator
 {
 public:
-    virtual void updateForce( std::shared_ptr<Particle> particle, float duration ) = 0;
+    virtual void updateForce( Particle* particle, float duration ) = 0;
 };
 
 #endif

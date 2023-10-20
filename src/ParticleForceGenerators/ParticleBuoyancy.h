@@ -22,7 +22,7 @@ private:
 public:
     ParticleBuoyancy( const float& maxDepth, const float& volume, const float& waterHeight, const float& liquidDensity = 1000.0f );
 
-    virtual void updateForce( std::shared_ptr<Particle> particle, float duration ) override;
+    virtual void updateForce( Particle* particle, float duration ) override;
 };
 
 #endif
