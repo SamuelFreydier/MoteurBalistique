@@ -19,7 +19,7 @@ int GroundContacts::addContact( ParticleContact* contact, const int& limit ) con
             contact->m_particles[ 0 ] = *particleIterator;
             contact->m_particles[ 1 ] = nullptr;
             contact->m_penetration = y + particleRadius - floorHeight;
-            contact->m_restitution = 0.f;
+            contact->m_restitution = 0.7f;
             contact++;
             count++;
 

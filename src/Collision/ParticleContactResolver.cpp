@@ -20,14 +20,14 @@ void ParticleContactResolver::resolveContacts( ParticleContact* contactArray, co
     while( m_iterationsUsed < m_iterations )
     {
         // Trouve le contact avec la plus grande vélocité de rapprochement (=> contact le plus critique)
-        float max = FLT_MAX;
+        float max = 0;
         int maxIndex = numContacts;
 
         for( index = 0; index < numContacts; index++ )
         {
             float sepVelocity = contactArray[ index ].calculateSeparatingVelocity();
-            if( sepVelocity < max &&
-                ( sepVelocity < 0 || contactArray[ index ].m_penetration > 0 ) )
+            if( sepVelocity > max &&
+                ( sepVelocity > 0 || contactArray[ index ].m_penetration > 0 ) )
             {
                 max = sepVelocity;
                 maxIndex = index;
