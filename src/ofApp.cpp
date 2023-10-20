@@ -53,6 +53,9 @@ void ofApp::update()
     // Calcul du deltaTime
     m_endTime = std::chrono::steady_clock::now();
     std::chrono::duration<float> elapsed{ m_endTime - m_startTime };
+    fps =(int)std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+    if(fps!=0)
+        fps = 1000 / fps;
     m_startTime = m_endTime;
 
     // Mise à jour physique
@@ -67,6 +70,9 @@ void ofApp::draw()
 
     // Affichage de l'UI
     m_gui.draw();
+    ofSetColor(255); // Définir la couleur du texte en blanc
+    string fpsStr = ofToString(fps) + " fps";
+    ofDrawBitmapString(fpsStr, ofGetWindowWidth()-60, 20); // Dessiner le texte à la position (20, 20)
 }
 
 //--------------------------------------------------------------

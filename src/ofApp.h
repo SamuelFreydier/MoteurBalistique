@@ -25,6 +25,7 @@ public:
     void dragEvent( ofDragInfo dragInfo );
     void gotMessage( ofMessage msg );
 
+    int fps = 0;
     // Interface (GUI)
     ofxPanel m_gui;
 
