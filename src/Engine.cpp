@@ -1,11 +1,11 @@
 #include "Engine.h"
 
 Engine* Engine::s_engine = nullptr;
-Vector Engine::s_gravity( { 0.0, 9.81f } );
+Vector Engine::s_gravity( { 0.0, - 9.81f, 0.0 } );
 float Engine::s_damping = 0.94;
+bool Engine::s_realisticAirResistance = false;
 int Engine::s_colorShift = 0;
 Referential Engine::s_referential = Referential();
-bool Engine::s_boolsMouseButtonPressed[3] = { false, false, false };
 
 /**
  * @brief Récupération de l'instance du Singleton
@@ -32,23 +32,18 @@ Engine* Engine::getInstance()
  * @param color 
  * @param isFireball 
 */
-void Engine::shootParticle( const Vector& initialPos, const float& initialAngle, const float& initialSpeed, const float& mass, const float& radius, const Vector& color, bool isFireball )
+void Engine::shootParticle(const Vector& initialPos, const Vector& initialVelocity , const float& mass, const float& radius, const Vector& color, bool isFireball, bool m_showParticleInfos)
 {
-    float xVelocity = initialSpeed * cos( initialAngle );
-    float yVelocity = initialSpeed * sin( initialAngle );
-    // l'axe y etant dirige vers le bas, il faut l'inverser afin de bien lancer la particule
-    Vector initialVelocity( { xVelocity, -yVelocity } );
-
     // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
     // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps
     ParticlePtr newParticle = nullptr;
     if( isFireball == true )
     {
-        newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, s_gravity, initialPos, color, s_colorShift );
+        newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, s_gravity, initialPos, color, m_showParticleInfos, s_colorShift );
     }
     else
     {
-        newParticle = std::make_shared<Particle>( mass, radius, initialVelocity, s_gravity, initialPos, color );
+        newParticle = std::make_shared<Particle>( mass, radius, initialVelocity, s_gravity, initialPos, color, m_showParticleInfos);
     }
 
     m_particles.push_back( newParticle );
@@ -77,9 +72,9 @@ void Engine::updateParticleList( std::list<ParticlePtr>& particleList, const flo
     while( particleIterator != particleList.end() )
     {
         ( *particleIterator )->update( deltaTime );
-        // on supprime les particules qui sont sorties en bas ou a droite
-        if( ( ( *particleIterator )->getPosition().getX() > ofGetWindowWidth() + 5 || ( *particleIterator )->getPosition().getY() > ofGetWindowHeight() + 5 )
-            || ( *particleIterator )->getRadius() <= 3.0 ) {
+        // on supprime les particules qui sont sorties par le bas et celles qui sont devenues trop petites (trainées de cendres)
+        if( ( ( *particleIterator )->getPosition().getY() - (*particleIterator)->getRadius() < 0 )
+            || ( *particleIterator )->getRadius() < 0.009 ) {
             particleIterator = particleList.erase( particleIterator );
         }
         else
@@ -152,12 +147,25 @@ Vector Engine::randshiftColor( const Vector& color, const int& shiftAmount )
 bool Engine::clickedParticle( const float& x, const float& y )
 {
     bool clicked = false;
-    std::list<ParticlePtr>::iterator particleIterator = m_particles.begin();
 
+
+    const bool conversionIsFromGraphicToMecanic = false;
+    const Vector clicGraphique = Vector({ x, y, 0.0 });
+    const Vector clicMecanique = s_referential.conversionPositionMecaniqueGraphique(clicGraphique, conversionIsFromGraphicToMecanic);
+
+    const float clicMecaniqueX = clicMecanique.getX();
+    const float clicMecaniqueY = clicMecanique.getY();
+
+
+    std::list<ParticlePtr>::iterator particleIterator = m_particles.begin();
     while( particleIterator != m_particles.end() && clicked == false )
     {
-        if( ( (*particleIterator)->getPosition().getX() - ( *particleIterator )->getRadius() < x && ( *particleIterator )->getPosition().getX() + ( *particleIterator )->getRadius() > x )
-            && ( ( *particleIterator )->getPosition().getY() - ( *particleIterator )->getRadius() < y && ( *particleIterator )->getPosition().getY() + ( *particleIterator )->getRadius() > y ) )
+        const float particlePositionX = (*particleIterator)->getPosition().getX();
+        const float particlePositionY = (*particleIterator)->getPosition().getY();
+        const float particleRadius = (*particleIterator)->getRadius();
+
+        if( (particlePositionX - particleRadius < clicMecaniqueX && particlePositionX + particleRadius > clicMecaniqueX)
+            && (particlePositionY - particleRadius < clicMecaniqueY && particlePositionY + particleRadius > clicMecaniqueY) )
         {
             clicked = true;
             ( *particleIterator )->clicked();
@@ -173,4 +181,14 @@ bool Engine::clickedParticle( const float& x, const float& y )
     }
 
     return clicked;
+}
+
+
+void Engine::showScore(const bool& boolShowScore) const
+{
+    if (boolShowScore)
+    {
+        ofSetColor(255, 100, 100);
+        ofDrawBitmapString("Score : " + ofToString(score), (Vector({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 })).v3());
+    }
 }

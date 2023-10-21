@@ -20,7 +20,7 @@ public:
     float& operator[]( const int& coordIndex ) { return m_coordinates[ coordIndex ]; }
 
     // getters
-    const float& getX() const { return m_coordinates[ 0 ]; }
+    const float getX() const { return m_coordinates[ 0 ]; }
     const float& getY() const { return m_coordinates[ 1 ]; }
     const float& getZ() const { return m_coordinates[ 2 ]; }
     const float& getW() const { return m_coordinates[ 3 ]; }

@@ -1,7 +1,7 @@
 #include "Referential.h"
 
 
-void Referential::drawReferential()
+void Referential::drawReferential() const
 {
 	// On dessine le rérérentiel en blanc et une épaisseur de ligne donnée
 	ofSetColor(255, 255, 255);
@@ -77,9 +77,9 @@ void Referential::drawReferential()
 }
 
 
-void Referential::resizeScale(ofMouseEventArgs& mouse)
+void Referential::resizeScale(const ofMouseEventArgs& mouse)
 {
-	const Vector mouseXY = Vector({ mouse.x, mouse.y });
+	const Vector mouseXY = Vector({ mouse.x, mouse.y, 0.0 });
 	const Vector deltaMouseOrigine = mouseXY - pointOrigine;
 
 	float puissanceScroll = 20;
@@ -99,4 +99,55 @@ void Referential::dragOrigin(const std::vector<float>& mouseXY, const Vector& st
 	const Vector deltaDragPosition = mouse_2D_Position - startDragPosition;
 		
 	pointOrigine = startDragOriginPosition + deltaDragPosition;
+}
+
+
+
+const Vector Referential::conversionPositionMecaniqueGraphique(const Vector& monVecteur, const bool& trueMecanique_falseGraphique) const
+{
+	Vector vecteurEntree = monVecteur;
+	Vector vecteurSortie;
+
+	if (trueMecanique_falseGraphique) // transformations successives du référentiel mécanique pour le placer dans le référentiel graphique
+	{		
+		Vector sortieGraphique = Vector({ monVecteur.getX(), -monVecteur.getY(), 0.0 }); // on inverse axe Y
+		sortieGraphique *= 1 / scale; // on met à l'échelle du référentiel graphique
+		sortieGraphique += pointOrigine; // on translate de sorte à se superposer à l'origine graphique du référentiel
+		
+		vecteurSortie = sortieGraphique;
+	}
+	else // transformations successives du référentiel graphique pour le placer dans le référentiel mécanique
+	{
+		Vector sortieMecanique = monVecteur - pointOrigine; // on translate de sorte à se superposer à l'origine de l'écran
+		sortieMecanique *= scale; // on met à l'échelle du référentiel mécanique
+		sortieMecanique = Vector({ sortieMecanique.getX(), -sortieMecanique.getY(), 0.0 }); // on inverse axe Y
+
+		vecteurSortie = sortieMecanique;
+	}
+
+	return vecteurSortie;
+}
+
+
+const Vector Referential::conversionVelocityMecaniqueGraphique(const Vector& monVecteur, const bool& trueMecanique_falseGraphique) const
+{
+	Vector vecteurEntree = monVecteur;
+	Vector vecteurSortie;
+
+	if (trueMecanique_falseGraphique) // transformations successives du référentiel mécanique pour le placer dans le référentiel graphique
+	{
+		Vector sortieGraphique = Vector({ monVecteur.getX(), -monVecteur.getY(), 0.0 }); // on inverse axe Y
+		sortieGraphique *= 1 / scale; // on met à l'échelle du référentiel graphique
+
+		vecteurSortie = sortieGraphique;
+	}
+	else // transformations successives du référentiel graphique pour le placer dans le référentiel mécanique
+	{
+		Vector sortieMecanique = monVecteur * scale; // on met à l'échelle du référentiel mécanique
+		sortieMecanique = Vector({ sortieMecanique.getX(), -sortieMecanique.getY(), 0.0 }); // on inverse axe Y
+
+		vecteurSortie = sortieMecanique;
+	}
+
+	return vecteurSortie;
 }

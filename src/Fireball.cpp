@@ -1,8 +1,8 @@
 #include "Fireball.h"
 #include "Engine.h"
 
-Fireball::Fireball( const float& mass, const float& radius, const Vector& velocity, const Vector& acceleration, const Vector& position, const Vector& color, const int& colorShift )
-    : Particle( mass, radius, velocity, acceleration, position, color ), m_colorShift( colorShift )
+Fireball::Fireball( const float& mass, const float& radius, const Vector& velocity, const Vector& acceleration, const Vector& position, const Vector& color, const bool& showParticleInfos, const int& colorShift)
+    : Particle( mass, radius, velocity, acceleration, position, color, showParticleInfos ), m_colorShift( colorShift )
 {
 
 }
@@ -75,7 +75,8 @@ void Fireball::explode()
     // Une itération = un débris qui part dans une direction
     for( float angleProjection = 0.0; angleProjection < 2 * PI; angleProjection += angleStep )
     {
-        Engine::getInstance()->shootParticle( getPosition(), angleProjection, getVelocity().norm(), getMass() * 0.4, getRadius() * 0.4, m_color, true );
+        const Vector initialVelocity = Vector({ getVelocity().norm() * cos(angleProjection), getVelocity().norm() * sin(angleProjection), 0.0 });
+        Engine::getInstance()->shootParticle( getPosition(), initialVelocity, getMass() * 0.4, getRadius() * 0.4, m_color, true );
     }
 
     // On laisse la responsabilité à l'Engine de détruire la boule

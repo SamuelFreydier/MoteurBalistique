@@ -4,6 +4,7 @@
 #include "ofxGui.h"
 #include "Matrix.h"
 #include "Engine.h"
+#include "MouseDragger.h"
 
 class ofApp : public ofBaseApp
 {
@@ -20,6 +21,7 @@ public:
     void mouseReleased( int x, int y, int button );
     void mouseEntered( int x, int y );
     void mouseExited( int x, int y );
+    void mouseScrolled(ofMouseEventArgs& mouse);
     void windowResized( int w, int h );
     void dragEvent( ofDragInfo dragInfo );
     void gotMessage( ofMessage msg );
@@ -32,9 +34,11 @@ public:
     
     ofParameterGroup m_worldForces;
     ofParameter<float> m_gravitySlider;
+    ofParameter<bool> m_realisticAirLossToggle;
     ofParameter<float> m_dampingSlider;
     ofParameterGroup m_particleConfig;
     ofParameter<bool> m_isShootingTrigger;
+    ofParameter<bool> m_showParticleInfosToggle;
     ofParameter<float> m_impulseSlider;
     ofParameter<float> m_massSlider;
     ofParameter<float> m_radiusSlider;
@@ -42,7 +46,14 @@ public:
     ofParameter<ofVec3f> m_colorSlider;
     ofParameter<int> m_colorShiftSlider;
 
-    // Calcul du temps passé à chaque frame
-    std::chrono::steady_clock::time_point m_startTime;
-    std::chrono::steady_clock::time_point m_endTime;
+    // Variable qui sert à compter le temps écoulé entre chaques "frames"
+    std::chrono::time_point<std::chrono::system_clock> dateOfBeginPreviousUpdate;
+
+    private:
+        MouseDragger draggerReferentialOrigin;
+        MouseDragger draggerParticleLauncher;
+
+        // l'indice 0 correspond au clic gauche, le 1 au clic scroll et le 2 au clic droit
+        bool boolsMouseButtonPressed[3]; // initialisation à false sur tous les champs par défaut
+
 };

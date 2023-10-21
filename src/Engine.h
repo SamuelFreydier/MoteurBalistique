@@ -4,6 +4,7 @@
 #include "Fireball.h"
 #include "Referential.h"
 
+
 using ParticlePtr = std::shared_ptr<Particle>;
 
 class Engine
@@ -22,15 +23,17 @@ class Engine
         // Gravité
         static Vector s_gravity;
 
-        // Frottement
+        // Frottement pas réaliste
         static float s_damping;
+
+        // Frottement air réaliste
+        static bool s_realisticAirResistance;
 
         // Variation des couleurs
         static int s_colorShift;
 
-
-        // à interpreter comme un nombre binaire sur 3 bits, bits 1 = clic gauche, bits 2 = clic scroll, bits 3 = clic droit donc les valeurs possibles sont comprises entre 0 et 7
-        static int s_mouseButtonPressed;
+        // score : +1 par boule de feu explosée !!
+        int score = 0;
 
     protected:
         Engine() = default;
@@ -41,7 +44,7 @@ class Engine
 
         static Engine* getInstance();
 
-        static Referential& getReferential() { return s_referential; }
+        static Referential& getReferential() { return s_referential; };
 
         const std::list<ParticlePtr>& getParticles() const { return m_particles; }
         void addParticle( ParticlePtr particle ) { m_particles.push_back( particle ); }
@@ -57,6 +60,9 @@ class Engine
         static const float& getDamping() { return s_damping; }
         static void setDamping( const float& damping ) { s_damping = damping; }
 
+        static const bool& getRealisticAirResistance() { return s_realisticAirResistance; }
+        static void setRealisticAirResistance(const bool& newRealisticAirResistance) { s_realisticAirResistance = newRealisticAirResistance; }
+
         static const int& getColorShift() { return s_colorShift; }
         static void setColorShift( const int& colorShift ) { s_colorShift = colorShift; }
 
@@ -67,7 +73,7 @@ class Engine
         static Vector randshiftColor( const Vector& color, const int& shiftAmount );
 
         // Tire une nouvelle particule depuis une position et avec un certain angle et une certaine force
-        void shootParticle( const Vector& initialPos, const float& initialAngle, const float& initialSpeed, const float& mass = 1.0, const float& radius = 1.0, const Vector& color = Vector( { 255, 0, 0 } ), bool isFireball = false );
+        void shootParticle( const Vector& initialPos, const Vector& initialVelocity, const float& mass = 1.0, const float& radius = 1.0, const Vector& color = Vector( { 255, 0, 0 } ), bool isFireball = false, bool m_showParticleInfos = false);
    
         // Mise à jour PHYSIQUE des particules
         void update( const float& deltaTime );
@@ -79,8 +85,9 @@ class Engine
         // Déclenche une action si une particule est présente à l'endroit d'un clic souris. Renvoie false si rien n'a été cliqué.
         bool clickedParticle( const float& x, const float& y );
 
-        // l'indice 0 correspond au clic gauche, le 1 au clic scroll et le 2 au clic droit, dsl c'est en public, c'est moche mais c'est comme ça haha
-        static bool s_boolsMouseButtonPressed[3];
+        const int& getScore() const { return score; };
+        void increaseScore(const int& points = 1) { score += points; };
+        void showScore(const bool& boolShowScore) const;
 };
 
 #endif
