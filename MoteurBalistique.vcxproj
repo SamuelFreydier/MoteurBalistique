@@ -104,6 +104,7 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Collision\ParticleSpontaneousCollision.cpp" />
     <ClCompile Include="src\Collision\GroundContacts.cpp" />
     <ClCompile Include="src\Collision\ParticleCable.cpp" />
     <ClCompile Include="src\Collision\ParticleContact.cpp" />
@@ -136,6 +137,7 @@
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxToggle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Collision\ParticleSpontaneousCollision.h" />
     <ClInclude Include="src\Collision\GroundContacts.h" />
     <ClInclude Include="src\Collision\ParticleCable.h" />
     <ClInclude Include="src\Collision\ParticleContact.h" />

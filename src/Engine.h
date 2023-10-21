@@ -6,6 +6,7 @@
 #include "Fireball.h"
 #include "Collision/ParticleContactResolver.h"
 #include "Collision/ParticleContactGenerator.h"
+#include "Collision/ParticleSpontaneousCollision.h"
 
 class Engine
 {
@@ -30,6 +31,9 @@ private:
 
     // Générateurs de collisions
     ContactGenerators m_contactGenerators;
+
+    // Générateur de collision spécial (pour les collisions spontanées entre particules)
+    ParticleSpontaneousCollision* m_spontaneousCollisionGenerator;
 
     // Liste des collisions
     ParticleContact* m_contacts;

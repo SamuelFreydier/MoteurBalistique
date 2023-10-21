@@ -16,6 +16,10 @@ Engine::Engine( const int& maxContacts, const int& iterations )
     : m_contactResolver( iterations ), m_maxContacts( maxContacts )
 {
     m_contacts = new ParticleContact[ maxContacts ];
+
+    m_spontaneousCollisionGenerator = new ParticleSpontaneousCollision();
+    m_spontaneousCollisionGenerator->m_restitution = 1.f;
+
     m_calculateIterations = ( iterations == 0 );
 }
 
@@ -28,6 +32,7 @@ Engine::~Engine()
     }
 
     delete[] m_contacts;
+    delete m_spontaneousCollisionGenerator;
 }
 
 /**
@@ -93,6 +98,7 @@ int Engine::generateContacts()
     int limit = m_maxContacts;
     ParticleContact* nextContact = m_contacts;
 
+    // On itère dans tous les générateurs de collisions
     for( ContactGenerators::iterator gen = m_contactGenerators.begin(); gen != m_contactGenerators.end(); gen++ )
     {
         int used = ( *gen )->addContact( nextContact, limit );
@@ -103,6 +109,22 @@ int Engine::generateContacts()
         if( limit <= 0 )
         {
             break;
+        }
+    }
+
+    // On itère pour vérifier les collisions entre toutes les particules
+    for( int firstParticleIdx = 0 ; firstParticleIdx < m_particles.size() && limit > 0; firstParticleIdx++  )
+    {
+        Particle* firstParticle = m_particles[ firstParticleIdx ];
+        for( int secondParticleIdx = firstParticleIdx + 1; secondParticleIdx < m_particles.size() && limit > 0; secondParticleIdx++ )
+        {
+            Particle* secondParticle = m_particles[ secondParticleIdx ];
+            m_spontaneousCollisionGenerator->m_particles[ 0 ] = firstParticle;
+            m_spontaneousCollisionGenerator->m_particles[ 1 ] = secondParticle;
+
+            int used = m_spontaneousCollisionGenerator->addContact( nextContact, limit );
+            limit -= used;
+            nextContact += used;
         }
     }
 
