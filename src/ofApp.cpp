@@ -88,7 +88,14 @@ void ofApp::keyReleased( int key )
 //--------------------------------------------------------------
 void ofApp::mouseMoved( int x, int y )
 {
-
+    if (boolsMouseButtonPressed[0] == false)
+    {
+        draggerParticleLauncher.draggingIsOver();
+    }
+    if (boolsMouseButtonPressed[2] == false)
+    {
+        draggerReferentialOrigin.draggingIsOver();
+    }
 }
 
 //--------------------------------------------------------------
@@ -173,13 +180,17 @@ void ofApp::mouseReleased( int x, int y, int button )
                 Vector mecanicStartPosition = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(draggerParticleLauncher.getStartMousePosition(), false);
                 Engine::getInstance()->shootParticle(mecanicStartPosition, mecanicStartVelocity, draggerParticleLauncher.getParticleMass(), draggerParticleLauncher.getParticleRadius(), Vector({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), m_isFireballToggle, m_showParticleInfosToggle);
 
-                std::cout << draggerParticleLauncher.isDraggingBig() << "\n";
+                //std::cout << draggerParticleLauncher.isDraggingBig() << "\n";
                 draggerParticleLauncher.draggingIsOver();
             }
             else // si on relâche un clic gauche sans que draggerParticleLauncher ne se soit activé, alors ça veut dire que c'était un clic simple (pas de drag)
             {
-                // on determine l'angle de lancer
-                float shootingAngle = atan2(ofGetWindowHeight() - y, x);
+                // On retrouve le clic souris dans le repère mécanique
+                Vector clicSourisGraphique = Vector({ (float)x, (float)y, 0.0 });
+                Vector clicSourisMecanique = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(clicSourisGraphique, false);
+
+                // on determine l'angle de lancer (cliquer en (1,0) mécanique = 0° et (0,1) = 90° car cercle trigo)
+                float shootingAngle = atan2(clicSourisMecanique.getY(), clicSourisMecanique.getX());
                 // on affiche dans la console l'angle et l'impulsion
                 std::cout << "Shooting Angle : " << shootingAngle << " / Impulse : " << m_impulseSlider << std::endl;
 
