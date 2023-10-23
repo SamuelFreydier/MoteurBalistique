@@ -88,7 +88,7 @@ void Referential::resizeScale(const ofMouseEventArgs& mouse)
 		float coef = 1 - mouse.scrollY / puissanceScroll;
 
 		scale *= coef;
-		pointOrigine += deltaMouseOrigine * (coef - 1);
+		pointOrigine += deltaMouseOrigine * (1 - 1 / coef);
 	}
 }
 
