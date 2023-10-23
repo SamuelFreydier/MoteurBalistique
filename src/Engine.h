@@ -3,6 +3,7 @@
 
 #include "ParticleForceGenerators/ParticleForceRegistry.h"
 #include "ParticleForceGenerators/ParticleGravity.h"
+#include "ParticleForceGenerators/ParticleFriction.h"
 #include "Fireball.h"
 #include "Referential.h"
 
@@ -32,6 +33,9 @@ class Engine
         // Frottement air réaliste
         static bool s_realisticAirResistance;
 
+        // Vent
+        static Vector3 s_wind;
+
         // Variation des couleurs
         static int s_colorShift;
 
@@ -53,14 +57,17 @@ class Engine
         void addParticle( ParticlePtr particle ) { m_particles.push_back( particle ); }
         void deleteParticle( ParticlePtr particle ) { m_particles.remove( particle ); }
 
-    const Vector3& getGravity() const { return m_gravity; }
-    void setGravity( const Vector3& gravity ) { m_gravity = gravity; }
+        const Vector3& getGravity() const { return m_gravity; }
+        void setGravity( const Vector3& gravity ) { m_gravity = gravity; }
 
         static const float& getDamping() { return s_damping; }
         static void setDamping( const float& damping ) { s_damping = damping; }
 
         static const bool& getRealisticAirResistance() { return s_realisticAirResistance; }
         static void setRealisticAirResistance(const bool& newRealisticAirResistance) { s_realisticAirResistance = newRealisticAirResistance; }
+
+        static const Vector3& getWind() { return s_wind; }
+        static void setWind(const Vector3& newWind) { s_wind = newWind; }
 
         static const int& getColorShift() { return s_colorShift; }
         static void setColorShift( const int& colorShift ) { s_colorShift = colorShift; }

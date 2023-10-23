@@ -18,9 +18,16 @@ Particle::Particle( const Particle& particle )
  * @brief Ajoute la force forceVector au vecteur d'accumulation m_accumForce
  * @param forceVector 
 */
-void Particle::addForce( const Vector3& forceVector )
+void Particle::addForce( const Vector3& forceVector, const bool& isFrictionGlitch )
 {
-    m_accumForce += forceVector;
+    if (isFrictionGlitch)
+    {
+        m_accumForce.glitchFriction = true;
+    }
+    else
+    {
+        m_accumForce.accumForce += forceVector;
+    }
 }
 
 /**
@@ -28,7 +35,8 @@ void Particle::addForce( const Vector3& forceVector )
 */
 void Particle::clearAccum()
 {
-    m_accumForce.clear();
+    m_accumForce.accumForce.clear();
+    m_accumForce.glitchFriction = false;
 }
 
 
@@ -38,53 +46,24 @@ void Particle::clearAccum()
 */
 void Particle::update( const float& secondsElapsedSincePreviousUpdate)
 {
+    if (m_accumForce.glitchFriction == true) // si il y a eu un glitch de friction, alors on annule la vélocité de la particule pour éviter des comportements illégaux (téléportations, partir dans le mauvais sens)
+    {
+        m_velocity = Vector3(); 
+    }
+
+    if (Engine::getRealisticAirResistance() == true) // Choix de l'utilisateur entre frottements de l'air réalistes ou pas
+    {
+        m_velocity *= pow(Engine::getInstance()->getDamping(), secondsElapsedSincePreviousUpdate); // on applique
+    }
+
+    // Maintenant on peut faire comme d'habitude avec l'intégrateur d'Euler :
 
     // Accélération
-    m_acceleration = m_accumForce / getMass();
-
-    // Section à mettre dans accumForce ? 
-    /*
-    if (Engine::getRealisticAirResistance()) // Si on applique un modèle réaliste, alors principe fondamental de la dynamique + formule force de trainée
-    {
-        float frontalSurface = PI * pow(m_radius, 2); // surface frontale d'une sphère
-        float normeForceTrainee = constTrainee * frontalSurface * pow(m_velocity.norm(), 2); // air immobile donc la vitesse relative par rapport à la masse d'air est juste la vitesse de la particule
-        
-        Vector3 forceTrainee = Vector3({ 0.0, 0.0, 0.0 });
-        if (m_velocity.norm() != 0)
-        {
-            forceTrainee = m_velocity * (1 / m_velocity.norm()) * normeForceTrainee * -1; // on multiplie par le vecteur vélocité normalisé et on prend le sens inverse
-        }
-       
-        //float forceTraineeX = -constTrainee * frontalSurface * m_velocity.getX() * abs(m_velocity.getX()); // le - et le abs() servent à orienter correctement le vecteur résultant de la force de Trainee
-        //float forceTraineeY = -constTrainee * frontalSurface * m_velocity.getY() * abs(m_velocity.getY());
-
-        if ((forceTrainee * m_massReverse * secondsElapsedSincePreviousUpdate).norm() >= m_velocity.norm()) // bug qui reste de déclencher des glitch, particule qui part dans la mauvaise direction ou se téléporte à cause d'une trop grande force de trainée
-        {
-            m_velocity = Vector3({ 0.0, 0.0, 0.0 });
-            m_velocity += Engine::getGravity() * secondsElapsedSincePreviousUpdate;
-        }
-        else // si tout va bien 
-        {
-            // On fait le bilan des forces avec l'acceleration terrestre qui est là dans tous les cas
-            Vector3 acceleration = (forceTrainee * m_massReverse) + Engine::getGravity();  
-
-            // update velocity
-            m_velocity += acceleration * secondsElapsedSincePreviousUpdate;
-        }
-    }
-    else // sinon, on utilise le damping qui est un paramètre reglable
-    {
-        m_velocity *= pow(Engine::getInstance()->getDamping(), secondsElapsedSincePreviousUpdate); // application frottements de l'air pas réalistes
-        m_velocity += Engine::getGravity() * secondsElapsedSincePreviousUpdate; // l'acceleration terrestre qui est là dans tous les cas
-    }
-    */
-    
-
+    m_acceleration = m_accumForce.accumForce / getMass();
+          
     // Vélocité
-    m_velocity = m_velocity * pow(Engine::getInstance()->getDamping(), secondsElapsedSincePreviousUpdate) + m_acceleration * secondsElapsedSincePreviousUpdate;
-
-
-    
+    m_velocity += m_acceleration * secondsElapsedSincePreviousUpdate;
+            
     // Position
     m_position += m_velocity * secondsElapsedSincePreviousUpdate;
 

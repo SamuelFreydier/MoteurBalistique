@@ -6,10 +6,12 @@ ParticleGravity::ParticleGravity( const Vector3& gravity )
 
 }
 
-void ParticleGravity::updateForce( std::shared_ptr<Particle> particle, float duration )
+void ParticleGravity::updateForce( const std::shared_ptr<Particle>& particle, const float& duration )
 {
-    if( particle->getMass() > 0.f )
+    float particleMass = particle->getMass();
+
+    if(particleMass > 0.f )
     {
-        particle->addForce( m_gravity * particle->getMass() );
+        particle->addForce( m_gravity * particleMass);
     }
 }

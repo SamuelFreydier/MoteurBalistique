@@ -35,6 +35,8 @@ public:
     ofParameterGroup m_worldForces;
     ofParameter<float> m_gravitySlider;
     ofParameter<bool> m_realisticAirLossToggle;
+    ofParameter<float> m_windX_slider;
+    ofParameter<float> m_windY_slider;
     ofParameter<float> m_dampingSlider;
     ofParameterGroup m_particleConfig;
     ofParameter<bool> m_isShootingTrigger;

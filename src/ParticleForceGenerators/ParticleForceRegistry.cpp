@@ -71,10 +71,10 @@ void ParticleForceRegistry::clear()
  * @brief Pour chaque élément du registre, met à jour la particule courante à l'aide du générateur associé
  * @param duration 
 */
-void ParticleForceRegistry::updateForces( const float& duration )
+void ParticleForceRegistry::updateForces( const float& secondsElapsedSincePreviousUpdate)
 {
     for( ParticleForceRegistration& registration : m_registry )
     {
-        registration.forceGenerator->updateForce( registration.particle, duration );
+        registration.forceGenerator->updateForce( registration.particle, secondsElapsedSincePreviousUpdate);
     }
 }

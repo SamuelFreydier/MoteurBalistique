@@ -9,7 +9,9 @@ void ofApp::setup()
     // Setup GUI
     m_worldForces.setName( "World Forces" );
     m_worldForces.add( m_gravitySlider.set( "Gravity", 9.81, 1, 20 ) );
-    m_worldForces.add(m_realisticAirLossToggle.set("Realistic air resistance", false));
+    m_worldForces.add(m_realisticAirLossToggle.set("Realistic air interaction", true));
+    m_worldForces.add(m_windX_slider.set("Horizontal wind", 0, -20, 20));
+    m_worldForces.add(m_windY_slider.set("Vertical wind", 0, -20, 20));
     m_worldForces.add( m_dampingSlider.set( "Damping", 0.94, 0.5, 1 ) );
     
     m_particleConfig.setName( "Particle Configuration" );
@@ -41,6 +43,7 @@ void ofApp::update()
     Engine::getInstance()->setGravity( Vector3( { 0.0, -m_gravitySlider, 0.0 } ) );
     Engine::getInstance()->setDamping( m_dampingSlider );
     Engine::getInstance()->setRealisticAirResistance(m_realisticAirLossToggle);
+    Engine::getInstance()->setWind(Vector3(m_windX_slider, m_windY_slider));
     Engine::getInstance()->setColorShift( m_colorShiftSlider );
 
     // Calcul du temps en secondes écoulé depuis la précédente mise à jour -> essentiel pour un moteur physique réaliste

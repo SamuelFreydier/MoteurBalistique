@@ -22,7 +22,7 @@ public:
     void remove( std::shared_ptr<Particle> particle, std::shared_ptr<ParticleForceGenerator> forceGenerator );
     void remove( std::shared_ptr<Particle> particle );
     void clear();
-    void updateForces( const float& duration );
+    void updateForces( const float& secondsElapsedSincePreviousUpdate);
 };
 
 #endif

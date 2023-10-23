@@ -22,16 +22,14 @@ protected:
     bool m_destroyedLater = false;
 
 
-    const float masseVolumiqueAir = 1.2; // 1.2kg par m^3 pour air à 20°C
-    const float coefSurfaceAeroDynamique = 0.70; // dans ces eaux-là pour une sphère mais à déterminer en soufflerie
-
-    // formule trainée : 0.5 * frontalSurface * masseVolumiqueAir * coefSurfaceAeroDynamique * VitesseRelativeMasseAir^2 en Newtons
-    // donc
-    const float constTrainee = 0.5 * masseVolumiqueAir * coefSurfaceAeroDynamique;
-    // et il ne manquera plus qu'à multiplier par frontalSurface et la vitesse relative à la masse d'air au carré
-
     // Force résultante sur la particule
-    Vector3 m_accumForce;
+    typedef struct 
+    {
+        Vector3 accumForce;
+        bool glitchFriction = false;
+    } accumForceSansGlitchFriction_t;
+
+    accumForceSansGlitchFriction_t m_accumForce;
 
 public:
     Particle( const float& mass = 1.0, const float& radius = 1.0, const Vector3& velocity = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& position = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& color = Vector3( { 255, 0, 0 } ), const bool& showParticleInfos = false);
@@ -66,7 +64,7 @@ public:
     bool toBeDestroyed() const { return m_destroyedLater; }
 
     // Gestion des forces
-    void addForce( const Vector3& forceVector );
+    void addForce( const Vector3& forceVector, const bool& isFrictionGlitch = false);
     void clearAccum();
 
     // Mise à jour et affichage à chaque frame
