@@ -11,7 +11,7 @@ private:
     float m_frictionCoefficient;
 
 public:
-    ParticleFriction( const float& frictionCoefficient, const Vector3& gravity = Vector3( 0, 9.81, 0 ) );
+    ParticleFriction( const float& frictionCoefficient, const Vector3& gravity = Vector3( 0, -9.81, 0 ) );
 
     virtual void updateForce( std::shared_ptr<Particle> particle, float duration ) override;
 

@@ -42,13 +42,14 @@ void Particle::update( const float& secondsElapsedSincePreviousUpdate)
     // Accélération
     m_acceleration = m_accumForce / getMass();
 
+    // Section à mettre dans accumForce ? 
     /*
     if (Engine::getRealisticAirResistance()) // Si on applique un modèle réaliste, alors principe fondamental de la dynamique + formule force de trainée
     {
         float frontalSurface = PI * pow(m_radius, 2); // surface frontale d'une sphère
         float normeForceTrainee = constTrainee * frontalSurface * pow(m_velocity.norm(), 2); // air immobile donc la vitesse relative par rapport à la masse d'air est juste la vitesse de la particule
         
-        Vector forceTrainee = Vector({ 0.0, 0.0, 0.0 });
+        Vector3 forceTrainee = Vector3({ 0.0, 0.0, 0.0 });
         if (m_velocity.norm() != 0)
         {
             forceTrainee = m_velocity * (1 / m_velocity.norm()) * normeForceTrainee * -1; // on multiplie par le vecteur vélocité normalisé et on prend le sens inverse
@@ -59,13 +60,13 @@ void Particle::update( const float& secondsElapsedSincePreviousUpdate)
 
         if ((forceTrainee * m_massReverse * secondsElapsedSincePreviousUpdate).norm() >= m_velocity.norm()) // bug qui reste de déclencher des glitch, particule qui part dans la mauvaise direction ou se téléporte à cause d'une trop grande force de trainée
         {
-            m_velocity = Vector({ 0.0, 0.0, 0.0 });
+            m_velocity = Vector3({ 0.0, 0.0, 0.0 });
             m_velocity += Engine::getGravity() * secondsElapsedSincePreviousUpdate;
         }
         else // si tout va bien 
         {
             // On fait le bilan des forces avec l'acceleration terrestre qui est là dans tous les cas
-            Vector acceleration = (forceTrainee * m_massReverse) + Engine::getGravity();  
+            Vector3 acceleration = (forceTrainee * m_massReverse) + Engine::getGravity();  
 
             // update velocity
             m_velocity += acceleration * secondsElapsedSincePreviousUpdate;
@@ -80,7 +81,7 @@ void Particle::update( const float& secondsElapsedSincePreviousUpdate)
     
 
     // Vélocité
-    m_velocity = m_velocity * pow(Engine::getInstance()->getDamping(), deltaTime) + m_acceleration * deltaTime;
+    m_velocity = m_velocity * pow(Engine::getInstance()->getDamping(), secondsElapsedSincePreviousUpdate) + m_acceleration * secondsElapsedSincePreviousUpdate;
 
 
     
@@ -119,7 +120,7 @@ void Particle::draw() const
     // 
     // transformations successives du référentiel mécanique pour le placer dans le référentiel graphique
     bool isConversionFromMecamicToGraphic = true;
-    Vector positionGraphique = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(m_position, isConversionFromMecamicToGraphic);
+    Vector3 positionGraphique = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(m_position, isConversionFromMecamicToGraphic);
 
     float scaleReferential = Engine::getInstance()->getReferential().getScale();
 
@@ -130,6 +131,6 @@ void Particle::draw() const
     {
         // calcul de la vitesse en m/s pour affichage en temps réel;
         float vitesseParticule = m_velocity.norm();
-        ofDrawBitmapString(ofToString(vitesseParticule) + " m/s\n" + ofToString(1 / m_massReverse) + " kg", (positionGraphique + Vector({0.0, - 20 - m_radius / scaleReferential, 0.0})).v3());
+        ofDrawBitmapString(ofToString(vitesseParticule) + " m/s\n" + ofToString(1 / m_massReverse) + " kg", (positionGraphique + Vector3({0.0, - 20 - m_radius / scaleReferential, 0.0})).v3());
     }
 }

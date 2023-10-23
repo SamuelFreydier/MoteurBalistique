@@ -8,10 +8,10 @@ void Referential::drawReferential() const
 	ofSetLineWidth(1);
 
 	// dessiner axe des abscisses et des ordonnées (fleches)
-	const Vector pointDebutAbscisse = Vector({ 0, pointOrigine.getY(), 0 });
-	const Vector pointFinAbscisse = Vector({ (float)ofGetScreenWidth() - 10, pointOrigine.getY(), 0 });
-	const Vector pointDebutOrdonnees = Vector({ pointOrigine.getX(), (float)ofGetScreenHeight(), 0 });
-	const Vector pointFinOrdonnees = Vector({ pointOrigine.getX(), 10, 0 });
+	const Vector3 pointDebutAbscisse = Vector3({ 0, pointOrigine.getY(), 0 });
+	const Vector3 pointFinAbscisse = Vector3({ (float)ofGetScreenWidth() - 10, pointOrigine.getY(), 0 });
+	const Vector3 pointDebutOrdonnees = Vector3({ pointOrigine.getX(), (float)ofGetScreenHeight(), 0 });
+	const Vector3 pointFinOrdonnees = Vector3({ pointOrigine.getX(), 10, 0 });
 
 
 	int taillePointeFleche = 5;
@@ -79,8 +79,8 @@ void Referential::drawReferential() const
 
 void Referential::resizeScale(const ofMouseEventArgs& mouse)
 {
-	const Vector mouseXY = Vector({ mouse.x, mouse.y, 0.0 });
-	const Vector deltaMouseOrigine = mouseXY - pointOrigine;
+	const Vector3 mouseXY = Vector3({ mouse.x, mouse.y, 0.0 });
+	const Vector3 deltaMouseOrigine = mouseXY - pointOrigine;
 
 	float puissanceScroll = 20;
 	if (abs(mouse.scrollY) < puissanceScroll)
@@ -93,24 +93,24 @@ void Referential::resizeScale(const ofMouseEventArgs& mouse)
 }
 
 
-void Referential::dragOrigin(const std::vector<float>& mouseXY, const Vector& startDragPosition, const Vector& startDragOriginPosition)
+void Referential::dragOrigin(const std::vector<float>& mouseXY, const Vector3& startDragPosition, const Vector3& startDragOriginPosition)
 {
-	const Vector mouse_2D_Position = Vector(mouseXY);
-	const Vector deltaDragPosition = mouse_2D_Position - startDragPosition;
+	const Vector3 mouse_2D_Position = Vector3({ mouseXY[0], mouseXY[1], 0.0 });
+	const Vector3 deltaDragPosition = mouse_2D_Position - startDragPosition;
 		
 	pointOrigine = startDragOriginPosition + deltaDragPosition;
 }
 
 
 
-const Vector Referential::conversionPositionMecaniqueGraphique(const Vector& monVecteur, const bool& trueMecanique_falseGraphique) const
+const Vector3 Referential::conversionPositionMecaniqueGraphique(const Vector3& monVecteur, const bool& trueMecanique_falseGraphique) const
 {
-	Vector vecteurEntree = monVecteur;
-	Vector vecteurSortie;
+	Vector3 vecteurEntree = monVecteur;
+	Vector3 vecteurSortie;
 
 	if (trueMecanique_falseGraphique) // transformations successives du référentiel mécanique pour le placer dans le référentiel graphique
 	{		
-		Vector sortieGraphique = Vector({ monVecteur.getX(), -monVecteur.getY(), 0.0 }); // on inverse axe Y
+		Vector3 sortieGraphique = Vector3({ monVecteur.getX(), -monVecteur.getY(), 0.0 }); // on inverse axe Y
 		sortieGraphique *= 1 / scale; // on met à l'échelle du référentiel graphique
 		sortieGraphique += pointOrigine; // on translate de sorte à se superposer à l'origine graphique du référentiel
 		
@@ -118,9 +118,9 @@ const Vector Referential::conversionPositionMecaniqueGraphique(const Vector& mon
 	}
 	else // transformations successives du référentiel graphique pour le placer dans le référentiel mécanique
 	{
-		Vector sortieMecanique = monVecteur - pointOrigine; // on translate de sorte à se superposer à l'origine de l'écran
+		Vector3 sortieMecanique = monVecteur - pointOrigine; // on translate de sorte à se superposer à l'origine de l'écran
 		sortieMecanique *= scale; // on met à l'échelle du référentiel mécanique
-		sortieMecanique = Vector({ sortieMecanique.getX(), -sortieMecanique.getY(), 0.0 }); // on inverse axe Y
+		sortieMecanique = Vector3({ sortieMecanique.getX(), -sortieMecanique.getY(), 0.0 }); // on inverse axe Y
 
 		vecteurSortie = sortieMecanique;
 	}
@@ -129,22 +129,22 @@ const Vector Referential::conversionPositionMecaniqueGraphique(const Vector& mon
 }
 
 
-const Vector Referential::conversionVelocityMecaniqueGraphique(const Vector& monVecteur, const bool& trueMecanique_falseGraphique) const
+const Vector3 Referential::conversionVelocityMecaniqueGraphique(const Vector3& monVecteur, const bool& trueMecanique_falseGraphique) const
 {
-	Vector vecteurEntree = monVecteur;
-	Vector vecteurSortie;
+	Vector3 vecteurEntree = monVecteur;
+	Vector3 vecteurSortie;
 
 	if (trueMecanique_falseGraphique) // transformations successives du référentiel mécanique pour le placer dans le référentiel graphique
 	{
-		Vector sortieGraphique = Vector({ monVecteur.getX(), -monVecteur.getY(), 0.0 }); // on inverse axe Y
+		Vector3 sortieGraphique = Vector3({ monVecteur.getX(), -monVecteur.getY(), 0.0 }); // on inverse axe Y
 		sortieGraphique *= 1 / scale; // on met à l'échelle du référentiel graphique
 
 		vecteurSortie = sortieGraphique;
 	}
 	else // transformations successives du référentiel graphique pour le placer dans le référentiel mécanique
 	{
-		Vector sortieMecanique = monVecteur * scale; // on met à l'échelle du référentiel mécanique
-		sortieMecanique = Vector({ sortieMecanique.getX(), -sortieMecanique.getY(), 0.0 }); // on inverse axe Y
+		Vector3 sortieMecanique = monVecteur * scale; // on met à l'échelle du référentiel mécanique
+		sortieMecanique = Vector3({ sortieMecanique.getX(), -sortieMecanique.getY(), 0.0 }); // on inverse axe Y
 
 		vecteurSortie = sortieMecanique;
 	}

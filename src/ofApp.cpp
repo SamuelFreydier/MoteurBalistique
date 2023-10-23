@@ -109,7 +109,7 @@ void ofApp::mouseDragged( int x, int y, int button )
         }
         else // si le draggerParticleLauncher n'est pas encore actif, alors on en créée un nouveau et on fait rien de plus
         {
-            draggerParticleLauncher = MouseDragger(Vector({ (float)x, (float)y, 0.0 }), m_radiusSlider);
+            draggerParticleLauncher = MouseDragger(Vector3({ (float)x, (float)y, 0.0 }), m_radiusSlider);
         }
     }
     else if (button == 1)
@@ -124,7 +124,7 @@ void ofApp::mouseDragged( int x, int y, int button )
         }
         else // si le dragOrigin n'est pas encore actif, alors on en créée un nouveau et on fait rien de plus
         {
-            draggerReferentialOrigin = MouseDragger(Vector({ (float)x, (float)y, 0.0 }), Engine::getInstance()->getReferential().getPointOrigine());
+            draggerReferentialOrigin = MouseDragger(Vector3({ (float)x, (float)y, 0.0 }), Engine::getInstance()->getReferential().getPointOrigine());
         }
     }
 }
@@ -174,7 +174,7 @@ void ofApp::mouseReleased( int x, int y, int button )
                 Vector3 mecanicStartVelocity = Vector3({ 0.0, 0.0, 0.0 });
                 if (draggerParticleLauncher.isDraggingBig()) // si le dragging est assez grand, alors on met une vélocité initiale non nulle
                 {
-                    Vector3 graphicStartVelocity = Vector3(draggerParticleLauncher.getStartMousePosition() - Vector33({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 }));
+                    Vector3 graphicStartVelocity = Vector3(draggerParticleLauncher.getStartMousePosition() - Vector3({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 }));
                     mecanicStartVelocity = Engine::getInstance()->getReferential().conversionVelocityMecaniqueGraphique(graphicStartVelocity, false);
                 }
                 Vector3 mecanicStartPosition = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(draggerParticleLauncher.getStartMousePosition(), false);

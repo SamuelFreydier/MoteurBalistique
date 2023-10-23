@@ -8,13 +8,13 @@ MouseDragger::MouseDragger()
 
 
 
-MouseDragger::MouseDragger(const Vector& newStartMousePosition, const Vector& newStartThingPosition)
+MouseDragger::MouseDragger(const Vector3& newStartMousePosition, const Vector3& newStartThingPosition)
 	: isCurrentlyDragging(true), startMousePosition(newStartMousePosition), startThingPosition(newStartThingPosition)
 {
 
 }
 
-MouseDragger::MouseDragger(const Vector& newStartMousePosition, const float& newParticleRadius)
+MouseDragger::MouseDragger(const Vector3& newStartMousePosition, const float& newParticleRadius)
 	: isCurrentlyDragging(true), startMousePosition(newStartMousePosition), particleRadius(newParticleRadius)
 {
 
@@ -24,7 +24,7 @@ MouseDragger::MouseDragger(const Vector& newStartMousePosition, const float& new
 void MouseDragger::drawDragger() const
 {
 	std::cout << isDraggingBig() << "\n";
-	Vector currentMousePosition = Vector({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 });
+	Vector3 currentMousePosition = Vector3({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 });
 	float normeDeltaDragPosition = (currentMousePosition - startMousePosition).norm();
 
 	float coefSize = normeDeltaDragPosition / 15;
@@ -52,7 +52,7 @@ void MouseDragger::drawDragger() const
 	}
 
 	ofSetColor(255, (1 - adjustedValue) * 255, adjustedValue * 255);
-	ofDrawBitmapString(ofToString(normeDeltaDragPosition * referentialScale) + " m/s\n" + ofToString(particleMass) + " kg", (currentMousePosition + Vector({ 20.0, 20.0, 0.0 })).v3());
+	ofDrawBitmapString(ofToString(normeDeltaDragPosition * referentialScale) + " m/s\n" + ofToString(particleMass) + " kg", (currentMousePosition + Vector3({ 20.0, 20.0, 0.0 })).v3());
 }
 
 
@@ -69,7 +69,7 @@ void MouseDragger::changeParticleMass(const ofMouseEventArgs& mouse)
 
 const bool MouseDragger::isDraggingBig() const
 {
-	Vector currentMousePosition = Vector({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 });
+	Vector3 currentMousePosition = Vector3({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 });
 	float normeDeltaDragPosition = (currentMousePosition - startMousePosition).norm();
 	float referentialScale = Engine::getInstance()->getReferential().getScale();
 

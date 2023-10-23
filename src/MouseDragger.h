@@ -7,22 +7,22 @@ class MouseDragger
 {
 	private:
 		bool isCurrentlyDragging;
-		Vector startMousePosition;
-		Vector startThingPosition;
+		Vector3 startMousePosition;
+		Vector3 startThingPosition;
 
 		float particleMass = 5;
 		float particleRadius = 5;
 
 	public:
 		MouseDragger();
-		MouseDragger(const Vector& newStartMousePosition, const Vector& newStartThingPosition = Vector());
-		MouseDragger(const Vector& newStartMousePosition, const float& newParticleRadius = 5);
+		MouseDragger(const Vector3& newStartMousePosition, const Vector3& newStartThingPosition = Vector3());
+		MouseDragger(const Vector3& newStartMousePosition, const float& newParticleRadius = 5);
 		void draggingIsOver() { isCurrentlyDragging = false; };
 		void drawDragger() const;
 
 		const bool isDragging() const { return isCurrentlyDragging; };
-		const Vector getStartMousePosition() const { return startMousePosition; };
-		const Vector getStartThingPosition() const { return startThingPosition; };
+		const Vector3 getStartMousePosition() const { return startMousePosition; };
+		const Vector3 getStartThingPosition() const { return startThingPosition; };
 		const float& getParticleMass() const { return particleMass; };
 		const float& getParticleRadius() const { return particleRadius; };
 

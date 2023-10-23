@@ -10,7 +10,7 @@ private:
     Vector3 m_gravity;
 
 public:
-    ParticleGravity( const Vector3& gravity = Vector3( { 0, 9.81, 0 } ) );
+    ParticleGravity( const Vector3& gravity = Vector3( { 0, -9.81, 0 } ) );
 
     virtual void updateForce( std::shared_ptr<Particle> particle, float duration ) override;
 

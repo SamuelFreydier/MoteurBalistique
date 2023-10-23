@@ -2,7 +2,7 @@
 #include "Engine.h"
 
 Fireball::Fireball( const float& mass, const float& radius, const Vector3& velocity, const Vector3& position, const Vector3& color, const bool& showParticleInfos, const int& colorShift )
-    : Particle( mass, radius, velocity, position, color, color, showParticleInfos), m_colorShift( colorShift )
+    : Particle( mass, radius, velocity, position, color, showParticleInfos), m_colorShift( colorShift )
 {
 
 }
