@@ -42,6 +42,7 @@ void Particle::update( const float& secondsElapsedSincePreviousUpdate)
     // Accélération
     m_acceleration = m_accumForce / getMass();
 
+    // Section à mettre dans accumForce ? 
     /*
     if (Engine::getRealisticAirResistance()) // Si on applique un modèle réaliste, alors principe fondamental de la dynamique + formule force de trainée
     {
