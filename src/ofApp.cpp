@@ -38,7 +38,7 @@ void ofApp::setup()
 void ofApp::update()
 {
     // Mise à jour des forces configurées
-    Engine::getInstance()->setGravity( Vector( { 0.0, -m_gravitySlider, 0.0 } ) );
+    Engine::getInstance()->setGravity( Vector3( { 0.0, -m_gravitySlider, 0.0 } ) );
     Engine::getInstance()->setDamping( m_dampingSlider );
     Engine::getInstance()->setRealisticAirResistance(m_realisticAirLossToggle);
     Engine::getInstance()->setColorShift( m_colorShiftSlider );
@@ -54,10 +54,10 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-    // Dessiner le référentiel cartésien
+    // Dessiner le référentiel graphique
     Engine::getInstance()->getReferential().drawReferential();
 
-    // Mise à jour graphique
+    // Dessiner les différentes particules
     Engine::getInstance()->drawParticles();
 
     // Affichage score si maintien du clic molette
@@ -171,14 +171,14 @@ void ofApp::mouseReleased( int x, int y, int button )
             if (draggerParticleLauncher.isDragging()) // si draggerParticleLauncher est actif, alors on lance une particule puis on désactive
             {
                 // on lance la particule avec la position et la vélocité déterminée
-                Vector mecanicStartVelocity = Vector({ 0.0, 0.0, 0.0 });
+                Vector3 mecanicStartVelocity = Vector3({ 0.0, 0.0, 0.0 });
                 if (draggerParticleLauncher.isDraggingBig()) // si le dragging est assez grand, alors on met une vélocité initiale non nulle
                 {
-                    Vector graphicStartVelocity = Vector(draggerParticleLauncher.getStartMousePosition() - Vector({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 }));
+                    Vector3 graphicStartVelocity = Vector3(draggerParticleLauncher.getStartMousePosition() - Vector33({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 }));
                     mecanicStartVelocity = Engine::getInstance()->getReferential().conversionVelocityMecaniqueGraphique(graphicStartVelocity, false);
                 }
-                Vector mecanicStartPosition = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(draggerParticleLauncher.getStartMousePosition(), false);
-                Engine::getInstance()->shootParticle(mecanicStartPosition, mecanicStartVelocity, draggerParticleLauncher.getParticleMass(), draggerParticleLauncher.getParticleRadius(), Vector({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), m_isFireballToggle, m_showParticleInfosToggle);
+                Vector3 mecanicStartPosition = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(draggerParticleLauncher.getStartMousePosition(), false);
+                Engine::getInstance()->shootParticle(mecanicStartPosition, mecanicStartVelocity, draggerParticleLauncher.getParticleMass(), draggerParticleLauncher.getParticleRadius(), Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), m_isFireballToggle, m_showParticleInfosToggle);
 
                 //std::cout << draggerParticleLauncher.isDraggingBig() << "\n";
                 draggerParticleLauncher.draggingIsOver();
@@ -186,8 +186,8 @@ void ofApp::mouseReleased( int x, int y, int button )
             else // si on relâche un clic gauche sans que draggerParticleLauncher ne se soit activé, alors ça veut dire que c'était un clic simple (pas de drag)
             {
                 // On retrouve le clic souris dans le repère mécanique
-                Vector clicSourisGraphique = Vector({ (float)x, (float)y, 0.0 });
-                Vector clicSourisMecanique = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(clicSourisGraphique, false);
+                Vector3 clicSourisGraphique = Vector3({ (float)x, (float)y, 0.0 });
+                Vector3 clicSourisMecanique = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(clicSourisGraphique, false);
 
                 // on determine l'angle de lancer (cliquer en (1,0) mécanique = 0° et (0,1) = 90° car cercle trigo)
                 float shootingAngle = atan2(clicSourisMecanique.getY(), clicSourisMecanique.getX());
@@ -195,8 +195,8 @@ void ofApp::mouseReleased( int x, int y, int button )
                 std::cout << "Shooting Angle : " << shootingAngle << " / Impulse : " << m_impulseSlider << std::endl;
 
                 // on lance la particule avec l'angle et l'impulsion détermines
-                const Vector initialVelocity = Vector({ m_impulseSlider * cos(shootingAngle), m_impulseSlider * sin(shootingAngle), 0.0 });
-                Engine::getInstance()->shootParticle(Vector({ 0.0, m_radiusSlider, 0.0 }), initialVelocity, m_massSlider, m_radiusSlider, Vector({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), m_isFireballToggle, m_showParticleInfosToggle);
+                const Vector3 initialVelocity = Vector3({ m_impulseSlider * cos(shootingAngle), m_impulseSlider * sin(shootingAngle), 0.0 });
+                Engine::getInstance()->shootParticle(Vector3({ 0.0, m_radiusSlider, 0.0 }), initialVelocity, m_massSlider, m_radiusSlider, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), m_isFireballToggle, m_showParticleInfosToggle);
             }
         }
     }

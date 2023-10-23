@@ -1,24 +1,48 @@
 #include "Particle.h"
 #include "Engine.h"
 
-Particle::Particle( const float& mass, const float& radius, const Vector& velocity, const Vector& acceleration, const Vector& position, const Vector& color, const bool& showParticleInfos )
-    : m_massReverse( 1 / mass ), m_radius( radius ), m_velocity( velocity ), m_acceleration( acceleration ), m_position( position ), m_color( color ), m_showParticleInfos(showParticleInfos)
+Particle::Particle( const float& mass, const float& radius, const Vector3& velocity, const Vector3& position, const Vector3& color, const bool& showParticleInfos)
+    : m_massReverse( 1 / mass ), m_radius( radius ), m_velocity( velocity ), m_position( position ), m_color( color ), m_showParticleInfos(showParticleInfos)
 {
 
 }
 
 Particle::Particle( const Particle& particle )
-    : Particle(particle.getMass(), particle.getRadius(), particle.getVelocity(), particle.getAcceleration(), particle.getPosition(), particle.getColor(), particle.getShowParticleInfos())
+    : Particle(particle.getMass(), particle.getRadius(), particle.getVelocity(), particle.getPosition(), particle.getColor(), particle.getShowParticleInfos())
 {
-
+    m_acceleration = particle.m_acceleration;
+    m_accumForce = particle.m_accumForce;
 }
 
 /**
+ * @brief Ajoute la force forceVector au vecteur d'accumulation m_accumForce
+ * @param forceVector 
+*/
+void Particle::addForce( const Vector3& forceVector )
+{
+    m_accumForce += forceVector;
+}
+
+/**
+ * @brief Nettoie le vecteur d'accumulation m_accumForce (=> vecteur nul)
+*/
+void Particle::clearAccum()
+{
+    m_accumForce.clear();
+}
+
+
+/**
  * @brief Calcul de la nouvelle vélocité et de la nouvelle position à partir de l'accélération via l'intégration d'Euler + Modification de la taille.
- * @param deltaTime 
+ * @param deltaTime
 */
 void Particle::update( const float& secondsElapsedSincePreviousUpdate)
 {
+
+    // Accélération
+    m_acceleration = m_accumForce / getMass();
+
+    /*
     if (Engine::getRealisticAirResistance()) // Si on applique un modèle réaliste, alors principe fondamental de la dynamique + formule force de trainée
     {
         float frontalSurface = PI * pow(m_radius, 2); // surface frontale d'une sphère
@@ -52,13 +76,22 @@ void Particle::update( const float& secondsElapsedSincePreviousUpdate)
         m_velocity *= pow(Engine::getInstance()->getDamping(), secondsElapsedSincePreviousUpdate); // application frottements de l'air pas réalistes
         m_velocity += Engine::getGravity() * secondsElapsedSincePreviousUpdate; // l'acceleration terrestre qui est là dans tous les cas
     }
+    */
     
 
+    // Vélocité
+    m_velocity = m_velocity * pow(Engine::getInstance()->getDamping(), deltaTime) + m_acceleration * deltaTime;
+
+
+    
     // Position
     m_position += m_velocity * secondsElapsedSincePreviousUpdate;
 
     // Taille
     m_radius *= m_sizeModificator;
+
+    // Nettoyage du vecteur d'accumulation de forces
+    clearAccum();
 }
 
 

@@ -1,6 +1,8 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+#include "ParticleForceGenerators/ParticleForceRegistry.h"
+#include "ParticleForceGenerators/ParticleGravity.h"
 #include "Fireball.h"
 #include "Referential.h"
 
@@ -17,13 +19,14 @@ class Engine
         static Referential s_referential;
 
         std::list<ParticlePtr> m_particles;
-        // Particules qui ne font rien de spécial (pas de réaction au clic) => typiquement les trainées des boules de feu
-        std::list<ParticlePtr> m_vanillaParticles;
     
-        // Gravité
-        static Vector s_gravity;
+        // Registre (associations particule / générateur de force) => Gère gravité/frottements/ressorts
+        ParticleForceRegistry m_particleForceRegistry;
 
-        // Frottement pas réaliste
+        // Gravité mise à jour selon les paramètres utilisateur
+        Vector3 m_gravity;
+
+        // Frottements pas réaliste
         static float s_damping;
 
         // Frottement air réaliste
@@ -50,12 +53,8 @@ class Engine
         void addParticle( ParticlePtr particle ) { m_particles.push_back( particle ); }
         void deleteParticle( ParticlePtr particle ) { m_particles.remove( particle ); }
 
-        const std::list<ParticlePtr>& getVanillaParticles() const { return m_vanillaParticles; }
-        void addVanillaParticle( ParticlePtr particle ) { m_vanillaParticles.push_back( particle ); }
-        void deleteVanillaParticle( ParticlePtr particle ) { m_vanillaParticles.remove( particle ); }
-    
-        static const Vector& getGravity() { return s_gravity; }
-        static void setGravity( const Vector& gravity ) { s_gravity = gravity; }
+    const Vector3& getGravity() const { return m_gravity; }
+    void setGravity( const Vector3& gravity ) { m_gravity = gravity; }
 
         static const float& getDamping() { return s_damping; }
         static void setDamping( const float& damping ) { s_damping = damping; }
@@ -66,18 +65,17 @@ class Engine
         static const int& getColorShift() { return s_colorShift; }
         static void setColorShift( const int& colorShift ) { s_colorShift = colorShift; }
 
-        //static const int& getMouseButtonPressed() { return s_mouseButtonPressed; }
-        //static void setMouseButtonPressed(const int& valeurPlusOuMoins) { s_mouseButtonPressed += valeurPlusOuMoins; }
-
         static float randshiftColorChannel( const float& colorChannel, const int& shiftAmount );
-        static Vector randshiftColor( const Vector& color, const int& shiftAmount );
+        static Vector3 randshiftColor( const Vector3& color, const int& shiftAmount );
 
         // Tire une nouvelle particule depuis une position et avec un certain angle et une certaine force
-        void shootParticle( const Vector& initialPos, const Vector& initialVelocity, const float& mass = 1.0, const float& radius = 1.0, const Vector& color = Vector( { 255, 0, 0 } ), bool isFireball = false, bool m_showParticleInfos = false);
+        void shootParticle( const Vector3& initialPos, const Vector3& initialVelocity, const float& mass = 1.0, const float& radius = 1.0, const Vector3& color = Vector3( { 255, 0, 0 } ), bool isFireball = false, bool m_showParticleInfos = false);
    
         // Mise à jour PHYSIQUE des particules
         void update( const float& deltaTime );
-        void updateParticleList( std::list<ParticlePtr>& particleList, const float& deltaTime );
+
+        // Nettoyage des particules non visibles
+        void cleanup();
 
         // Mise à jour GRAPHIQUE des particules
         void drawParticles() const;

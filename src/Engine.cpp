@@ -1,11 +1,11 @@
 #include "Engine.h"
 
 Engine* Engine::s_engine = nullptr;
-Vector Engine::s_gravity( { 0.0, - 9.81f, 0.0 } );
 float Engine::s_damping = 0.94;
 bool Engine::s_realisticAirResistance = false;
 int Engine::s_colorShift = 0;
 Referential Engine::s_referential = Referential();
+
 
 /**
  * @brief Récupération de l'instance du Singleton
@@ -32,18 +32,18 @@ Engine* Engine::getInstance()
  * @param color 
  * @param isFireball 
 */
-void Engine::shootParticle(const Vector& initialPos, const Vector& initialVelocity , const float& mass, const float& radius, const Vector& color, bool isFireball, bool m_showParticleInfos)
+void Engine::shootParticle(const Vector3& initialPos, const Vector3& initialVelocity , const float& mass, const float& radius, const Vector3& color, bool isFireball, bool m_showParticleInfos)
 {
     // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
     // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps
     ParticlePtr newParticle = nullptr;
     if( isFireball == true )
     {
-        newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, s_gravity, initialPos, color, m_showParticleInfos, s_colorShift );
+        newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos, s_colorShift );
     }
     else
     {
-        newParticle = std::make_shared<Particle>( mass, radius, initialVelocity, s_gravity, initialPos, color, m_showParticleInfos);
+        newParticle = std::make_shared<Particle>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos);
     }
 
     m_particles.push_back( newParticle );
@@ -55,27 +55,43 @@ void Engine::shootParticle(const Vector& initialPos, const Vector& initialVeloci
 */
 void Engine::update( const float& deltaTime )
 {
-    updateParticleList( m_particles, deltaTime );
-    updateParticleList( m_vanillaParticles, deltaTime );
+    // Ajout des forces au registre
+    for( ParticlePtr& particle : m_particles )
+    {
+        // Gravité
+        m_particleForceRegistry.add( particle, std::make_shared<ParticleGravity>( m_gravity ) );
+    }
+
+    // Mise à jour des forces
+    m_particleForceRegistry.updateForces( deltaTime );
+
+    // Nettoyage du registre
+    m_particleForceRegistry.clear();
+
+    // Mise à jour physique de chaque particule
+    for( ParticlePtr& particle : m_particles )
+    {
+        particle->update( deltaTime );
+    }
+
+    // Nettoyage des particules inutiles
+    cleanup();
 }
 
 
 /**
- * @brief Mise à jour de la physique des particules D'UNE LISTE PRECISE
- * @param particleList 
- * @param deltaTime 
+ * @brief Supprime les particules sorties de l'écran ou trop petites
 */
-void Engine::updateParticleList( std::list<ParticlePtr>& particleList, const float& deltaTime )
+void Engine::cleanup()
 {
-    std::list<ParticlePtr>::iterator particleIterator = particleList.begin();
+    std::list<ParticlePtr>::iterator particleIterator = m_particles.begin();
 
-    while( particleIterator != particleList.end() )
+    while( particleIterator != m_particles.end() )
     {
-        ( *particleIterator )->update( deltaTime );
         // on supprime les particules qui sont sorties par le bas et celles qui sont devenues trop petites (trainées de cendres)
         if( ( ( *particleIterator )->getPosition().getY() - (*particleIterator)->getRadius() < 0 )
             || ( *particleIterator )->getRadius() < 0.009 ) {
-            particleIterator = particleList.erase( particleIterator );
+            particleIterator = m_particles.erase( particleIterator );
         }
         else
         {
@@ -93,11 +109,6 @@ void Engine::drawParticles() const
     for( const ParticlePtr& currParticle : m_particles )
     {
         currParticle->draw();
-    }
-
-    for( const ParticlePtr& currVanillaParticle : m_vanillaParticles )
-    {
-        currVanillaParticle->draw();
     }
 }
 
@@ -125,14 +136,13 @@ float Engine::randshiftColorChannel( const float& colorChannel, const int& shift
  * @param shiftAmount 
  * @return 
 */
-Vector Engine::randshiftColor( const Vector& color, const int& shiftAmount )
+Vector3 Engine::randshiftColor( const Vector3& color, const int& shiftAmount )
 {
-    Vector newColor( color );
+    Vector3 newColor( color );
 
-    for( int channelIdx = 0; channelIdx < newColor.getDimension(); channelIdx++ )
-    {
-        newColor[ channelIdx ] = randshiftColorChannel( newColor[ channelIdx ], shiftAmount );
-    }
+    newColor.x = randshiftColorChannel( newColor.getX(), shiftAmount );
+    newColor.y = randshiftColorChannel( newColor.getY(), shiftAmount );
+    newColor.z = randshiftColorChannel( newColor.getZ(), shiftAmount );
 
     return newColor;
 }
@@ -150,8 +160,8 @@ bool Engine::clickedParticle( const float& x, const float& y )
 
 
     const bool conversionIsFromGraphicToMecanic = false;
-    const Vector clicGraphique = Vector({ x, y, 0.0 });
-    const Vector clicMecanique = s_referential.conversionPositionMecaniqueGraphique(clicGraphique, conversionIsFromGraphicToMecanic);
+    const Vector3 clicGraphique = Vector3({ x, y, 0.0 });
+    const Vector3 clicMecanique = s_referential.conversionPositionMecaniqueGraphique(clicGraphique, conversionIsFromGraphicToMecanic);
 
     const float clicMecaniqueX = clicMecanique.getX();
     const float clicMecaniqueY = clicMecanique.getY();
@@ -170,7 +180,7 @@ bool Engine::clickedParticle( const float& x, const float& y )
             clicked = true;
             ( *particleIterator )->clicked();
         }
-        if( ( *particleIterator )->ToBeDestroyed() )
+        if( ( *particleIterator )->toBeDestroyed() )
         {
             particleIterator = m_particles.erase( particleIterator );
         }
@@ -189,6 +199,6 @@ void Engine::showScore(const bool& boolShowScore) const
     if (boolShowScore)
     {
         ofSetColor(255, 100, 100);
-        ofDrawBitmapString("Score : " + ofToString(score), (Vector({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 })).v3());
+        ofDrawBitmapString("Score : " + ofToString(score), (Vector3({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 })).v3());
     }
 }

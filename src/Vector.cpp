@@ -1,25 +1,36 @@
 #include "Vector.h"
 #include <math.h>
 
-// constructeurs
-Vector::Vector( const std::vector<float>& coordinates )
-    : m_dimension( coordinates.size() )
+/**
+ * @brief Constructeur avec coordonnées
+ * @param x 
+ * @param y 
+ * @param z 
+*/
+Vector3::Vector3( const float& newX, const float& newY, const float& newZ )
+    : x( newX ), y( newY ), z( newZ )
 {
-    m_coordinates.reserve( m_dimension );
-    for( const float& coordinate : coordinates )
-    {
-        m_coordinates.emplace_back( coordinate );
-    }
 }
 
-Vector::Vector( const int& dimension )
-    : m_dimension( dimension )
+
+/**
+ * @brief Constructeur par copie
+ * @param vector 
+*/
+Vector3::Vector3( const Vector3& vector )
+    : Vector3( vector.x, vector.y, vector.z )
 {
-    m_coordinates.reserve( m_dimension );
-    for( int cptDim = 0; cptDim < m_dimension; cptDim++ )
-    {
-        m_coordinates.emplace_back( 0.0 );
-    }
+}
+
+
+/**
+* @brief produit par un scalaire
+* @param float
+* @return
+*/
+Vector3 Vector3::operator*( const float& value ) const
+{
+    return Vector3( x * value, y * value, z * value );
 }
 
 /**
@@ -27,26 +38,32 @@ Vector::Vector( const int& dimension )
 * @param float
 * @return
 */
-Vector Vector::operator*( const float& value ) const
-{
-    Vector newVector( m_dimension );
-
-    for( int coordId = 0; coordId < m_dimension; coordId++ )
-    {
-        newVector[ coordId ] = m_coordinates[ coordId ] * value;
-    }
-
-    return newVector;
-}
-
-/**
-* @brief produit par un scalaire
-* @param float
-* @return
-*/
-Vector& Vector::operator*=( const float& value )
+Vector3& Vector3::operator*=( const float& value )
 {
     *this = *this * value;
+
+    return *this;
+}
+
+/**
+ * @brief Division par un scalaire
+ * @param value 
+ * @return 
+*/
+Vector3 Vector3::operator/( const float& value ) const
+{
+    return Vector3( x / value, y / value, z / value );
+}
+
+
+/**
+ * @brief Division par un scalaire
+ * @param value 
+ * @return 
+*/
+Vector3& Vector3::operator/=( const float& value )
+{
+    *this = *this / value;
 
     return *this;
 }
@@ -56,18 +73,11 @@ Vector& Vector::operator*=( const float& value )
  * @param vector
  * @return
 */
-Vector Vector::operator*( const Vector& vector ) const
+Vector3 Vector3::operator*( const Vector3& vector ) const
 {
-    Vector vctResult( 3 );
-
-    if( m_dimension >= 3 && vector.m_dimension >= 3 )
-    {
-        vctResult[ 0 ] = m_coordinates[ 1 ] * vector[ 2 ] - m_coordinates[ 2 ] * vector[ 1 ];
-        vctResult[ 1 ] = m_coordinates[ 2 ] * vector[ 0 ] - m_coordinates[ 0 ] * vector[ 2 ];
-        vctResult[ 2 ] = m_coordinates[ 0 ] * vector[ 1 ] - m_coordinates[ 1 ] * vector[ 0 ];
-    }
-
-    return vctResult;
+    return Vector3( y * vector.z - z * vector.y,
+                    z * vector.x - x * vector.z,
+                    x * vector.y - y * vector.x );
 }
 
 /**
@@ -75,16 +85,9 @@ Vector Vector::operator*( const Vector& vector ) const
  * @param vector
  * @return
 */
-float Vector::dotProduct( const Vector& vector ) const
+float Vector3::dotProduct( const Vector3& vector ) const
 {
-    float dotResult = 0.0;
-
-    for( int coordId = 0; coordId < m_dimension; coordId++ )
-    {
-        dotResult += m_coordinates[ coordId ] * vector[ coordId ];
-    }
-
-    return dotResult;
+    return x * vector.x + y * vector.y + z * vector.z;
 }
 
 /**
@@ -92,42 +95,35 @@ float Vector::dotProduct( const Vector& vector ) const
 * @param vector
 * @return
 */
-Vector Vector::operator+( const Vector& vector ) const
+Vector3 Vector3::operator+( const Vector3& vector ) const
 {
-    Vector newVector( m_dimension );
-
-    for( int coordId = 0; coordId < m_dimension; coordId++ )
-    {
-        newVector[ coordId ] = m_coordinates[ coordId ] + vector[ coordId ];
-    }
-
-    return newVector;
+    return Vector3( x + vector.x, y + vector.y, z + vector.z );
 }
 
-Vector Vector::operator-() const
+Vector3 Vector3::operator-() const
 {
     return *this * -1;
 }
 
-Vector Vector::operator-( const Vector& vector ) const
+Vector3 Vector3::operator-( const Vector3& vector ) const
 {
     return *this + ( -vector );
+}
+
+void Vector3::clear()
+{
+    x = y = z = 0;
 }
 
 /**
 * @brief calcul de la norme
 *
 */
-float Vector::norm() const
+float Vector3::norm() const
 {
-    float coordSum = 0.0;
-
-    for( int coordId = 0; coordId < m_dimension; coordId++ )
-    {
-        coordSum += m_coordinates[ coordId ] * m_coordinates[ coordId ];
-    }
-
-    return sqrt( coordSum );
+    return sqrt( x * x +
+                 y * y +
+                 z * z );
 }
 
 
@@ -135,53 +131,48 @@ float Vector::norm() const
  * @brief Renvoie le vecteur en version normalisée
  * @return 
 */
-Vector Vector::normalized() const
+Vector3 Vector3::normalized() const
 {
-    Vector vectNorm = Vector( *this );
+    Vector3 resultVector( *this );
+    float vectorNorm = norm();
 
-    float thisNorm = norm();
-
-    if( thisNorm != 0 )
+    if( vectorNorm > 0 )
     {
-        for( int i = 0; i < m_dimension; i++ )
-        {
-            vectNorm[ i ] /= thisNorm;
-        }
+        resultVector /= vectorNorm;
     }
 
-    return vectNorm;
+    return resultVector;
 }
 
 /**
-* @brief normalise le vecteur
+* @brief Normalisation du vecteur
 */
-void Vector::normalize()
+void Vector3::normalize()
 {
     // Réutilisation de code pour réduire la redondance malgré une légère perte de performance
     *this = normalized();
 }
 
 /**
-* @brief surchage de l'operateur egal
+* @brief Surcharge de l'operateur =
 * @param vector
 * @return
 */
-Vector& Vector::operator=( const Vector& vector )
+Vector3& Vector3::operator=( const Vector3& vector )
 {
-    for( int coordId = 0; coordId < m_dimension; coordId++ )
-    {
-        m_coordinates[ coordId ] = vector[ coordId ];
-    }
+    x = vector.x;
+    y = vector.y;
+    z = vector.z;
 
     return *this;
 }
 
 /**
-* @brief surchage de l'addition
+* @brief Surcharge de l'addition
 * @param vector
 * @return
 */
-Vector& Vector::operator+=( const Vector& vector )
+Vector3& Vector3::operator+=( const Vector3& vector )
 {
     *this = *this + vector;
 
@@ -189,26 +180,25 @@ Vector& Vector::operator+=( const Vector& vector )
 }
 
 /**
-* @brief Test d'egalite
+* @brief Test d'égalité
 * @param vector
 * @return
 */
-bool Vector::operator==( const Vector& vector ) const
+bool Vector3::operator==( const Vector3& vector ) const
 {
-    bool isEqual = true;
+    bool isEqual = false;
 
-    for( int coordId = 0; coordId < m_dimension && isEqual == true; coordId++ )
+    if( x == vector.x &&
+        y == vector.y &&
+        z == vector.z )
     {
-        if( m_coordinates[ coordId ] != vector[ coordId ] )
-        {
-            isEqual = false;
-        }
+        isEqual = true;
     }
 
     return isEqual;
 }
 
-bool Vector::operator!=( const Vector& vector ) const
+bool Vector3::operator!=( const Vector3& vector ) const
 {
     return !( *this == vector );
 }
@@ -218,17 +208,11 @@ bool Vector::operator!=( const Vector& vector ) const
  * @param vector 
  * @return 
 */
-float Vector::distance( const Vector& vector ) const
+float Vector3::distance( const Vector3& vector ) const
 {
-    float sum = 0;
-    float distance;
-
-    for( int coord = 0; coord < m_dimension; coord++ )
-    {
-        sum += pow( vector[ coord ] - m_coordinates[ coord ], 2 );
-    }
-
-    return sqrt( sum );
+    return sqrt( pow( vector.x - x, 2 ) +
+                 pow( vector.y - y, 2 ) +
+                 pow( vector.z - z, 2 ) );
 }
 
 
@@ -236,18 +220,7 @@ float Vector::distance( const Vector& vector ) const
  * @brief Affiche le vecteur dans le terminal
  * @param out 
 */
-void Vector::show( std::ostream& out ) const
+void Vector3::show( std::ostream& out ) const
 {
-    out << "(";
-
-    for( int cptCoord = 0; cptCoord < m_dimension; cptCoord++ )
-    {
-        out << m_coordinates[ cptCoord ];
-        if( cptCoord != m_dimension - 1 )
-        {
-            out << ", ";
-        }
-    }
-
-    out << ")" << std::endl;
+    out << "(" << x << ", " << y << ", " << z << ")" << '\n';
 }

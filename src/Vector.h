@@ -1,60 +1,59 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#define DEFAULT_VCT_DIMENSION 3
-
 #include <ofMain.h>
 
-class Vector
+// Un vecteur de dimension 3 => (x, y, z)
+class Vector3
 {
-private:
-    std::vector<float> m_coordinates;
-    int m_dimension;
 public:
-    Vector( const std::vector<float>& coordinates );
-    Vector( const int& dimension = DEFAULT_VCT_DIMENSION );
+    float x;
+    float y;
+    float z;
+public:
+    Vector3( const float& newX = 0, const float& newY = 0, const float& newZ = 0 );
+    Vector3( const Vector3& vector );
 
-    const int& getDimension() const { return m_dimension; }
-    const std::vector<float>& getCoordinates() const { return m_coordinates; }
-    const float& operator[]( const int& coordIndex ) const { return m_coordinates[ coordIndex ]; }
-    float& operator[]( const int& coordIndex ) { return m_coordinates[ coordIndex ]; }
+    // Getters (pour s'assurer dans certains cas de retourner une référence constante)
+    const float& getX() const { return x; }
+    const float& getY() const { return y; }
+    const float& getZ() const { return z; }
 
-    // getters
-    const float& getX() const { return m_coordinates[ 0 ]; }
-    const float& getY() const { return m_coordinates[ 1 ]; }
-    const float& getZ() const { return m_coordinates[ 2 ]; }
-    const float& getW() const { return m_coordinates[ 3 ]; }
-
-
-    // /!Attention!\ Peut planter si dimension trop basse
-    glm::vec1 v1() const { return glm::vec1( m_coordinates[ 0 ] ); }
-    glm::vec2 v2() const { return glm::vec2( m_coordinates[ 0 ], m_coordinates[ 1 ] ); }
-    glm::vec3 v3() const { return glm::vec3( m_coordinates[ 0 ], m_coordinates[ 1 ], m_coordinates[ 2 ] ); }
-    glm::vec4 v4() const { return glm::vec4( m_coordinates[ 0 ], m_coordinates[ 1 ], m_coordinates[ 2 ], m_coordinates[ 3 ] ); }
+    // Vecteurs graphiques
+    glm::vec1 v1() const { return glm::vec1( x ); }
+    glm::vec2 v2() const { return glm::vec2( x, y ); }
+    glm::vec3 v3() const { return glm::vec3( x, y, z ); }
 
     // Multiplication par un scalaire
-    Vector operator*( const float& value ) const;
-    Vector& operator*=( const float& value );
+    Vector3 operator*( const float& value ) const;
+    Vector3& operator*=( const float& value );
+
+    // Division par un scalaire
+    Vector3 operator/( const float& value ) const;
+    Vector3& operator/=( const float& value );
 
     // Produit vectoriel
-    Vector operator*( const Vector& vector ) const;
+    Vector3 operator*( const Vector3& vector ) const;
 
     // Produit scalaire
-    float dotProduct( const Vector& vector ) const;
+    float dotProduct( const Vector3& vector ) const;
 
     // surcharges d'operateurs
-    Vector operator+( const Vector& vector ) const;
-    Vector operator-() const;
-    Vector operator-( const Vector& vector ) const;
-    Vector& operator=( const Vector& vector );
-    Vector& operator+=( const Vector& vector );
-    bool operator==( const Vector& vector ) const;
-    bool operator!=( const Vector& vector ) const;
+    Vector3 operator+( const Vector3& vector ) const;
+    Vector3 operator-() const;
+    Vector3 operator-( const Vector3& vector ) const;
+    Vector3& operator=( const Vector3& vector );
+    Vector3& operator+=( const Vector3& vector );
+    bool operator==( const Vector3& vector ) const;
+    bool operator!=( const Vector3& vector ) const;
+
+    // Nettoyage
+    void clear();
 
     float norm() const;
-    Vector normalized() const;
+    Vector3 normalized() const;
     void normalize();
-    float distance( const Vector& vector ) const;
+    float distance( const Vector3& vector ) const;
 
     void show( std::ostream& out = std::cout ) const;
 };
