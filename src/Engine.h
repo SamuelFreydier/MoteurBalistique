@@ -72,7 +72,7 @@ class Engine
         void shootParticle( const Vector3& initialPos, const Vector3& initialVelocity, const float& mass = 1.0, const float& radius = 1.0, const Vector3& color = Vector3( { 255, 0, 0 } ), bool isFireball = false, bool m_showParticleInfos = false);
    
         // Mise à jour PHYSIQUE des particules
-        void update( const float& deltaTime );
+        void update( const float& secondsElapsedSincePreviousUpdate);
 
         // Nettoyage des particules non visibles
         void cleanup();

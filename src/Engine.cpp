@@ -53,7 +53,7 @@ void Engine::shootParticle(const Vector3& initialPos, const Vector3& initialVelo
  * @brief Mise à jour de la physique des particules en fonction du temps écoulé depuis la dernière frame
  * @param deltaTime 
 */
-void Engine::update( const float& deltaTime )
+void Engine::update( const float& secondsElapsedSincePreviousUpdate)
 {
     // Ajout des forces au registre
     for( ParticlePtr& particle : m_particles )
@@ -63,7 +63,7 @@ void Engine::update( const float& deltaTime )
     }
 
     // Mise à jour des forces
-    m_particleForceRegistry.updateForces( deltaTime );
+    m_particleForceRegistry.updateForces(secondsElapsedSincePreviousUpdate);
 
     // Nettoyage du registre
     m_particleForceRegistry.clear();
@@ -71,7 +71,7 @@ void Engine::update( const float& deltaTime )
     // Mise à jour physique de chaque particule
     for( ParticlePtr& particle : m_particles )
     {
-        particle->update( deltaTime );
+        particle->update(secondsElapsedSincePreviousUpdate);
     }
 
     // Nettoyage des particules inutiles

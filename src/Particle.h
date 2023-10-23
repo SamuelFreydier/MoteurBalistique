@@ -70,7 +70,7 @@ public:
     void clearAccum();
 
     // Mise à jour et affichage à chaque frame
-    virtual void update( const float& deltaTime );
+    virtual void update( const float& secondsElapsedSincePreviousUpdate);
     void draw() const;
     virtual void clicked() {};
 
