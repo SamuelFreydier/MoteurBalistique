@@ -8,7 +8,7 @@ ParticleAirFriction::ParticleAirFriction(const Vector3& worldWind)
 }
 
 
-void ParticleAirFriction::updateForce(const std::shared_ptr<Particle>& particle, const float& secondsElapsedSincePreviousUpdate)
+void ParticleAirFriction::updateForce(Particle* particle, float secondsElapsedSincePreviousUpdate)
 {
     bool isFrictionGlitch = false;
     const Vector3 particleVelocity = particle->getVelocity();
@@ -34,7 +34,7 @@ void ParticleAirFriction::updateForce(const std::shared_ptr<Particle>& particle,
     // Loi trouvée par tâtonnements sur paint tkt : 
     // si prevision > norme(airRelativeVelocity), alors report de glitch et particleVelocity = 0 
 
-    const float previsionVariationSurParticleVelocity = normeForceTrainee * particle->getMassReverse() * secondsElapsedSincePreviousUpdate;
+    const float previsionVariationSurParticleVelocity = normeForceTrainee * particle->getInverseMass() * secondsElapsedSincePreviousUpdate;
 
     if (previsionVariationSurParticleVelocity > airRelativeVelocity.norm())
     {

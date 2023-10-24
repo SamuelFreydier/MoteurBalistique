@@ -111,6 +111,6 @@ void Particle::draw() const
     {
         // calcul de la vitesse en m/s pour affichage en temps réel;
         float vitesseParticule = m_velocity.norm();
-        ofDrawBitmapString(ofToString(vitesseParticule) + " m/s\n" + ofToString(1 / m_massReverse) + " kg", (positionGraphique + Vector3({0.0, - 20 - m_radius / scaleReferential, 0.0})).v3());
+        ofDrawBitmapString(ofToString(vitesseParticule) + " m/s\n" + ofToString(1 / m_inverseMass) + " kg", (positionGraphique + Vector3({0.0, - 20 - m_radius / scaleReferential, 0.0})).v3());
     }
 }

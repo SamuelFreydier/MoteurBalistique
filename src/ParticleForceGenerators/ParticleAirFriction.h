@@ -12,7 +12,7 @@ class ParticleAirFriction : public ParticleForceGenerator
     public:
         ParticleAirFriction(const Vector3& worldWind = Vector3()); 
 
-        virtual void updateForce(const std::shared_ptr<Particle>& particle, const float& secondsElapsedSincePreviousUpdate) override;
+        virtual void updateForce(Particle* particle, float secondsElapsedSincePreviousUpdate) override;
 
         const Vector3& getWorldWind() const { return m_worldWind; }
         void setWorldWind(const Vector3& worldWind) { m_worldWind = worldWind; }
