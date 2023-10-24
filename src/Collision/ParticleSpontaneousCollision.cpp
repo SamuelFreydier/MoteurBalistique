@@ -23,9 +23,8 @@ int ParticleSpontaneousCollision::addContact( ParticleContact* contact, const in
     }
 
     // Calcul du vecteur normal
-    Vector3 normal = -midline / midlineSize;
+    contact->m_contactNormal = -midline.normalized();
 
-    contact->m_contactNormal = normal;
     contact->m_penetration = m_particles[ 0 ]->getRadius() + m_particles[ 1 ]->getRadius() - midlineSize;
     contact->m_restitution = m_restitution;
 

@@ -36,6 +36,7 @@ private:
 
     // Gère la résolution d'interpénétration (overlap) pour la collision
     void resolveInterpenetration( const float& duration );
+
 };
 
 #endif
