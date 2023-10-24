@@ -62,7 +62,7 @@ public:
     const float& getSizeModificator() const { return m_sizeModificator; }
     void setSizeModificator( const float& sizeModificator ) { m_sizeModificator = sizeModificator; }
 
-    const bool& getIsStationary() const { return m_isStationary; }
+    const bool& isStationary() const { return m_isStationary; }
     void setIsStationary(const bool isStationary) { m_isStationary = isStationary; }
 
     bool toBeDestroyed() const { return m_destroyedLater; }

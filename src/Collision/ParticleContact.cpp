@@ -38,7 +38,7 @@ void ParticleContact::resolveVelocity( const float& duration )
         accCausedVelocity -= m_particles[ 1 ]->getAcceleration();
     }
     float accCausedSepVelocity = accCausedVelocity.dotProduct( m_contactNormal ) * duration;
-    //std::cout << "AccCausedSepVelocity: " << accCausedSepVelocity << '\n';
+
     // Si la vélocité de rapprochement est due à une augmentation d'accélération, on la supprime de la vélocité de séparation
     if( accCausedSepVelocity >= separatingVelocity )
     {
@@ -52,10 +52,6 @@ void ParticleContact::resolveVelocity( const float& duration )
     }
 
     float deltaVelocity = newSepVelocity - separatingVelocity;
-
-    //std::cout << "New Sep Velocity: " << newSepVelocity << '\n';
-    //std::cout << "Separating Velocity : " << separatingVelocity << '\n';
-    //std::cout << "Delta Velocity: " << deltaVelocity << '\n';
 
     // Application des changements de vélocité à chaque objet proportionnellement à leur masse
     // Plus grande masse => Moins de changement
@@ -76,62 +72,53 @@ void ParticleContact::resolveVelocity( const float& duration )
 
     // Montant d'impulsion par unité d'inverse de masse
     Vector3 impulsePerInverseMass = m_contactNormal * impulse;
-    //impulsePerInverseMass.show();
 
+    Vector3 newVelocityparticle0 = m_particles[0]->getVelocity();
 
-    Vector3 m_newVelocityparticle0 = m_particles[0]->getVelocity();
     // pour appliquer la friction, on a besoin du projeté du vecteur velocity dans le plan orthogonal au vecteur contact/rebond
     // projeté du vecteur u dans le plan orthogonal au vecteur v: Proj(u) = u- ((u.n)/(n.n))*n
-    Vector3 m_contactNormalised = m_contactNormal.normalized();
-    Vector3 m_velocityParticle0Normalised = m_newVelocityparticle0;
-    m_velocityParticle0Normalised -= m_contactNormalised * (m_velocityParticle0Normalised.dotProduct(m_contactNormalised) / m_contactNormalised.dotProduct(m_contactNormalised)); // m_velocityParticle0Normalized est la projection de la direction de déplacement de la balle dans le plan de la surface
-    m_velocityParticle0Normalised = m_velocityParticle0Normalised.normalized();
+    Vector3 contactNormalised = m_contactNormal.normalized();
+    Vector3 velocityParticle0Normalised = newVelocityparticle0;
+    velocityParticle0Normalised -= contactNormalised * (velocityParticle0Normalised.dotProduct(contactNormalised) / contactNormalised.dotProduct(contactNormalised)); // m_velocityParticle0Normalized est la projection de la direction de déplacement de la balle dans le plan de la surface
+    velocityParticle0Normalised = velocityParticle0Normalised.normalized();
 
-     //frictions
-    if (m_particles[1] == nullptr) // pour l'instant on ne considère les frictions que contre des objets inamovibles de type "sol" ou "mur", on ignore les frictions particule-particule
+    // Gestion des frictions
+    if( m_particles[1] == nullptr ) // pour l'instant on ne considère les frictions que contre des objets inamovibles de type "sol" ou "mur", on ignore les frictions particule-particule
     {
         if (-0.2 <= separatingVelocity && separatingVelocity <= 0.2)// l'objet est au repos modulo les micro rebonds théoriquement gérés 
         {
             float forceNormale = m_particles[0]->getAcceleration().dotProduct(m_contactNormal) * duration * (-1);
             float friction;
-            if (m_particles[0]->getIsStationary()) //la sphère est arretee, au repos
+            if (m_particles[0]->isStationary()) //la sphère est arretee, au repos
             {
-                //frictions statiques
+                // frictions statiques
                 friction = 0.6 * abs(forceNormale); //métal sur métal
-                if (friction > m_newVelocityparticle0.dotProduct(m_velocityParticle0Normalised))
+                if (friction > newVelocityparticle0.dotProduct(velocityParticle0Normalised))
                 {
-                    friction = m_newVelocityparticle0.dotProduct(m_velocityParticle0Normalised);
+                    friction = newVelocityparticle0.dotProduct(velocityParticle0Normalised);
                 }
-                std::cout << "friction statique" << endl;
             }
             else
             {
-                //frictions dynamiques
+                // frictions dynamiques
                 friction = 0.4 * abs(forceNormale);
-                std::cout << "friction dynamique" << endl;
             }
-            m_newVelocityparticle0 -= m_velocityParticle0Normalised*friction;
+            newVelocityparticle0.show();
+            newVelocityparticle0 -= velocityParticle0Normalised*friction;
         }
     }
-    m_newVelocityparticle0 += impulsePerInverseMass * m_particles[0]->getInverseMass();
-    // Application des impulsions => en direction du contact et proportionnelles à l'inverse de la masse 
+    newVelocityparticle0 += impulsePerInverseMass * m_particles[0]->getInverseMass();
 
+    // Application des impulsions => en direction du contact, proportionnelles à l'inverse de la masse, et avec ajustement post-friction
     // Première particule
-    //std::cout << "Before Velocity : ";
-    //m_particles[ 0 ]->getVelocity().show();
-    //Vector3( impulsePerInverseMass * m_particles[ 0 ]->getInverseMass() ).show();
-    m_particles[ 0 ]->setVelocity( m_newVelocityparticle0);
-    //std::cout << "After Velocity : ";
-    //m_particles[ 0 ]->getVelocity().show();
+    m_particles[ 0 ]->setVelocity( newVelocityparticle0 );
+
     // Deuxième particule
     if( m_particles[ 1 ] )
     {
         // Direction opposée donc on lui applique l'opposé de l'impulsion
-        m_particles[ 1 ]->setVelocity(m_particles[1]->getVelocity() + impulsePerInverseMass * m_particles[1]->getInverseMass());
+        m_particles[ 1 ]->setVelocity(m_particles[1]->getVelocity() - impulsePerInverseMass * m_particles[1]->getInverseMass());
     }
-
-
-
 }
 
 void ParticleContact::resolveInterpenetration( const float& duration )
