@@ -1,5 +1,21 @@
 #include "ParticleCable.h"
 
+
+/*
+ParticleCable::ParticleCable(Particle* particle1, Particle* particle2, float maxLength)
+    : ParticleLink(particle1, particle2), m_maxLength(maxLength)
+{
+
+}*/
+
+
+// Pour initier le générateur de câble pour le comportement câble des ressorts des blobs
+void ParticleCable::init(std::vector<Blob*>* blobs)
+{
+    m_blobs = blobs;
+}
+
+
 /**
 * @brief Génère les collisions pour éviter que le câble soit brisé.
 * @param contact
@@ -8,26 +24,52 @@
 */
 int ParticleCable::addContact( ParticleContact* contact, const int& limit ) const
 {
-    // Longueur du câble
-    float length = currentLength();
+    // Les particules des blobs sont reliées entre elles en utilisant des ressorts classiques.Par contre, ces liens ont une limite d’élasticité au-delà 
+    // de laquelle ils se comportent comme des câbles.
+    const float elasticityLimit = 15; // dégueulasse
+    const float coefRestitution = 1; // 0 = collision parfaitement inélastique et 1 = collision parfaitement élastique
 
-    // Est-ce que le câble est trop étendu ?
-    if( length < m_maxLength )
+    int count = 0;
+    for (Blob* blob : *m_blobs)
     {
-        // Si non => pas besoin de collision
-        return 0;
+        Blob::Partuples blobParticleAssociations = blob->getParticleAssociations();
+
+        for (Blob::ParticleAssociation_t blobParticleAssociation : blobParticleAssociations)
+        {
+            Particle* particle1 = blobParticleAssociation.firstParticle;
+            Particle* particle2 = blobParticleAssociation.secondParticle;
+
+            // Longueur du câble
+            float length = particle1->getPosition().distance(particle2->getPosition());
+
+            // Est-ce que le câble est trop étendu ? Si non => pas besoin de collision
+            if (length > elasticityLimit)
+            {
+                // Câble trop étendu => Création de collision
+                contact->m_particles[0] = particle1;
+                contact->m_particles[1] = particle2;
+
+                // Calcul du vecteur normal
+                Vector3 normal = -(particle2->getPosition() - particle1->getPosition());
+                normal.normalize();
+                contact->m_contactNormal = normal;
+                contact->m_penetration = length - elasticityLimit;
+                contact->m_restitution = coefRestitution;
+                count++;
+            }
+
+
+            if (count >= limit)
+            {
+                break;
+            }
+        }
+
+        if (count >= limit)
+        {
+            break;
+        }
     }
 
-    // Câble trop étendu => Création de collision
-    contact->m_particles[ 0 ] = m_particles[ 0 ];
-    contact->m_particles[ 1 ] = m_particles[ 1 ];
-
-    // Calcul du vecteur normal
-    Vector3 normal = m_particles[ 1 ]->getPosition() - m_particles[ 0 ]->getPosition();
-    normal.normalize();
-    contact->m_contactNormal = normal;
-    contact->m_penetration = length - m_maxLength;
-    contact->m_restitution = m_restitution;
-
-    return 1;
+    return count;
 }

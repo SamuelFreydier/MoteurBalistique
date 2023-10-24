@@ -18,8 +18,6 @@ protected:
     // Facteur permettant de réduire la taille de la particule (< 1) ou de l'agrandir (> 1)
     float m_sizeModificator = 1.0;
 
-    // Passe à true pour donner l'instruction à l'Engine de le détruire
-    bool m_destroyedLater = false;
 
 
     // Force résultante sur la particule
@@ -32,6 +30,10 @@ protected:
     accumForceSansGlitchFriction_t m_accumForce;
 
 public:
+    // Passe à true pour donner l'instruction à l'Engine de le détruire
+    bool m_destroyedLater = false;
+
+
     Particle( const float& mass = 1.0, const float& radius = 1.0, const Vector3& velocity = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& position = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& color = Vector3( { 255, 0, 0 } ), const bool& showParticleInfos = false);
     Particle( const Particle& particle );
 

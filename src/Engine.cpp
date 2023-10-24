@@ -34,6 +34,8 @@ Engine::~Engine()
         m_particles.pop_back();
     }
 
+    // TO DO vider m_blobs
+
     delete[] m_contacts;
     delete m_spontaneousCollisionGenerator;
 }
@@ -91,6 +93,8 @@ int Engine::generateContacts()
         return 0;
     }
 
+
+
     int limit = m_maxContacts;
     ParticleContact* nextContact = m_contacts;
 
@@ -124,6 +128,8 @@ int Engine::generateContacts()
         }
     }
 
+
+
     return m_maxContacts - limit;
 }
 
@@ -146,6 +152,36 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
         }
     }
 
+    // ajout des forces de ressort assurant l'intégrité des blobs
+    for (Blob* blob : m_blobs)
+    {
+        Blob::Partuples blobParticleAssociations = blob->getParticleAssociations();
+
+        for (Blob::ParticleAssociation_t blobParticleAssociation : blobParticleAssociations)
+        {
+            // Loi de physique, la somme des interactions entre deux objets est nulle ou un truc du genre.
+            m_particleForceRegistry.add(blobParticleAssociation.firstParticle, new ParticleSpring(blobParticleAssociation.secondParticle, 10, 1));
+            m_particleForceRegistry.add(blobParticleAssociation.secondParticle, new ParticleSpring(blobParticleAssociation.firstParticle, 10, 1));
+        }
+        /*
+        Particles blobParticles = blob->getBlobParticles();
+
+        Particle* firstParticle = blobParticles[0];
+        for (Particle* blobParticle : blobParticles)
+        {
+            //const float rand1 = (float)(rand() % 1001) / 1000;
+            //blobParticle->setColor(Vector3(255 * rand1, 100, 100));
+
+            if (blobParticle != firstParticle)
+            {
+                m_particleForceRegistry.add(blobParticle, new ParticleSpring(firstParticle, 10, 1));
+            }
+
+            int lole = 1;
+        }
+        */
+    }
+
     // Mise à jour des forces
     m_particleForceRegistry.updateForces(secondsElapsedSincePreviousUpdate);
 
@@ -165,6 +201,7 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     }
     m_tempAshFallParticles.clear(); // Après avoir copié tous les éléments de cette liste temporaire, on la vide
 
+       
 
     // Génération des collisions
     int usedContacts = generateContacts();
@@ -196,8 +233,13 @@ void Engine::cleanup()
     while( particleIterator != m_particles.end() )
     {
         // on supprime les particules qui ont été marquées comme "à détruire" et celles qui sont devenues trop petites (le radius des trainées de cendres diminue automatiquement)
-        if( ( *particleIterator )->getRadius() < 0.009 || (*particleIterator)->toBeDestroyed() ) {
-            particleIterator = m_particles.erase( particleIterator );
+        if( ( *particleIterator )->getRadius() < 0.009 || (*particleIterator)->toBeDestroyed() ) 
+        {
+            for (Blob* blob : m_blobs) // On l'efface d'abord des blobs dont elle faisait potentiellement partie
+            {
+                blob->eraseDeadParticle(*particleIterator);
+            }
+            particleIterator = m_particles.erase( particleIterator ); // il manque un delete du pointeur non ? ce ne sont plus des shared_ptr...
         }
         else
         {
@@ -260,9 +302,10 @@ Vector3 Engine::randshiftColor( const Vector3& color, const int& shiftAmount )
  * @param y 
  * @return 
 */
-bool Engine::clickedParticle( const float& x, const float& y )
+Particle* Engine::clickedParticle( const float& x, const float& y )
 {
     bool clicked = false;
+    Particle* clickedParticle = nullptr;
 
 
     const bool conversionIsFromGraphicToMecanic = false;
@@ -283,7 +326,8 @@ bool Engine::clickedParticle( const float& x, const float& y )
             && (particlePositionY - particleRadius < clicMecaniqueY && particlePositionY + particleRadius > clicMecaniqueY) )
         {
             clicked = true;
-            ( *particleIterator )->clicked();
+            clickedParticle = *particleIterator;
+            //( *particleIterator )->clicked();
         }
         /*
         if( ( *particleIterator )->toBeDestroyed() )
@@ -297,7 +341,7 @@ bool Engine::clickedParticle( const float& x, const float& y )
         particleIterator++;
     }
 
-    return clicked;
+    return clickedParticle;
 }
 
 

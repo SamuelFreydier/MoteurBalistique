@@ -16,7 +16,10 @@ void ofApp::setup()
     }*/
 
     groundContactGenerator.init( &Engine::getInstance()->getParticles() );
+    cableContactGenerator.init(&Engine::getInstance()->getBlobs());
+
     Engine::getInstance()->addContactGenerator( &groundContactGenerator );
+    Engine::getInstance()->addContactGenerator(&cableContactGenerator);
 
 
     // Setup GUI
@@ -155,21 +158,53 @@ void ofApp::mousePressed( int x, int y, int button )
     // Quand un clic est détecté, on modifie le tableau de bools en conséquence
     boolsMouseButtonPressed[button] = true;
 
-
-    if (button == 0) // si clic gauche on essaie de cliquer sur une particule
+    if (m_isShootingTrigger) // Si le mode shooting est activé
     {
-
-    }
-    else if (button == 1) // si clic molette 
-    {
-
-    }
-    else if (button == 2) // si clic droit, alors on essaie d'exploser des boules
-    {
-        const bool particuleTouchee = Engine::getInstance()->clickedParticle(x, y);
-        if (particuleTouchee)
+        if (button == 0) // si clic gauche on essaie de cliquer sur une particule
         {
-            Engine::getInstance()->increaseScore();
+
+        }
+        else if (button == 1) // si clic molette 
+        {
+
+        }
+        else if (button == 2) // si clic droit, alors on essaie d'exploser des boules
+        {
+            Particle* clickedParticle = Engine::getInstance()->clickedParticle(x, y);
+            if (clickedParticle != nullptr)
+            {
+                clickedParticle->clicked();
+                Engine::getInstance()->increaseScore();
+            }
+        }
+    }
+    else // sinon ( = mode blob)
+    {
+        if (button == 0) // si clic gauche on essaie de cliquer sur une particule
+        {
+            const Vector3 mecanicSponePosition = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(Vector3(x, y), false);
+            Blob* newBlob = new Blob(mecanicSponePosition);
+            Engine::Particles blobParticles = newBlob->getBlobParticles();
+
+            for (Particle* blobParticle : blobParticles)
+            {
+                Engine::getInstance()->addParticle(blobParticle);
+            }
+
+            Engine::getInstance()->addBlob(newBlob);
+        }
+        else if (button == 1) // si clic molette 
+        {
+
+        }
+        else if (button == 2) // si clic droit, alors on essaie d'exploser des boules
+        {
+            Particle* clickedParticle = Engine::getInstance()->clickedParticle(x, y);
+            if (clickedParticle != nullptr)
+            {
+                clickedParticle->m_destroyedLater = true;
+                Engine::getInstance()->increaseScore();
+            }
         }
     }
 
