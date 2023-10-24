@@ -4,6 +4,7 @@
 #include "ParticleForceGenerators/ParticleForceRegistry.h"
 #include "ParticleForceGenerators/ParticleGravity.h"
 #include "ParticleForceGenerators/ParticleFriction.h"
+#include "ParticleForceGenerators/ParticleAirFriction.h"
 #include "Fireball.h"
 #include "Referential.h"
 

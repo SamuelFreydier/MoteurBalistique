@@ -111,6 +111,7 @@
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\Matrix.cpp" />
     <ClCompile Include="src\Particle.cpp" />
+    <ClCompile Include="src\ParticleForceGenerators\ParticleAirFriction.cpp" />
     <ClCompile Include="src\Referential.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleForceRegistry.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleFriction.cpp" />
@@ -134,6 +135,7 @@
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Matrix.h" />
     <ClInclude Include="src\Particle.h" />
+    <ClInclude Include="src\ParticleForceGenerators\ParticleAirFriction.h" />
     <ClInclude Include="src\Referential.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleForceGenerator.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleForceRegistry.h" />

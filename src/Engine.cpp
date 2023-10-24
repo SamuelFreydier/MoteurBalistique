@@ -65,7 +65,7 @@ void Engine::update( const float& secondsElapsedSincePreviousUpdate)
         // Frottements de l'air réalistes
         if (s_realisticAirResistance)
         {
-            m_particleForceRegistry.add(particle, std::make_shared<ParticleFriction>(s_realisticAirResistance));
+            m_particleForceRegistry.add(particle, std::make_shared<ParticleAirFriction>(getWind()));
         }
     }
 
