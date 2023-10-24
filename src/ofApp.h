@@ -6,6 +6,7 @@
 #include "Engine.h"
 #include "MouseDragger.h"
 #include "Collision/GroundContacts.h"
+#include "Blob.h"
 
 class ofApp : public ofBaseApp
 {
@@ -55,6 +56,9 @@ class ofApp : public ofBaseApp
 
         // Générateur de sol
         GroundContacts groundContactGenerator;
+
+        // Générateur de câble pour le comportement câble des ressorts des blobs
+        ParticleCable cableContactGenerator;
 
     private:
         MouseDragger draggerReferentialOrigin;

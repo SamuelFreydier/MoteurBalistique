@@ -5,10 +5,13 @@
 #include "ParticleForceGenerators/ParticleGravity.h"
 #include "ParticleForceGenerators/ParticleFriction.h"
 #include "ParticleForceGenerators/ParticleAirFriction.h"
+#include "ParticleForceGenerators/ParticleSpring.h"
 #include "Fireball.h"
+#include "Blob.h"
 #include "Collision/ParticleContactResolver.h"
 #include "Collision/ParticleContactGenerator.h"
 #include "Collision/ParticleSpontaneousCollision.h"
+#include "Collision/ParticleCable.h"
 #include "Referential.h"
 
 class Engine
@@ -16,6 +19,7 @@ class Engine
     public:
         typedef std::vector<ParticleContactGenerator*> ContactGenerators;
         typedef std::vector<Particle*> Particles;
+        typedef std::vector<Blob*> Blobs;
 
     private:
         // Singleton
@@ -26,7 +30,10 @@ class Engine
 
         Particles m_particles;
         Particles m_tempAshFallParticles; // Pour éviter que le Integrate() d'une fireball ne modifie m_particles en droppant des ashfall ce qui fait planter le programme (bug d'itérateur)
-    
+        
+        Blobs m_blobs;
+
+
         // Registre (associations particule / générateur de force) => Gère gravité/frottements/ressorts
         ParticleForceRegistry m_particleForceRegistry;
 
@@ -105,13 +112,16 @@ class Engine
         void drawParticles() const;
 
         // Déclenche une action si une particule est présente à l'endroit d'un clic souris. Renvoie false si rien n'a été cliqué.
-        bool clickedParticle( const float& x, const float& y );
+        Particle* clickedParticle( const float& x, const float& y );
 
-        std::vector<Particle*>& getParticles() { return m_particles; }
+        Particles& getParticles() { return m_particles; }
         void addParticle( Particle* particle ) { m_particles.push_back( particle ); }
 
-        std::vector<Particle*>& getTempAshFallParticles() { return m_tempAshFallParticles; }
+        Particles& getTempAshFallParticles() { return m_tempAshFallParticles; }
         void addTempAshFallParticles(Particle* particle) { m_tempAshFallParticles.push_back(particle); }
+
+        Blobs& getBlobs() { return m_blobs; }
+        void addBlob(Blob* blob) { m_blobs.push_back(blob); }
 
         const Vector3& getGravity() const { return m_gravity; }
         void setGravity( const Vector3& gravity ) { m_gravity = gravity; }

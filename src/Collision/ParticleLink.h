@@ -23,6 +23,7 @@ public:
      * @param limit (>= 1)
      * @return 0 si le lien est serein. 1 si une collision est nécessaire.
     */
+    //ParticleLink(Particle* particle1, Particle* particle2); // Constructeur de classe abstraite n'a pas besoin d'etre virtuel. il n epourra néanmoins pas instancier d'objet ParticleLink car classe abstraite
     virtual int addContact( ParticleContact* contact, const int& limit ) const = 0;
 };
 
