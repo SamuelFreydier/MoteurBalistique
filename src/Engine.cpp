@@ -136,6 +136,10 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     // Ajout des forces au registre
     for( Particle* particle : m_particles )
     {
+        if (particle->getVelocity().norm() < 0.2) //on garde une marge en cas de microrebonds
+            particle->setIsStationary(true);
+        else
+            particle->setIsStationary(false);
         // Gravité
         m_particleForceRegistry.add( particle, new ParticleGravity( m_gravity ) );
 

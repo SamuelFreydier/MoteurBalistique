@@ -14,6 +14,7 @@ protected:
     Vector3 m_acceleration;
     Vector3 m_position;
     Vector3 m_color;
+    bool m_isStationary;
 
     // Facteur permettant de réduire la taille de la particule (< 1) ou de l'agrandir (> 1)
     float m_sizeModificator = 1.0;
@@ -60,6 +61,9 @@ public:
 
     const float& getSizeModificator() const { return m_sizeModificator; }
     void setSizeModificator( const float& sizeModificator ) { m_sizeModificator = sizeModificator; }
+
+    const bool& getIsStationary() const { return m_isStationary; }
+    void setIsStationary(const bool isStationary) { m_isStationary = isStationary; }
 
     bool toBeDestroyed() const { return m_destroyedLater; }
 
