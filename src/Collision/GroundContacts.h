@@ -9,14 +9,14 @@
 */
 class GroundContacts : public ParticleContactGenerator
 {
-private:
-    // Ensemble de particules concernées par la collision au sol
-    Engine::Particles* m_particles;
+    private:
+        // Ensemble de particules concernées par la collision au sol
+        Engine::Particles* m_particles;
 
-public:
-    void init( Engine::Particles* particles );
+    public:
+        void init( Engine::Particles* particles );
 
-    virtual int addContact( ParticleContact* contact, const int& limit ) const override;
+        virtual int addContact( ParticleContact* contact, const int& limit ) const override;
 };
 
 #endif

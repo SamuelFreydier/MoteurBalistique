@@ -12,13 +12,13 @@ int GroundContacts::addContact( ParticleContact* contact, const int& limit ) con
     {
         float y = ( *particleIterator )->getPosition().getY();
         float particleRadius = ( *particleIterator )->getRadius();
-        float floorHeight = ofGetWindowHeight();
-        if( y + particleRadius > floorHeight )
+        float floorHeight = 0;
+        if( y - particleRadius < floorHeight )
         {
-            contact->m_contactNormal = Vector3( 0, 1, 0 );
+            contact->m_contactNormal = Vector3( 0, -1, 0 );
             contact->m_particles[ 0 ] = *particleIterator;
             contact->m_particles[ 1 ] = nullptr;
-            contact->m_penetration = y + particleRadius - floorHeight;
+            contact->m_penetration = floorHeight - (y - particleRadius);
             contact->m_restitution = 0.7f;
             contact++;
             count++;

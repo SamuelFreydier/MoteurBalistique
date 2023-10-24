@@ -195,9 +195,8 @@ void Engine::cleanup()
 
     while( particleIterator != m_particles.end() )
     {
-        // on supprime les particules qui sont sorties par le bas et celles qui sont devenues trop petites (trainées de cendres)
-        if( ( ( *particleIterator )->getPosition().getY() - (*particleIterator)->getRadius() < 0 )
-            || ( *particleIterator )->getRadius() < 0.009 || (*particleIterator)->toBeDestroyed() ) {
+        // on supprime les particules qui ont été marquées comme "à détruire" et celles qui sont devenues trop petites (le radius des trainées de cendres diminue automatiquement)
+        if( ( *particleIterator )->getRadius() < 0.009 || (*particleIterator)->toBeDestroyed() ) {
             particleIterator = m_particles.erase( particleIterator );
         }
         else

@@ -32,7 +32,7 @@ void ParticleAirFriction::updateForce(Particle* particle, float secondsElapsedSi
 
     // Détection de glitch
     // Loi trouvée par tâtonnements sur paint tkt : 
-    // si prevision > norme(airRelativeVelocity), alors report de glitch et particleVelocity = 0 
+    // si prevision > norme(airRelativeVelocity), alors report de glitch et particleVelocity = airvelocity
 
     const float previsionVariationSurParticleVelocity = normeForceTrainee * particle->getInverseMass() * secondsElapsedSincePreviousUpdate;
 

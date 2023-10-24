@@ -47,9 +47,9 @@ void Particle::clearAccum()
 */
 void Particle::integrate( const float& secondsElapsedSincePreviousUpdate)
 {
-    if (m_accumForce.glitchFriction == true) // si il y a eu un glitch de friction, alors on annule la vélocité de la particule pour éviter des comportements illégaux (téléportations, partir dans le mauvais sens)
+    if (m_accumForce.glitchFriction == true) // si il y a eu un glitch de friction, alors m_velocity = wind pour éviter des comportements illégaux (téléportations, partir dans le mauvais sens)
     {
-        m_velocity = Vector3(); 
+        m_velocity = Engine::getWind(); 
     }
 
     if (Engine::getRealisticAirResistance() == true) // Choix de l'utilisateur entre frottements de l'air réalistes ou pas
@@ -107,6 +107,10 @@ void Particle::draw() const
     ofSetColor(m_color.getX(), m_color.getY(), m_color.getZ());
     ofDrawCircle(positionGraphique.v3(), m_radius / scaleReferential); // On dessine sans oublier d'également mettre la taille de la particule à l'échelle
 
+    if (getRadius() <= (0.3 * 0.6))
+    {
+        int lol = 2;
+    }
     if (m_showParticleInfos)
     {
         // calcul de la vitesse en m/s pour affichage en temps réel;
