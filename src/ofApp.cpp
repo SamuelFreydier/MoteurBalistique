@@ -166,7 +166,7 @@ void ofApp::mousePressed( int x, int y, int button )
         }
         else if (button == 1) // si clic molette 
         {
-
+            
         }
         else if (button == 2) // si clic droit, alors on essaie d'exploser des boules
         {
@@ -195,7 +195,8 @@ void ofApp::mousePressed( int x, int y, int button )
         }
         else if (button == 1) // si clic molette 
         {
-
+            Blob* newBlob = new Blob(Engine::getInstance()->getParticles());
+            Engine::getInstance()->addBlob(newBlob);
         }
         else if (button == 2) // si clic droit, alors on essaie d'exploser des boules
         {

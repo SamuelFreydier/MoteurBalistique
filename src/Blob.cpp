@@ -29,6 +29,22 @@ Blob::Blob(const Vector3& sponePosition)
 		blobParticles.push_back(newBlobParticle);
 	}
 
+	initParticleAssociations();
+}
+
+
+
+Blob::Blob(const std::vector<Particle*>& particlesToAssembly)
+{
+	blobParticles = particlesToAssembly;
+
+	initParticleAssociations();
+}
+
+
+
+void Blob::initParticleAssociations()
+{
 	for (Particle* blobParticle : blobParticles) // On déclare certains couples de particules qui seront reliées par un ressort. Chaque particule doit avoir au moins nbrMaxAssos ressorts
 	{
 		// par exemple avec 10 particules et nbrMaxAssos, il est possible qu'un groupe de 3 particules attachées entre elles de façon circulaire se 
@@ -47,7 +63,7 @@ Blob::Blob(const Vector3& sponePosition)
 
 				for (ParticleAssociation_t asso : particleAssociations)
 				{
-					if ((asso.firstParticle == blobParticle && asso.secondParticle == blobParticles[randIndex]) 
+					if ((asso.firstParticle == blobParticle && asso.secondParticle == blobParticles[randIndex])
 						|| (asso.secondParticle == blobParticle && asso.firstParticle == blobParticles[randIndex]))
 					{
 						assoAlreadyExists = true;
@@ -65,6 +81,7 @@ Blob::Blob(const Vector3& sponePosition)
 		}
 	}
 }
+
 
 
 void Blob::eraseDeadParticle(Particle* deadParticle)

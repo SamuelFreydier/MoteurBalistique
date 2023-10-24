@@ -12,7 +12,7 @@ public:
     float z;
 public:
     Vector3( const float& newX = 0, const float& newY = 0, const float& newZ = 0 );
-    Vector3( const Vector3& vector );
+    Vector3( const Vector3& vector);
 
     // Getters (pour s'assurer dans certains cas de retourner une référence constante)
     const float& getX() const { return x; }

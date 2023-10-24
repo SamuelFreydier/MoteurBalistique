@@ -55,6 +55,7 @@ int ParticleCable::addContact( ParticleContact* contact, const int& limit ) cons
                 contact->m_contactNormal = normal;
                 contact->m_penetration = length - elasticityLimit;
                 contact->m_restitution = coefRestitution;
+                contact++;
                 count++;
             }
 

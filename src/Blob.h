@@ -26,8 +26,10 @@ class Blob
 
 	public:
 		Blob(const Vector3& sponePosition = Vector3());
+		Blob(const std::vector<Particle*>& particlesToAssembly);
 		// TO DO destructeur ~Blob()
 
+		void initParticleAssociations();
 		void eraseDeadParticle(Particle* deadParticle);
 
 		const std::vector<Particle*>& getBlobParticles() { return blobParticles; };
