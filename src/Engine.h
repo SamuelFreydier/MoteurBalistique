@@ -19,6 +19,7 @@ private:
     static Engine* s_engine;
 
     Particles m_particles;
+    Particles m_tempAshFallParticles; // Pour éviter que le Integrate() d'une fireball ne modifie m_particles en droppant des ashfall ce qui fait planter le programme (bug d'itérateur)
     
     // Registre (associations particule / générateur de force) => Gère gravité/frottements/ressorts
     ParticleForceRegistry m_particleForceRegistry;
@@ -80,6 +81,9 @@ public:
 
     std::vector<Particle*>& getParticles() { return m_particles; }
     void addParticle( Particle* particle ) { m_particles.push_back( particle ); }
+
+    std::vector<Particle*>& getTempAshFallParticles() { return m_tempAshFallParticles; }
+    void addTempAshFallParticles(Particle* particle) { m_tempAshFallParticles.push_back(particle); }
 
     const Vector3& getGravity() const { return m_gravity; }
     void setGravity( const Vector3& gravity ) { m_gravity = gravity; }

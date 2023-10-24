@@ -39,7 +39,7 @@ void ParticleContact::resolveVelocity( const float& duration )
         accCausedVelocity -= m_particles[ 1 ]->getAcceleration();
     }
     float accCausedSepVelocity = accCausedVelocity.dotProduct( m_contactNormal ) * duration;
-    std::cout << "AccCausedSepVelocity: " << accCausedSepVelocity << '\n';
+    //std::cout << "AccCausedSepVelocity: " << accCausedSepVelocity << '\n';
     // Si la vélocité de rapprochement est due à une augmentation d'accélération, on la supprime de la vélocité de séparation
     if( accCausedSepVelocity >= separatingVelocity )
     {
@@ -54,9 +54,9 @@ void ParticleContact::resolveVelocity( const float& duration )
 
     float deltaVelocity = newSepVelocity - separatingVelocity;
 
-    std::cout << "New Sep Velocity: " << newSepVelocity << '\n';
-    std::cout << "Separating Velocity : " << separatingVelocity << '\n';
-    std::cout << "Delta Velocity: " << deltaVelocity << '\n';
+    //std::cout << "New Sep Velocity: " << newSepVelocity << '\n';
+    //std::cout << "Separating Velocity : " << separatingVelocity << '\n';
+    //std::cout << "Delta Velocity: " << deltaVelocity << '\n';
 
     // Application des changements de vélocité à chaque objet proportionnellement à leur masse
     // Plus grande masse => Moins de changement
@@ -77,16 +77,16 @@ void ParticleContact::resolveVelocity( const float& duration )
 
     // Montant d'impulsion par unité d'inverse de masse
     Vector3 impulsePerInverseMass = m_contactNormal * impulse;
-    impulsePerInverseMass.show();
+    //impulsePerInverseMass.show();
 
     // Application des impulsions => en direction du contact et proportionnelles à l'inverse de la masse
     // Première particule
-    std::cout << "Before Velocity : ";
-    m_particles[ 0 ]->getVelocity().show();
-    Vector3( impulsePerInverseMass * m_particles[ 0 ]->getInverseMass() ).show();
+    //std::cout << "Before Velocity : ";
+    //m_particles[ 0 ]->getVelocity().show();
+    //Vector3( impulsePerInverseMass * m_particles[ 0 ]->getInverseMass() ).show();
     m_particles[ 0 ]->setVelocity( m_particles[ 0 ]->getVelocity() + impulsePerInverseMass * m_particles[ 0 ]->getInverseMass() );
-    std::cout << "After Velocity : ";
-    m_particles[ 0 ]->getVelocity().show();
+    //std::cout << "After Velocity : ";
+    //m_particles[ 0 ]->getVelocity().show();
     // Deuxième particule
     if( m_particles[ 1 ] )
     {
@@ -123,15 +123,15 @@ void ParticleContact::resolveInterpenetration( const float& duration )
 
     // Application des montants de mouvement pour chaque particule pour la résolution de pénétration, proportionnellement à leur masse
     // Première particule
-    std::cout << "Floor height: " << ofGetWindowHeight() << '\n';
-    std::cout << "Particle radius: " << m_particles[ 0 ]->getRadius() << '\n';
-    std::cout << "Position before: ";
-    m_particles[ 0 ]->getPosition().show();
-    std::cout << "Movement Per Inverse Mass";
-    movementPerInverseMass.show();
+    //std::cout << "Floor height: " << ofGetWindowHeight() << '\n';
+    //std::cout << "Particle radius: " << m_particles[ 0 ]->getRadius() << '\n';
+    //std::cout << "Position before: ";
+    //m_particles[ 0 ]->getPosition().show();
+    //std::cout << "Movement Per Inverse Mass";
+    //movementPerInverseMass.show();
     m_particles[ 0 ]->setPosition( m_particles[ 0 ]->getPosition() + movementPerInverseMass * m_particles[ 0 ]->getInverseMass() );
-    std::cout << "Position after: ";
-    m_particles[ 0 ]->getPosition().show();
+    //std::cout << "Position after: ";
+    //m_particles[ 0 ]->getPosition().show();
     // Deuxième particule
     if( m_particles[ 1 ] )
     {

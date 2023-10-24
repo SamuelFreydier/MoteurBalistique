@@ -153,8 +153,16 @@ void Engine::runPhysics( const float& deltaTime )
     // Mise à jour physique de chaque particule
     for( Particle* particle : m_particles )
     {
-        particle->integrate( deltaTime );
+        particle->integrate(deltaTime);
     }
+
+    // Pour éviter que le Integrate() d'une fireball ne modifie m_particles en droppant des ashfall ce qui fait planter le programme (bug d'itérateur)
+    for (Particle* ashFallParticle : m_tempAshFallParticles)
+    {
+        m_particles.push_back(ashFallParticle);
+    }
+    m_tempAshFallParticles.clear(); // Après avoir copié tous les éléments de cette liste temporaire, on la vide
+
 
     // Génération des collisions
     int usedContacts = generateContacts();
@@ -172,7 +180,7 @@ void Engine::runPhysics( const float& deltaTime )
     }
 
     // Nettoyage des particules inutiles
-    //cleanup();
+    cleanup();
 }
 
 
@@ -187,7 +195,7 @@ void Engine::cleanup()
     {
         // Si la particule est sortie de l'écran ou est trop petite => Suppression
         if( ( ( *particleIterator )->getPosition().getX() > ofGetWindowWidth() + 5 || ( *particleIterator )->getPosition().getY() > ofGetWindowHeight() + 5 )
-            || ( *particleIterator )->getRadius() <= 3.0 ) {
+            || ( *particleIterator )->getRadius() <= 3.0 || (*particleIterator)->toBeDestroyed()) {
             particleIterator = m_particles.erase( particleIterator );
         }
         else
@@ -264,6 +272,7 @@ bool Engine::clickedParticle( const float& x, const float& y )
             clicked = true;
             ( *particleIterator )->clicked();
         }
+        /*
         if( ( *particleIterator )->toBeDestroyed() )
         {
             particleIterator = m_particles.erase( particleIterator );
@@ -271,7 +280,8 @@ bool Engine::clickedParticle( const float& x, const float& y )
         else
         {
             particleIterator++;
-        }
+        }*/
+        particleIterator++;
     }
 
     return clicked;

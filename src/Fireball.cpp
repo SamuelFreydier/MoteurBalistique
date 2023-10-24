@@ -47,11 +47,11 @@ void Fireball::integrate( const float& deltaTime )
         newPosition.y += sin( angle ) * m_radius;
 
         // Création de la particule (plus petite que la boule de feu d'origine)
-        Particle* ashfall = new Particle( getMass() * 0.1, getRadius() * 0.3, Vector3( { 0, 0, 0 } ), newPosition, colorShift );
+        Particle* ashfall = new Particle( 0.0001, getRadius() * 0.3, Vector3( { 0, 0, 0 } ), newPosition, colorShift );
 
         // Disparition progressive de la trainée de la boule de feu
         ashfall->setSizeModificator( ( rand() % 8 + 85 ) / 100.0 );
-        Engine::getInstance()->addParticle( ashfall );
+        Engine::getInstance()->addTempAshFallParticles( ashfall ); // Pour l'instant on les met dans une liste temporaire pour éviter de modifier Engine::m_particles (bug d'itérateur dans Engine::RunPhysics() sinon)
     }
 }
 
