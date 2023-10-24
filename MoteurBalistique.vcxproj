@@ -111,6 +111,7 @@
     <ClCompile Include="src\Collision\ParticleContactResolver.cpp" />
     <ClCompile Include="src\Collision\ParticleLink.cpp" />
     <ClCompile Include="src\Collision\ParticleRod.cpp" />
+    <ClCompile Include="src\MouseDragger.cpp" />
     <ClCompile Include="src\Fireball.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
@@ -120,6 +121,8 @@
     <ClCompile Include="src\ParticleForceGenerators\ParticleAnchoredSpring.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleBungee.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleBuoyancy.cpp" />
+    <ClCompile Include="src\ParticleForceGenerators\ParticleAirFriction.cpp" />
+    <ClCompile Include="src\Referential.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleForceRegistry.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleFriction.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleGravity.cpp" />
@@ -145,6 +148,7 @@
     <ClInclude Include="src\Collision\ParticleContactResolver.h" />
     <ClInclude Include="src\Collision\ParticleLink.h" />
     <ClInclude Include="src\Collision\ParticleRod.h" />
+    <ClInclude Include="src\MouseDragger.h" />
     <ClInclude Include="src\Fireball.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\Engine.h" />
@@ -153,6 +157,8 @@
     <ClInclude Include="src\ParticleForceGenerators\ParticleAnchoredSpring.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleBungee.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleBuoyancy.h" />
+    <ClInclude Include="src\ParticleForceGenerators\ParticleAirFriction.h" />
+    <ClInclude Include="src\Referential.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleForceGenerator.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleForceRegistry.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleFriction.h" />

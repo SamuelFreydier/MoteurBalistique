@@ -8,8 +8,10 @@ ParticleGravity::ParticleGravity( const Vector3& gravity )
 
 void ParticleGravity::updateForce( Particle* particle, float duration )
 {
-    if( particle->getMass() > 0.f )
+    float particleMass = particle->getMass();
+
+    if(particleMass > 0.f )
     {
-        particle->addForce( m_gravity * particle->getMass() );
+        particle->addForce( m_gravity * particleMass);
     }
 }

@@ -22,7 +22,7 @@ public:
     void remove( Particle* particle, ParticleForceGenerator* forceGenerator );
     void remove( Particle* particle );
     void clear();
-    void updateForces( const float& duration );
+    void updateForces( const float& secondsElapsedSincePreviousUpdate);
 };
 
 #endif

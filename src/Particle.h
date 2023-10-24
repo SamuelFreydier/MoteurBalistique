@@ -9,6 +9,7 @@ protected:
     float m_inverseMass;
     float m_radius;
 
+    bool m_showParticleInfos;
     Vector3 m_velocity;
     Vector3 m_acceleration;
     Vector3 m_position;
@@ -20,11 +21,18 @@ protected:
     // Passe à true pour donner l'instruction à l'Engine de le détruire
     bool m_destroyedLater = false;
 
+
     // Force résultante sur la particule
-    Vector3 m_accumForce;
+    typedef struct 
+    {
+        Vector3 accumForce;
+        bool glitchFriction = false;
+    } accumForceSansGlitchFriction_t;
+
+    accumForceSansGlitchFriction_t m_accumForce;
 
 public:
-    Particle( const float& mass = 1.0, const float& radius = 1.0, const Vector3& velocity = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& position = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& color = Vector3( { 255, 0, 0 } ) );
+    Particle( const float& mass = 1.0, const float& radius = 1.0, const Vector3& velocity = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& position = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& color = Vector3( { 255, 0, 0 } ), const bool& showParticleInfos = false);
     Particle( const Particle& particle );
 
     // Accesseurs et Mutateurs
@@ -32,8 +40,11 @@ public:
     float getMass() const { return 1 / m_inverseMass; }
     void setMassReverse( const float& mass ) { m_inverseMass = 1 / mass; }
 
+    const bool& getShowParticleInfos() const { return m_showParticleInfos; }
+    void setShowParticleInfos( const bool& showParticleInfos ) { m_showParticleInfos = showParticleInfos; }
+
     const float& getRadius() const { return m_radius; }
-    void setRadius( const float& radius ) { m_radius = radius; }
+    void setRadius(const float& radius) { m_radius = radius; }
 
     const Vector3& getVelocity() const { return m_velocity; }
     void setVelocity( const Vector3& velocity ) { m_velocity = velocity; }
@@ -53,13 +64,15 @@ public:
     bool toBeDestroyed() const { return m_destroyedLater; }
 
     // Gestion des forces
-    void addForce( const Vector3& forceVector );
+    void addForce( const Vector3& forceVector, const bool& isFrictionGlitch = false);
     void clearAccum();
 
     // Mise à jour et affichage à chaque frame
-    virtual void integrate( const float& deltaTime );
+    virtual void integrate( const float& secondsElapsedSincePreviousUpdate);
     void draw() const;
     virtual void clicked() {};
+
+
 };
 
 #endif

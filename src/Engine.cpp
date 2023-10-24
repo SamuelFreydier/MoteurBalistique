@@ -2,7 +2,10 @@
 
 Engine* Engine::s_engine = nullptr;
 float Engine::s_damping = 0.94;
+bool Engine::s_realisticAirResistance = false;
+Vector3 Engine::s_wind = Vector3();
 int Engine::s_colorShift = 0;
+Referential Engine::s_referential = Referential();
 
 
 /**
@@ -60,25 +63,18 @@ Engine* Engine::getInstance( const int& maxContacts, const int& iterations )
  * @param color 
  * @param isFireball 
 */
-void Engine::shootParticle( const Vector3& initialPos, const float& initialAngle, const float& initialSpeed, const float& mass, const float& radius, const Vector3& color, bool isFireball )
+void Engine::shootParticle(const Vector3& initialPos, const Vector3& initialVelocity , const float& mass, const float& radius, const Vector3& color, bool isFireball, bool m_showParticleInfos)
 {
-    float xVelocity = initialSpeed * cos( initialAngle );
-    float yVelocity = initialSpeed * sin( initialAngle );
-    float zVelocity = 0;
-
-    // l'axe y etant dirige vers le bas, il faut l'inverser afin de bien lancer la particule
-    Vector3 initialVelocity( { xVelocity, -yVelocity, zVelocity } );
-
     // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
     // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps
     Particle* newParticle = nullptr;
     if( isFireball == true )
     {
-        newParticle = new Fireball( mass, radius, initialVelocity, initialPos, color, s_colorShift );
+        newParticle = new Fireball( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos, s_colorShift );
     }
     else
     {
-        newParticle = new Particle( mass, radius, initialVelocity, initialPos, color );
+        newParticle = new Particle( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos);
     }
 
     m_particles.push_back( newParticle );
@@ -135,17 +131,23 @@ int Engine::generateContacts()
  * @brief Mise à jour de la physique des particules en fonction du temps écoulé depuis la dernière frame
  * @param deltaTime 
 */
-void Engine::runPhysics( const float& deltaTime )
+void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
 {
     // Ajout des forces au registre
     for( Particle* particle : m_particles )
     {
         // Gravité
         m_particleForceRegistry.add( particle, new ParticleGravity( m_gravity ) );
+
+        // Frottements de l'air réalistes
+        if (s_realisticAirResistance)
+        {
+            m_particleForceRegistry.add(particle, new ParticleAirFriction(getWind()));
+        }
     }
 
     // Mise à jour des forces
-    m_particleForceRegistry.updateForces( deltaTime );
+    m_particleForceRegistry.updateForces(secondsElapsedSincePreviousUpdate);
 
     // Nettoyage du registre
     m_particleForceRegistry.clear();
@@ -153,7 +155,7 @@ void Engine::runPhysics( const float& deltaTime )
     // Mise à jour physique de chaque particule
     for( Particle* particle : m_particles )
     {
-        particle->integrate(deltaTime);
+        particle->integrate(secondsElapsedSincePreviousUpdate);
     }
 
     // Pour éviter que le Integrate() d'une fireball ne modifie m_particles en droppant des ashfall ce qui fait planter le programme (bug d'itérateur)
@@ -176,7 +178,7 @@ void Engine::runPhysics( const float& deltaTime )
             m_contactResolver.setIterations( usedContacts * 2 );
         }
 
-        m_contactResolver.resolveContacts( m_contacts, usedContacts, deltaTime );
+        m_contactResolver.resolveContacts( m_contacts, usedContacts, secondsElapsedSincePreviousUpdate);
     }
 
     // Nettoyage des particules inutiles
@@ -193,9 +195,9 @@ void Engine::cleanup()
 
     while( particleIterator != m_particles.end() )
     {
-        // Si la particule est sortie de l'écran ou est trop petite => Suppression
-        if( ( ( *particleIterator )->getPosition().getX() > ofGetWindowWidth() + 5 || ( *particleIterator )->getPosition().getY() > ofGetWindowHeight() + 5 )
-            || ( *particleIterator )->getRadius() <= 3.0 || (*particleIterator)->toBeDestroyed()) {
+        // on supprime les particules qui sont sorties par le bas et celles qui sont devenues trop petites (trainées de cendres)
+        if( ( ( *particleIterator )->getPosition().getY() - (*particleIterator)->getRadius() < 0 )
+            || ( *particleIterator )->getRadius() < 0.009 || (*particleIterator)->toBeDestroyed() ) {
             particleIterator = m_particles.erase( particleIterator );
         }
         else
@@ -262,12 +264,24 @@ Vector3 Engine::randshiftColor( const Vector3& color, const int& shiftAmount )
 bool Engine::clickedParticle( const float& x, const float& y )
 {
     bool clicked = false;
-    std::vector<Particle*>::iterator particleIterator = m_particles.begin();
 
+
+    const bool conversionIsFromGraphicToMecanic = false;
+    const Vector3 clicGraphique = Vector3({ x, y, 0.0 });
+    const Vector3 clicMecanique = s_referential.conversionPositionMecaniqueGraphique(clicGraphique, conversionIsFromGraphicToMecanic);
+
+    const float clicMecaniqueX = clicMecanique.getX();
+    const float clicMecaniqueY = clicMecanique.getY();
+
+    std::vector<Particle*>::iterator particleIterator = m_particles.begin();
     while( particleIterator != m_particles.end() && clicked == false )
     {
-        if( ( (*particleIterator)->getPosition().getX() - ( *particleIterator )->getRadius() < x && ( *particleIterator )->getPosition().getX() + ( *particleIterator )->getRadius() > x )
-            && ( ( *particleIterator )->getPosition().getY() - ( *particleIterator )->getRadius() < y && ( *particleIterator )->getPosition().getY() + ( *particleIterator )->getRadius() > y ) )
+        const float particlePositionX = (*particleIterator)->getPosition().getX();
+        const float particlePositionY = (*particleIterator)->getPosition().getY();
+        const float particleRadius = (*particleIterator)->getRadius();
+
+        if( (particlePositionX - particleRadius < clicMecaniqueX && particlePositionX + particleRadius > clicMecaniqueX)
+            && (particlePositionY - particleRadius < clicMecaniqueY && particlePositionY + particleRadius > clicMecaniqueY) )
         {
             clicked = true;
             ( *particleIterator )->clicked();
@@ -285,4 +299,14 @@ bool Engine::clickedParticle( const float& x, const float& y )
     }
 
     return clicked;
+}
+
+
+void Engine::showScore(const bool& boolShowScore) const
+{
+    if (boolShowScore)
+    {
+        ofSetColor(255, 100, 100);
+        ofDrawBitmapString("Score : " + ofToString(score), (Vector3({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 })).v3());
+    }
 }

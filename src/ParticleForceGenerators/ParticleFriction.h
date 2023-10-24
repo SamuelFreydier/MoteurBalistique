@@ -11,9 +11,9 @@ private:
     float m_frictionCoefficient;
 
 public:
-    ParticleFriction( const float& frictionCoefficient, const Vector3& gravity = Vector3( 0, 9.81, 0 ) );
+    ParticleFriction( const float& frictionCoefficient, const Vector3& gravity = Vector3( 0, -9.81, 0 ) ); 
 
-    virtual void updateForce( Particle* particle, float duration ) override;
+    virtual void updateForce( Particle* particle, float secondsElapsedSincePreviousUpdate) override;
 
     const Vector3& getFriction() const { return m_friction; }
     void setFriction( const Vector3& friction ) { m_friction = friction; }

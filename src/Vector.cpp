@@ -100,6 +100,20 @@ Vector3 Vector3::operator+( const Vector3& vector ) const
     return Vector3( x + vector.x, y + vector.y, z + vector.z );
 }
 
+/**
+* @brief Surcharge de l'addition
+* @param vector
+* @return
+*/
+Vector3& Vector3::operator+=(const Vector3& vector)
+{
+    *this = *this + vector;
+
+    return *this;
+}
+
+
+
 Vector3 Vector3::operator-() const
 {
     return *this * -1;
@@ -115,6 +129,45 @@ Vector3& Vector3::operator-=( const Vector3& vector )
     *this = *this - vector;
 
     return *this;
+}
+
+/**
+* @brief Surcharge de l'operateur =
+* @param vector
+* @return
+*/
+Vector3& Vector3::operator=(const Vector3& vector)
+{
+    x = vector.x;
+    y = vector.y;
+    z = vector.z;
+
+    return *this;
+}
+
+
+/**
+* @brief Test d'égalité
+* @param vector
+* @return
+*/
+bool Vector3::operator==(const Vector3& vector) const
+{
+    bool isEqual = false;
+
+    if (x == vector.x &&
+        y == vector.y &&
+        z == vector.z)
+    {
+        isEqual = true;
+    }
+
+    return isEqual;
+}
+
+bool Vector3::operator!=(const Vector3& vector) const
+{
+    return !(*this == vector);
 }
 
 void Vector3::clear()
@@ -160,55 +213,6 @@ void Vector3::normalize()
     *this = normalized();
 }
 
-/**
-* @brief Surcharge de l'operateur =
-* @param vector
-* @return
-*/
-Vector3& Vector3::operator=( const Vector3& vector )
-{
-    x = vector.x;
-    y = vector.y;
-    z = vector.z;
-
-    return *this;
-}
-
-/**
-* @brief Surcharge de l'addition
-* @param vector
-* @return
-*/
-Vector3& Vector3::operator+=( const Vector3& vector )
-{
-    *this = *this + vector;
-
-    return *this;
-}
-
-/**
-* @brief Test d'égalité
-* @param vector
-* @return
-*/
-bool Vector3::operator==( const Vector3& vector ) const
-{
-    bool isEqual = false;
-
-    if( x == vector.x &&
-        y == vector.y &&
-        z == vector.z )
-    {
-        isEqual = true;
-    }
-
-    return isEqual;
-}
-
-bool Vector3::operator!=( const Vector3& vector ) const
-{
-    return !( *this == vector );
-}
 
 /**
  * @brief Calcule la distance entre deux vecteurs
