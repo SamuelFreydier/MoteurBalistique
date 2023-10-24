@@ -104,7 +104,13 @@ void Particle::draw() const
 
     float scaleReferential = Engine::getInstance()->getReferential().getScale();
 
-    ofSetColor(m_color.getX(), m_color.getY(), m_color.getZ());
+    Vector3 drawColor = m_color;
+    if (isSelected)
+    {
+        drawColor = Vector3(200, 200, 200);
+    }
+
+    ofSetColor(drawColor.getX(), drawColor.getY(), drawColor.getZ());
     ofDrawCircle(positionGraphique.v3(), m_radius / scaleReferential); // On dessine sans oublier d'également mettre la taille de la particule à l'échelle
 
     if (getRadius() <= (0.3 * 0.6))

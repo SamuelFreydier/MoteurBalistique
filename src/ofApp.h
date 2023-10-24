@@ -63,6 +63,7 @@ class ofApp : public ofBaseApp
     private:
         MouseDragger draggerReferentialOrigin;
         MouseDragger draggerParticleLauncher;
+        MouseDragger draggerSelection;
 
         // l'indice 0 correspond au clic gauche, le 1 au clic scroll et le 2 au clic droit
         bool boolsMouseButtonPressed[3]; // initialisation à false sur tous les champs par défaut

@@ -23,7 +23,7 @@ MouseDragger::MouseDragger(const Vector3& newStartMousePosition, const float& ne
 
 void MouseDragger::drawDragger() const
 {
-	std::cout << isDraggingBig() << "\n";
+	//std::cout << isDraggingBig() << "\n";
 	Vector3 currentMousePosition = Vector3({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 });
 	float normeDeltaDragPosition = (currentMousePosition - startMousePosition).norm();
 
@@ -54,6 +54,31 @@ void MouseDragger::drawDragger() const
 	ofSetColor(255, (1 - adjustedValue) * 255, adjustedValue * 255);
 	ofDrawBitmapString(ofToString(normeDeltaDragPosition * referentialScale) + " m/s\n" + ofToString(particleMass) + " kg", (currentMousePosition + Vector3({ 20.0, 20.0, 0.0 })).v3());
 }
+
+
+void MouseDragger::drawSelectionDragger() const
+{
+	const Vector3 coinHautGauche = Vector3(std::min(startMousePosition.x, (float)ofGetMouseX()), std::min(startMousePosition.y, (float)ofGetMouseY()));
+	const float w = std::abs(ofGetMouseX() - startMousePosition.x);
+	const float h = std::abs(ofGetMouseY() - startMousePosition.y);
+
+
+	ofSetColor(100, 100, 100);
+	ofDrawRectangle(coinHautGauche.v2(), w, h);
+
+
+}
+
+
+void MouseDragger::setSelectedParticles(const Engine::Particles& newSelectedParticles)
+{ 
+	selectedParticles = newSelectedParticles; 
+
+	for (Particle* selectedParticle : selectedParticles)
+	{
+		selectedParticle->isSelected = true;
+	}
+};
 
 
 void MouseDragger::changeParticleMass(const ofMouseEventArgs& mouse)

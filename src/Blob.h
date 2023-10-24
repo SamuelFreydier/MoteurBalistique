@@ -21,7 +21,6 @@ class Blob
 
 		const int nbrParticle = 10;
 		const float sponeRadius = 5;
-		const int nbrMaxAssos = 2;
 
 
 	public:

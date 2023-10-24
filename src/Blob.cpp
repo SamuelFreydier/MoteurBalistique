@@ -45,6 +45,21 @@ Blob::Blob(const std::vector<Particle*>& particlesToAssembly)
 
 void Blob::initParticleAssociations()
 {
+	// Très moche mais ça sert à ne pas avoir de boucle infinie
+	int nbrMaxAssos;
+	if (blobParticles.size() >= 3)
+	{
+		nbrMaxAssos = 2;
+	}
+	else if (blobParticles.size() == 2)
+	{
+		nbrMaxAssos = 1;
+	}
+	else
+	{
+		nbrMaxAssos = 0;
+	}
+
 	for (Particle* blobParticle : blobParticles) // On déclare certains couples de particules qui seront reliées par un ressort. Chaque particule doit avoir au moins nbrMaxAssos ressorts
 	{
 		// par exemple avec 10 particules et nbrMaxAssos, il est possible qu'un groupe de 3 particules attachées entre elles de façon circulaire se 

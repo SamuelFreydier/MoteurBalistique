@@ -111,8 +111,11 @@ class Engine
         // Mise à jour GRAPHIQUE des particules
         void drawParticles() const;
 
-        // Déclenche une action si une particule est présente à l'endroit d'un clic souris. Renvoie false si rien n'a été cliqué.
+        // Renvoie la particule présente à l'endroit du clic souris. Renvoie nullptr si rien n'a été cliqué
         Particle* clickedParticle( const float& x, const float& y );
+
+        // Renvoie la liste (vector) de particules présentes dans l'aire de sélection de la souris. Renvoie vector de taille 0 si rien n'a été sélectionné
+        Particles selectedParticles(const Vector3& startMousePosition, const Vector3& currentMousePosition);
 
         Particles& getParticles() { return m_particles; }
         void addParticle( Particle* particle ) { m_particles.push_back( particle ); }
@@ -122,6 +125,7 @@ class Engine
 
         Blobs& getBlobs() { return m_blobs; }
         void addBlob(Blob* blob) { m_blobs.push_back(blob); }
+        void destroyCorruptedBlobs(Particle* corruptedParticle);
 
         const Vector3& getGravity() const { return m_gravity; }
         void setGravity( const Vector3& gravity ) { m_gravity = gravity; }

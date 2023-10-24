@@ -32,7 +32,7 @@ protected:
 public:
     // Passe à true pour donner l'instruction à l'Engine de le détruire
     bool m_destroyedLater = false;
-
+    bool isSelected = false;
 
     Particle( const float& mass = 1.0, const float& radius = 1.0, const Vector3& velocity = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& position = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& color = Vector3( { 255, 0, 0 } ), const bool& showParticleInfos = false);
     Particle( const Particle& particle );

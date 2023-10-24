@@ -249,6 +249,33 @@ void Engine::cleanup()
 }
 
 
+void Engine::destroyCorruptedBlobs(Particle* corruptedParticle)
+{
+    Blobs tempGoodBlobs;
+
+    for (Blob* blob : m_blobs) // On parcourt tous les blobs 
+    {
+        bool isBlobCorrupted = false;
+
+        for (Particle* blobParticle : blob->getBlobParticles())
+        {
+            if (blobParticle == corruptedParticle)
+            {
+                isBlobCorrupted = true;
+                break;
+            }
+        }
+
+        if (isBlobCorrupted == false)
+        {
+            tempGoodBlobs.push_back(blob);
+        }
+    }
+
+    m_blobs = tempGoodBlobs;
+}
+
+
 /**
  * @brief Dessine les particules
 */
@@ -257,6 +284,7 @@ void Engine::drawParticles() const
     for( Particle* currParticle : m_particles )
     {
         currParticle->draw();
+        currParticle->isSelected = false;
     }
 }
 
@@ -342,6 +370,58 @@ Particle* Engine::clickedParticle( const float& x, const float& y )
     }
 
     return clickedParticle;
+}
+
+
+Engine::Particles Engine::selectedParticles(const Vector3& startMousePosition, const Vector3& currentMousePosition)
+{
+    Particles theSelectedParticles;
+
+    const Vector3 startMecanicMousePosition = getReferential().conversionPositionMecaniqueGraphique(startMousePosition, false);
+    const Vector3 currentMecanicMousePosition = getReferential().conversionPositionMecaniqueGraphique(currentMousePosition, false);
+
+    float minX, maxX, minY, maxY;
+
+    if (startMecanicMousePosition.x < currentMecanicMousePosition.x)
+    {
+        minX = startMecanicMousePosition.x;
+        maxX = currentMecanicMousePosition.x;
+    }
+    else
+    {
+        minX = currentMecanicMousePosition.x;
+        maxX = startMecanicMousePosition.x;
+    }
+
+
+    if (startMecanicMousePosition.y < currentMecanicMousePosition.y)
+    {
+        minY = startMecanicMousePosition.y;
+        maxY = currentMecanicMousePosition.y;
+    }
+    else
+    {
+        minY = currentMecanicMousePosition.y;
+        maxY = startMecanicMousePosition.y;
+    }
+
+
+    for (Particle* particle : m_particles)
+    {
+        const float X = particle->getPosition().getX();
+        const float Y = particle->getPosition().getY();
+        const float radius = particle->getRadius();
+
+        const bool xIsGood = X + radius >= minX && X - radius <= maxX;
+        const bool yIsGood = Y + radius >= minY && Y - radius <= maxY;
+
+        if (xIsGood && yIsGood)
+        {
+            theSelectedParticles.push_back(particle);
+        }
+    }
+
+    return theSelectedParticles;
 }
 
 

@@ -16,7 +16,7 @@ void ofApp::setup()
     }*/
 
     groundContactGenerator.init( &Engine::getInstance()->getParticles() );
-    cableContactGenerator.init(&Engine::getInstance()->getBlobs());
+    cableContactGenerator.init( &Engine::getInstance()->getBlobs());
 
     Engine::getInstance()->addContactGenerator( &groundContactGenerator );
     Engine::getInstance()->addContactGenerator(&cableContactGenerator);
@@ -69,11 +69,24 @@ void ofApp::update()
 
     // Mise à jour physique
     Engine::getInstance()->runPhysics(elapsedSincePreviousUpdate.count());
+
+    // Détection de la sélection graphique de particules
+    if (draggerSelection.isDragging())
+    {
+        const Vector3 currentMousePosition = Vector3(ofGetMouseX(), ofGetMouseY());
+        draggerSelection.setSelectedParticles( Engine::getInstance()->selectedParticles(draggerSelection.getStartMousePosition(), currentMousePosition));
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw()
 {
+    // Dessiner l'aire de sélection de la souris si il y en a une 
+    if (draggerSelection.isDragging())
+    {
+        draggerSelection.drawSelectionDragger();
+    }
+
     // Dessiner le référentiel graphique
     Engine::getInstance()->getReferential().drawReferential();
 
@@ -126,18 +139,31 @@ void ofApp::mouseDragged( int x, int y, int button )
 {
     if (button == 0) // si dragging du clic gauche 
     {
-        if (draggerParticleLauncher.isDragging())
+        if (m_isShootingTrigger)
         {
-            //Engine::getInstance()->getReferential().dragOrigin({ (float)x, (float)y, 0.0 }, draggerParticleLauncher.getStartMousePosition(), draggerParticleLauncher.getStartThingPosition());
+            if (draggerParticleLauncher.isDragging() == false) // si le draggerParticleLauncher n'est pas encore actif, alors on en créée un nouveau et on fait rien de plus
+            {
+                draggerParticleLauncher = MouseDragger(Vector3(x, y), m_radiusSlider);
+            }
         }
-        else // si le draggerParticleLauncher n'est pas encore actif, alors on en créée un nouveau et on fait rien de plus
+        else
         {
-            draggerParticleLauncher = MouseDragger(Vector3({ (float)x, (float)y, 0.0 }), m_radiusSlider);
+
         }
     }
     else if (button == 1)
     {
+        if (m_isShootingTrigger)
+        {
 
+        }
+        else
+        {
+            if (draggerSelection.isDragging() == false) // si le draggerSelection n'est pas encore actif, alors on en créée un nouveau et on fait rien de plus
+            {
+                draggerSelection = MouseDragger(Vector3(x, y));
+            }
+        }
     }
     else if (button == 2) // s'il s'agit d'un dragging du clic droit, alors on applique un dragging à l'origine du référentiel
     {
@@ -147,7 +173,7 @@ void ofApp::mouseDragged( int x, int y, int button )
         }
         else // si le dragOrigin n'est pas encore actif, alors on en créée un nouveau et on fait rien de plus
         {
-            draggerReferentialOrigin = MouseDragger(Vector3({ (float)x, (float)y, 0.0 }), Engine::getInstance()->getReferential().getPointOrigine());
+            draggerReferentialOrigin = MouseDragger(Vector3(x, y), Engine::getInstance()->getReferential().getPointOrigine());
         }
     }
 }
@@ -195,8 +221,18 @@ void ofApp::mousePressed( int x, int y, int button )
         }
         else if (button == 1) // si clic molette 
         {
-            Blob* newBlob = new Blob(Engine::getInstance()->getParticles());
-            Engine::getInstance()->addBlob(newBlob);
+            Particle* clickedParticle = Engine::getInstance()->clickedParticle(x, y);
+            if (clickedParticle != nullptr) // si on a cliqué sur une particule
+            {
+                Engine::getInstance()->destroyCorruptedBlobs(clickedParticle); // on détruit tous les blobs dont cette particule fait partie mais on ne détruit pas les particules
+            }
+            /*
+            else // si on a cliqué sur rien, alors on prend toutes les particules de la map et on les réunit en seul gros blob
+            {
+                Blob* newBlob = new Blob(Engine::getInstance()->getParticles());
+                Engine::getInstance()->addBlob(newBlob);
+            }
+            */
         }
         else if (button == 2) // si clic droit, alors on essaie d'exploser des boules
         {
@@ -258,7 +294,19 @@ void ofApp::mouseReleased( int x, int y, int button )
     }
     else if (button == 1)
     {
+        if(m_isShootingTrigger == false) // il faut être en mode blob
+        {
+            if (draggerSelection.isDragging()) // alors on réunit les particules sélectionnées en un blob
+            {
+                if (draggerSelection.getSelectedParticles().size() >= 2) // Il faut minimum deux particules pour créer un blob
+                {
+                    Blob* newBlob = new Blob(draggerSelection.getSelectedParticles());
+                    Engine::getInstance()->addBlob(newBlob);
+                }
+            }
+        }
 
+        draggerSelection.draggingIsOver();
     }    
     else if (button == 2) // si relâchement d'un clic droit, alors on annule le dragging d'origine courant (si il n'est même pas actif, c'est pas grave)
     {
