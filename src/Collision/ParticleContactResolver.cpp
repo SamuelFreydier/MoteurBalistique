@@ -25,11 +25,11 @@ void ParticleContactResolver::resolveContacts( std::vector<ParticleContact>& con
 
         for( index = 0; index < numContacts; index++ )
         {
-            float sepVelocity = contactArray[ index ].calculateSeparatingVelocity();
-            if( sepVelocity > max &&
-                ( sepVelocity > 0 || contactArray[ index ].m_penetration > 0 ) )
+            float closingVelocity = contactArray[ index ].calculateClosingVelocity();
+            if( closingVelocity > max &&
+                ( closingVelocity > 0 || contactArray[ index ].m_penetration > 0 ) )
             {
-                max = sepVelocity;
+                max = closingVelocity;
                 maxIndex = index;
             }
         }

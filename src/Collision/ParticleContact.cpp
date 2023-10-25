@@ -1,12 +1,20 @@
 #include "ParticleContact.h"
 
+/**
+ * @brief Résolution d'une collision en fonction da la durée de la dernière frame
+ * @param duration 
+*/
 void ParticleContact::resolve( const float& duration )
 {
     resolveVelocity( duration );
     resolveInterpenetration( duration );
 }
 
-float ParticleContact::calculateSeparatingVelocity() const
+/**
+ * @brief Calcul de la vélocité relative dans le sens de la normale. La normale doit être dans le sens du contact du point de vue de la première particule.
+ * @return 
+*/
+float ParticleContact::calculateClosingVelocity() const
 {
     Vector3 relativeVelocity = m_particles[ 0 ]->getVelocity();
     if( m_particles[ 1 ] )
@@ -17,19 +25,24 @@ float ParticleContact::calculateSeparatingVelocity() const
     return relativeVelocity.dotProduct( m_contactNormal );
 }
 
+
+/**
+ * @brief Calcul de la nouvelle vélocité des deux acteurs de la collision (en prenant en compte les problèmes de rebond à l'état stationnaire et la friction)
+ * @return
+*/
 void ParticleContact::resolveVelocity( const float& duration )
 {
     // Trouve la vélocité dans la direction du contact
-    float separatingVelocity = calculateSeparatingVelocity();
+    float closingVelocity = calculateClosingVelocity();
     // Est-ce que le contact se sépare déjà, ou est-ce qu'il est stationnaire ?
-    if( separatingVelocity <= 0 )
+    if( closingVelocity <= 0 )
     {
         // Si un de ces cas, on ne fait pas d'impulsion
         return;
     }
 
     // Calcul de la nouvelle vélocité de séparation
-    float newSepVelocity = -separatingVelocity * m_restitution;
+    float newSepVelocity = -closingVelocity * m_restitution;
 
     // Vérifie l'augmentation de vélocité due à l'accélération seule (permet d'éviter des rebonds sur une seule frame entre deux particules collées)
     Vector3 accCausedVelocity = m_particles[ 0 ]->getAcceleration();
@@ -40,7 +53,7 @@ void ParticleContact::resolveVelocity( const float& duration )
     float accCausedSepVelocity = accCausedVelocity.dotProduct( m_contactNormal ) * duration;
 
     // Si la vélocité de rapprochement est due à une augmentation d'accélération, on la supprime de la vélocité de séparation
-    if( accCausedSepVelocity >= separatingVelocity )
+    if( accCausedSepVelocity >= closingVelocity )
     {
         newSepVelocity -= accCausedSepVelocity;
 
@@ -51,7 +64,7 @@ void ParticleContact::resolveVelocity( const float& duration )
         }
     }
 
-    float deltaVelocity = newSepVelocity - separatingVelocity;
+    float deltaVelocity = newSepVelocity - closingVelocity;
 
     // Application des changements de vélocité à chaque objet proportionnellement à leur masse
     // Plus grande masse => Moins de changement
@@ -85,7 +98,7 @@ void ParticleContact::resolveVelocity( const float& duration )
     // Gestion des frictions
     if( m_particles[1] == nullptr ) // pour l'instant on ne considère les frictions que contre des objets inamovibles de type "sol" ou "mur", on ignore les frictions particule-particule
     {
-        if (-0.2 <= separatingVelocity && separatingVelocity <= 0.2)// l'objet est au repos modulo les micro rebonds théoriquement gérés 
+        if (-0.2 <= closingVelocity && closingVelocity <= 0.2)// l'objet est au repos modulo les micro rebonds théoriquement gérés 
         {
             float forceNormale = m_particles[0]->getAcceleration().dotProduct(m_contactNormal) * duration * (-1);
             float friction;
@@ -121,6 +134,11 @@ void ParticleContact::resolveVelocity( const float& duration )
     }
 }
 
+
+/**
+ * @brief Calcul de la nouvelle position des particules de façon inversement proportionnelle à leur masse, de manière à ce qu'il n'y ait plus d'interpénétration
+ * @param duration 
+*/
 void ParticleContact::resolveInterpenetration( const float& duration )
 {
     // S'il n'y a pas de pénétration, tout ceci est inutile
