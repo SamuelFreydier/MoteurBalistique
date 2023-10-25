@@ -127,6 +127,8 @@ void Blob::eraseDeadParticle( std::shared_ptr<Particle> deadParticle)
 			{
 				if (asso.firstParticle != deadParticle && asso.secondParticle != deadParticle)
 				{
+					float sumRadius = asso.firstParticle->getRadius() + asso.secondParticle->getRadius();
+					asso.associationRestLength = sumRadius;
 					tempParticleAssociations.push_back(asso);
 				}
 			}

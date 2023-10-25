@@ -11,6 +11,9 @@ class Blob
 		{
 			std::shared_ptr<Particle> firstParticle;
 			std::shared_ptr<Particle> secondParticle;
+			float associationElasticity = 15.f;
+			float associationRestLength = 1.f;
+			float associationRestitution = 1.f;
 		};
 
 		typedef std::vector< ParticleAssociation_t> Partuples;

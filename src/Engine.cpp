@@ -154,27 +154,9 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
 
         for (Blob::ParticleAssociation_t blobParticleAssociation : blobParticleAssociations)
         {
-            // Loi de physique, la somme des interactions entre deux objets est nulle ou un truc du genre.
-            m_particleForceRegistry.add(blobParticleAssociation.firstParticle, std::make_shared<ParticleSpring>(blobParticleAssociation.secondParticle, 10, 1));
-            m_particleForceRegistry.add(blobParticleAssociation.secondParticle, std::make_shared<ParticleSpring>(blobParticleAssociation.firstParticle, 10, 1));
+            m_particleForceRegistry.add(blobParticleAssociation.firstParticle, std::make_shared<ParticleSpring>(blobParticleAssociation.secondParticle, blobParticleAssociation.associationElasticity, blobParticleAssociation .associationRestLength));
+            m_particleForceRegistry.add(blobParticleAssociation.secondParticle, std::make_shared<ParticleSpring>(blobParticleAssociation.firstParticle, blobParticleAssociation.associationElasticity, blobParticleAssociation.associationRestLength ));
         }
-        /*
-        Particles blobParticles = blob->getBlobParticles();
-
-        Particle* firstParticle = blobParticles[0];
-        for (Particle* blobParticle : blobParticles)
-        {
-            //const float rand1 = (float)(rand() % 1001) / 1000;
-            //blobParticle->setColor(Vector3(255 * rand1, 100, 100));
-
-            if (blobParticle != firstParticle)
-            {
-                m_particleForceRegistry.add(blobParticle, new ParticleSpring(firstParticle, 10, 1));
-            }
-
-            int lole = 1;
-        }
-        */
     }
 
     // Mise à jour des forces
