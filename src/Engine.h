@@ -108,6 +108,9 @@ class Engine
         // Nettoyage des particules non visibles
         void cleanup();
 
+        // Suppression de toutes les particules contenues dans Engine
+        void clear();
+
         // Mise à jour GRAPHIQUE des particules
         void drawParticles() const;
 

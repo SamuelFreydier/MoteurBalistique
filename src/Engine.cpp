@@ -227,6 +227,13 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
 }
 
 
+void Engine::clear()
+{
+    m_particles.clear();
+    m_tempAshFallParticles.clear();
+    m_blobs.clear();
+}
+
 /**
  * @brief Supprime les particules sorties de l'écran ou trop petites
 */
