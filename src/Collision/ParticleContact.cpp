@@ -45,17 +45,16 @@ void ParticleContact::resolveVelocity( const float& duration )
     float newSepVelocity = -closingVelocity * m_restitution;
 
     // Vérifie l'augmentation de vélocité due à l'accélération seule (permet d'éviter des rebonds sur une seule frame entre deux particules collées)
-    Vector3 accCausedVelocity = m_particles[ 0 ]->getAcceleration();
+    Vector3 accFrame = m_particles[ 0 ]->getAcceleration();
     if( m_particles[ 1 ] )
     {
-        accCausedVelocity -= m_particles[ 1 ]->getAcceleration();
+        accFrame -= m_particles[ 1 ]->getAcceleration();
     }
-    float accCausedSepVelocity = accCausedVelocity.dotProduct( m_contactNormal ) * duration;
-
+    float accCausedClosingVelocity = accFrame.dotProduct( m_contactNormal ) * duration;
     // Si la vélocité de rapprochement est due à une augmentation d'accélération, on la supprime de la vélocité de séparation
-    if( accCausedSepVelocity >= closingVelocity )
+    if( accCausedClosingVelocity >= closingVelocity )
     {
-        newSepVelocity -= accCausedSepVelocity;
+        newSepVelocity += accCausedClosingVelocity;
 
         // Vérifie que l'on n'a pas enlevé plus de vélocité que nécessaire
         if( newSepVelocity > 0 )
