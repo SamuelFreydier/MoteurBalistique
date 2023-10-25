@@ -7,8 +7,8 @@ void ofApp::setup()
     srand( time( NULL ) );
 
     // Setup App
-    int particleCount = 10;
-    Engine::getInstance( particleCount * 100 );
+    int maxContacts = 100000;
+    Engine::getInstance( maxContacts );
 
     /*for( int i = 0; i < particleCount; i++ )
     {

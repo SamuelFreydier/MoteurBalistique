@@ -45,7 +45,7 @@ void ParticleContact::resolveVelocity( const float& duration )
         newSepVelocity -= accCausedSepVelocity;
 
         // Vérifie que l'on n'a pas enlevé plus de vélocité que nécessaire
-        if( newSepVelocity < 0 )
+        if( newSepVelocity > 0 )
         {
             newSepVelocity = 0;
         }
