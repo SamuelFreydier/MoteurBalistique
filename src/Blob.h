@@ -9,14 +9,14 @@ class Blob
 	public:
 		struct ParticleAssociation_t
 		{
-			Particle* firstParticle;
-			Particle* secondParticle;
+			std::shared_ptr<Particle> firstParticle;
+			std::shared_ptr<Particle> secondParticle;
 		};
 
 		typedef std::vector< ParticleAssociation_t> Partuples;
 
 	private :
-		std::vector<Particle*> blobParticles;
+		std::vector<std::shared_ptr<Particle>> blobParticles;
 		Partuples particleAssociations;
 
 		const int nbrParticle = 10;
@@ -25,13 +25,13 @@ class Blob
 
 	public:
 		Blob(const Vector3& sponePosition = Vector3());
-		Blob(const std::vector<Particle*>& particlesToAssembly);
+		Blob(const std::vector<std::shared_ptr<Particle>>& particlesToAssembly);
 		// TO DO destructeur ~Blob()
 
 		void initParticleAssociations();
-		void eraseDeadParticle(Particle* deadParticle);
+		void eraseDeadParticle(std::shared_ptr<Particle> deadParticle);
 
-		const std::vector<Particle*>& getBlobParticles() { return blobParticles; };
+		const std::vector<std::shared_ptr<Particle>>& getBlobParticles() { return blobParticles; };
 		const Partuples& getParticleAssociations() { return particleAssociations; };
 
 		//void move();

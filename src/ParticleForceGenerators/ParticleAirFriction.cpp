@@ -8,7 +8,7 @@ ParticleAirFriction::ParticleAirFriction(const Vector3& worldWind)
 }
 
 
-void ParticleAirFriction::updateForce(Particle* particle, float secondsElapsedSincePreviousUpdate)
+void ParticleAirFriction::updateForce( std::shared_ptr<Particle> particle, float secondsElapsedSincePreviousUpdate)
 {
     bool isFrictionGlitch = false;
     const Vector3 particleVelocity = particle->getVelocity();

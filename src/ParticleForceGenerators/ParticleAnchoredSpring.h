@@ -19,7 +19,7 @@ private:
 public:
     ParticleAnchoredSpring( Vector3* anchor, const float& springConstant, const float& restLength );
 
-    virtual void updateForce( Particle* particle, float duration ) override;
+    virtual void updateForce( std::shared_ptr<Particle> particle, float duration ) override;
 };
 
 #endif

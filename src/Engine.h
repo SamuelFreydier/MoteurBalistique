@@ -3,7 +3,6 @@
 
 #include "ParticleForceGenerators/ParticleForceRegistry.h"
 #include "ParticleForceGenerators/ParticleGravity.h"
-#include "ParticleForceGenerators/ParticleFriction.h"
 #include "ParticleForceGenerators/ParticleAirFriction.h"
 #include "ParticleForceGenerators/ParticleSpring.h"
 #include "Fireball.h"
@@ -18,8 +17,8 @@ class Engine
 {
     public:
         typedef std::vector<ParticleContactGenerator*> ContactGenerators;
-        typedef std::vector<Particle*> Particles;
-        typedef std::vector<Blob*> Blobs;
+        typedef std::vector<std::shared_ptr<Particle>> Particles;
+        typedef std::vector<std::shared_ptr<Blob>> Blobs;
 
     private:
         // Singleton
@@ -32,7 +31,6 @@ class Engine
         Particles m_tempAshFallParticles; // Pour éviter que le Integrate() d'une fireball ne modifie m_particles en droppant des ashfall ce qui fait planter le programme (bug d'itérateur)
         
         Blobs m_blobs;
-
 
         // Registre (associations particule / générateur de force) => Gère gravité/frottements/ressorts
         ParticleForceRegistry m_particleForceRegistry;
@@ -47,10 +45,10 @@ class Engine
         ContactGenerators m_contactGenerators;
 
         // Générateur de collision spécial (pour les collisions spontanées entre particules)
-        ParticleSpontaneousCollision* m_spontaneousCollisionGenerator;
+        std::shared_ptr<ParticleSpontaneousCollision> m_spontaneousCollisionGenerator;
 
         // Liste des collisions
-        ParticleContact* m_contacts;
+        std::vector<ParticleContact> m_contacts;
 
         // Nombre maximal de collisions autorisées
         int m_maxContacts;
@@ -115,20 +113,20 @@ class Engine
         void drawParticles() const;
 
         // Renvoie la particule présente à l'endroit du clic souris. Renvoie nullptr si rien n'a été cliqué
-        Particle* clickedParticle( const float& x, const float& y );
+        std::shared_ptr<Particle> clickedParticle( const float& x, const float& y );
 
         // Renvoie la liste (vector) de particules présentes dans l'aire de sélection de la souris. Renvoie vector de taille 0 si rien n'a été sélectionné
         Particles selectedParticles(const Vector3& startMousePosition, const Vector3& currentMousePosition);
 
         Particles& getParticles() { return m_particles; }
-        void addParticle( Particle* particle ) { m_particles.push_back( particle ); }
+        void addParticle( std::shared_ptr<Particle> particle ) { m_particles.push_back( particle ); }
 
         Particles& getTempAshFallParticles() { return m_tempAshFallParticles; }
-        void addTempAshFallParticles(Particle* particle) { m_tempAshFallParticles.push_back(particle); }
+        void addTempAshFallParticles( std::shared_ptr<Particle> particle) { m_tempAshFallParticles.push_back(particle); }
 
         Blobs& getBlobs() { return m_blobs; }
-        void addBlob(Blob* blob) { m_blobs.push_back(blob); }
-        void destroyCorruptedBlobs(Particle* corruptedParticle);
+        void addBlob(std::shared_ptr<Blob> blob) { m_blobs.push_back(blob); }
+        void destroyCorruptedBlobs(std::shared_ptr<Particle> corruptedParticle);
 
         const Vector3& getGravity() const { return m_gravity; }
         void setGravity( const Vector3& gravity ) { m_gravity = gravity; }

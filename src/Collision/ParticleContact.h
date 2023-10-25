@@ -12,7 +12,7 @@ class ParticleContact
 
 public:
     // Particules impliquées dans le contact. La seconde particule est à nullptr si la collision est entre l'objet et la scène
-    Particle* m_particles[ 2 ];
+    std::shared_ptr<Particle> m_particles[ 2 ];
 
     // Coefficient normal de restitution au niveau du contact
     float m_restitution;

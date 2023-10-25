@@ -6,7 +6,7 @@ ParticleGravity::ParticleGravity( const Vector3& gravity )
 
 }
 
-void ParticleGravity::updateForce( Particle* particle, float duration )
+void ParticleGravity::updateForce( std::shared_ptr<Particle> particle, float duration )
 {
     float particleMass = particle->getMass();
 

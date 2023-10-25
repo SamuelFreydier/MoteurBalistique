@@ -18,9 +18,9 @@ Referential Engine::s_referential = Referential();
 Engine::Engine( const int& maxContacts, const int& iterations )
     : m_contactResolver( iterations ), m_maxContacts( maxContacts )
 {
-    m_contacts = new ParticleContact[ maxContacts ];
+    m_contacts = std::vector<ParticleContact>( maxContacts, ParticleContact() );
 
-    m_spontaneousCollisionGenerator = new ParticleSpontaneousCollision();
+    m_spontaneousCollisionGenerator = std::make_shared<ParticleSpontaneousCollision>();
     m_spontaneousCollisionGenerator->m_restitution = 1.f;
 
     m_calculateIterations = ( iterations == 0 );
@@ -28,16 +28,8 @@ Engine::Engine( const int& maxContacts, const int& iterations )
 
 Engine::~Engine()
 {
-    while( !m_particles.empty() )
-    {
-        delete m_particles.back();
-        m_particles.pop_back();
-    }
-
-    // TO DO vider m_blobs
-
-    delete[] m_contacts;
-    delete m_spontaneousCollisionGenerator;
+    m_particles.clear();
+    m_blobs.clear();
 }
 
 /**
@@ -69,14 +61,14 @@ void Engine::shootParticle(const Vector3& initialPos, const Vector3& initialVelo
 {
     // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
     // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps
-    Particle* newParticle = nullptr;
+    std::shared_ptr<Particle> newParticle = nullptr;
     if( isFireball == true )
     {
-        newParticle = new Fireball( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos, s_colorShift );
+        newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos, s_colorShift );
     }
     else
     {
-        newParticle = new Particle( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos);
+        newParticle = std::make_shared<Particle>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos);
     }
 
     m_particles.push_back( newParticle );
@@ -88,22 +80,21 @@ void Engine::shootParticle(const Vector3& initialPos, const Vector3& initialVelo
 */
 int Engine::generateContacts()
 {
-    if( m_contacts == nullptr )
+    if( m_contacts.empty() )
     {
         return 0;
     }
 
-
-
     int limit = m_maxContacts;
-    ParticleContact* nextContact = m_contacts;
+    std::vector<ParticleContact>& nextContact = m_contacts;
+    int contactIndex = 0;
 
     // On itère dans tous les générateurs de collisions
     for( ContactGenerators::iterator gen = m_contactGenerators.begin(); gen != m_contactGenerators.end(); gen++ )
     {
-        int used = ( *gen )->addContact( nextContact, limit );
+        int used = ( *gen )->addContact( &nextContact[contactIndex], limit);
         limit -= used;
-        nextContact += used;
+        contactIndex += used;
 
         // Plus de collision possible.
         if( limit <= 0 )
@@ -115,16 +106,16 @@ int Engine::generateContacts()
     // On itère pour vérifier les collisions entre toutes les particules
     for( int firstParticleIdx = 0 ; firstParticleIdx < m_particles.size() && limit > 0; firstParticleIdx++  )
     {
-        Particle* firstParticle = m_particles[ firstParticleIdx ];
+        std::shared_ptr<Particle> firstParticle = m_particles[ firstParticleIdx ];
         for( int secondParticleIdx = firstParticleIdx + 1; secondParticleIdx < m_particles.size() && limit > 0; secondParticleIdx++ )
         {
-            Particle* secondParticle = m_particles[ secondParticleIdx ];
+            std::shared_ptr<Particle> secondParticle = m_particles[ secondParticleIdx ];
             m_spontaneousCollisionGenerator->m_particles[ 0 ] = firstParticle;
             m_spontaneousCollisionGenerator->m_particles[ 1 ] = secondParticle;
 
-            int used = m_spontaneousCollisionGenerator->addContact( nextContact, limit );
+            int used = m_spontaneousCollisionGenerator->addContact( &nextContact[contactIndex], limit);
             limit -= used;
-            nextContact += used;
+            contactIndex += used;
         }
     }
 
@@ -140,32 +131,32 @@ int Engine::generateContacts()
 void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
 {
     // Ajout des forces au registre
-    for( Particle* particle : m_particles )
+    for( std::shared_ptr<Particle>& particle : m_particles )
     {
         if (particle->getVelocity().norm() < 0.2) //on garde une marge en cas de microrebonds
             particle->setIsStationary(true);
         else
             particle->setIsStationary(false);
         // Gravité
-        m_particleForceRegistry.add( particle, new ParticleGravity( m_gravity ) );
+        m_particleForceRegistry.add( particle, std::make_shared<ParticleGravity>( m_gravity ) );
 
         // Frottements de l'air réalistes
         if (s_realisticAirResistance)
         {
-            m_particleForceRegistry.add(particle, new ParticleAirFriction(getWind()));
+            m_particleForceRegistry.add(particle, std::make_shared<ParticleAirFriction>(getWind()));
         }
     }
 
     // ajout des forces de ressort assurant l'intégrité des blobs
-    for (Blob* blob : m_blobs)
+    for ( std::shared_ptr<Blob>& blob : m_blobs)
     {
         Blob::Partuples blobParticleAssociations = blob->getParticleAssociations();
 
         for (Blob::ParticleAssociation_t blobParticleAssociation : blobParticleAssociations)
         {
             // Loi de physique, la somme des interactions entre deux objets est nulle ou un truc du genre.
-            m_particleForceRegistry.add(blobParticleAssociation.firstParticle, new ParticleSpring(blobParticleAssociation.secondParticle, 10, 1));
-            m_particleForceRegistry.add(blobParticleAssociation.secondParticle, new ParticleSpring(blobParticleAssociation.firstParticle, 10, 1));
+            m_particleForceRegistry.add(blobParticleAssociation.firstParticle, std::make_shared<ParticleSpring>(blobParticleAssociation.secondParticle, 10, 1));
+            m_particleForceRegistry.add(blobParticleAssociation.secondParticle, std::make_shared<ParticleSpring>(blobParticleAssociation.firstParticle, 10, 1));
         }
         /*
         Particles blobParticles = blob->getBlobParticles();
@@ -193,13 +184,13 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     m_particleForceRegistry.clear();
 
     // Mise à jour physique de chaque particule
-    for( Particle* particle : m_particles )
+    for( std::shared_ptr<Particle> particle : m_particles )
     {
         particle->integrate(secondsElapsedSincePreviousUpdate);
     }
 
     // Pour éviter que le Integrate() d'une fireball ne modifie m_particles en droppant des ashfall ce qui fait planter le programme (bug d'itérateur)
-    for (Particle* ashFallParticle : m_tempAshFallParticles)
+    for (std::shared_ptr<Particle> ashFallParticle : m_tempAshFallParticles)
     {
         m_particles.push_back(ashFallParticle);
     }
@@ -239,14 +230,14 @@ void Engine::clear()
 */
 void Engine::cleanup()
 {
-    std::vector<Particle*>::iterator particleIterator = m_particles.begin();
+    std::vector<std::shared_ptr<Particle>>::iterator particleIterator = m_particles.begin();
 
     while( particleIterator != m_particles.end() )
     {
         // on supprime les particules qui ont été marquées comme "à détruire" et celles qui sont devenues trop petites (le radius des trainées de cendres diminue automatiquement)
         if( ( *particleIterator )->getRadius() < 0.009 || (*particleIterator)->toBeDestroyed() ) 
         {
-            for (Blob* blob : m_blobs) // On l'efface d'abord des blobs dont elle faisait potentiellement partie
+            for (std::shared_ptr<Blob> blob : m_blobs) // On l'efface d'abord des blobs dont elle faisait potentiellement partie
             {
                 blob->eraseDeadParticle(*particleIterator);
             }
@@ -260,15 +251,15 @@ void Engine::cleanup()
 }
 
 
-void Engine::destroyCorruptedBlobs(Particle* corruptedParticle)
+void Engine::destroyCorruptedBlobs(std::shared_ptr<Particle> corruptedParticle)
 {
     Blobs tempGoodBlobs;
 
-    for (Blob* blob : m_blobs) // On parcourt tous les blobs 
+    for (std::shared_ptr<Blob> blob : m_blobs) // On parcourt tous les blobs 
     {
         bool isBlobCorrupted = false;
 
-        for (Particle* blobParticle : blob->getBlobParticles())
+        for ( std::shared_ptr<Particle> blobParticle : blob->getBlobParticles())
         {
             if (blobParticle == corruptedParticle)
             {
@@ -292,7 +283,7 @@ void Engine::destroyCorruptedBlobs(Particle* corruptedParticle)
 */
 void Engine::drawParticles() const
 {
-    for( Particle* currParticle : m_particles )
+    for( const std::shared_ptr<Particle>& currParticle : m_particles )
     {
         currParticle->draw();
         currParticle->isSelected = false;
@@ -341,10 +332,10 @@ Vector3 Engine::randshiftColor( const Vector3& color, const int& shiftAmount )
  * @param y 
  * @return 
 */
-Particle* Engine::clickedParticle( const float& x, const float& y )
+std::shared_ptr<Particle> Engine::clickedParticle( const float& x, const float& y )
 {
     bool clicked = false;
-    Particle* clickedParticle = nullptr;
+    std::shared_ptr<Particle> clickedParticle = nullptr;
 
 
     const bool conversionIsFromGraphicToMecanic = false;
@@ -354,7 +345,7 @@ Particle* Engine::clickedParticle( const float& x, const float& y )
     const float clicMecaniqueX = clicMecanique.getX();
     const float clicMecaniqueY = clicMecanique.getY();
 
-    std::vector<Particle*>::iterator particleIterator = m_particles.begin();
+    std::vector<std::shared_ptr<Particle>>::iterator particleIterator = m_particles.begin();
     while( particleIterator != m_particles.end() && clicked == false )
     {
         const float particlePositionX = (*particleIterator)->getPosition().getX();
@@ -417,7 +408,7 @@ Engine::Particles Engine::selectedParticles(const Vector3& startMousePosition, c
     }
 
 
-    for (Particle* particle : m_particles)
+    for ( std::shared_ptr<Particle> particle : m_particles)
     {
         const float X = particle->getPosition().getX();
         const float Y = particle->getPosition().getY();

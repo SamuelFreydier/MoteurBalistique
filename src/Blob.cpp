@@ -24,7 +24,7 @@ Blob::Blob(const Vector3& sponePosition)
 		}
 
 		//Engine::Particles lol = Engine::getInstance()->getParticles();
-		Particle* newBlobParticle = new Particle(particleMass, particleRadius, particleSponeVelocity, particleSponePosition, particleColor);
+		std::shared_ptr<Particle> newBlobParticle = std::make_shared<Particle>(particleMass, particleRadius, particleSponeVelocity, particleSponePosition, particleColor);
 		//Engine::getInstance()->addParticle(newBlobParticle);
 		blobParticles.push_back(newBlobParticle);
 	}
@@ -34,7 +34,7 @@ Blob::Blob(const Vector3& sponePosition)
 
 
 
-Blob::Blob(const std::vector<Particle*>& particlesToAssembly)
+Blob::Blob(const std::vector<std::shared_ptr<Particle>>& particlesToAssembly)
 {
 	blobParticles = particlesToAssembly;
 
@@ -60,7 +60,7 @@ void Blob::initParticleAssociations()
 		nbrMaxAssos = 0;
 	}
 
-	for (Particle* blobParticle : blobParticles) // On déclare certains couples de particules qui seront reliées par un ressort. Chaque particule doit avoir au moins nbrMaxAssos ressorts
+	for ( std::shared_ptr<Particle> blobParticle : blobParticles) // On déclare certains couples de particules qui seront reliées par un ressort. Chaque particule doit avoir au moins nbrMaxAssos ressorts
 	{
 		// par exemple avec 10 particules et nbrMaxAssos, il est possible qu'un groupe de 3 particules attachées entre elles de façon circulaire se 
 		// détache du blob principal mais la proba est faible. Il faudrait faire un algo de parcours de graphe pour etre sur que ça n'arrive pas
@@ -99,7 +99,7 @@ void Blob::initParticleAssociations()
 
 
 
-void Blob::eraseDeadParticle(Particle* deadParticle)
+void Blob::eraseDeadParticle( std::shared_ptr<Particle> deadParticle)
 {
 	bool isParticleInBlob = false;
 		

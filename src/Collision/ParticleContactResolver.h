@@ -19,7 +19,7 @@ public:
     ParticleContactResolver( const int& iterations );
 
     void setIterations( const int& iterations ) { m_iterations = iterations; }
-    void resolveContacts( ParticleContact* contactArray, const int& numContacts, const float& duration );
+    void resolveContacts( std::vector<ParticleContact>& contactArray, const int& numContacts, const float& duration );
 };
 
 #endif

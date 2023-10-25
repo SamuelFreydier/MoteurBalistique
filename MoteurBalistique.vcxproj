@@ -125,7 +125,6 @@
     <ClCompile Include="src\ParticleForceGenerators\ParticleAirFriction.cpp" />
     <ClCompile Include="src\Referential.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleForceRegistry.cpp" />
-    <ClCompile Include="src\ParticleForceGenerators\ParticleFriction.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleGravity.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleSpring.cpp" />
     <ClCompile Include="src\Vector.cpp" />
@@ -163,7 +162,6 @@
     <ClInclude Include="src\Referential.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleForceGenerator.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleForceRegistry.h" />
-    <ClInclude Include="src\ParticleForceGenerators\ParticleFriction.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleGravity.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleSpring.h" />
     <ClInclude Include="src\Vector.h" />

@@ -74,7 +74,7 @@ void MouseDragger::setSelectedParticles(const Engine::Particles& newSelectedPart
 { 
 	selectedParticles = newSelectedParticles; 
 
-	for (Particle* selectedParticle : selectedParticles)
+	for (std::shared_ptr<Particle> selectedParticle : selectedParticles)
 	{
 		selectedParticle->isSelected = true;
 	}

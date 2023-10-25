@@ -10,7 +10,7 @@ ParticleCable::ParticleCable(Particle* particle1, Particle* particle2, float max
 
 
 // Pour initier le générateur de câble pour le comportement câble des ressorts des blobs
-void ParticleCable::init(std::vector<Blob*>* blobs)
+void ParticleCable::init(std::vector<std::shared_ptr<Blob>>* blobs)
 {
     m_blobs = blobs;
 }
@@ -30,14 +30,14 @@ int ParticleCable::addContact( ParticleContact* contact, const int& limit ) cons
     const float coefRestitution = 1; // 0 = collision parfaitement inélastique et 1 = collision parfaitement élastique
 
     int count = 0;
-    for (Blob* blob : *m_blobs)
+    for ( std::shared_ptr<Blob> blob : *m_blobs)
     {
         Blob::Partuples blobParticleAssociations = blob->getParticleAssociations();
 
         for (Blob::ParticleAssociation_t blobParticleAssociation : blobParticleAssociations)
         {
-            Particle* particle1 = blobParticleAssociation.firstParticle;
-            Particle* particle2 = blobParticleAssociation.secondParticle;
+            std::shared_ptr<Particle> particle1 = blobParticleAssociation.firstParticle;
+            std::shared_ptr<Particle> particle2 = blobParticleAssociation.secondParticle;
 
             // Longueur du câble
             float length = particle1->getPosition().distance(particle2->getPosition());

@@ -11,7 +11,7 @@ class ParticleLink : public ParticleContactGenerator
 {
 public:
     // Paire de particules connectées
-    Particle* m_particles[ 2 ];
+    std::shared_ptr<Particle> m_particles[ 2 ];
 
 protected:
     float currentLength() const;

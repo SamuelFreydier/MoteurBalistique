@@ -6,7 +6,7 @@
  * @param springConstant
  * @param restLength
 */
-ParticleBungee::ParticleBungee( Particle* otherParticle, const float& springConstant, const float& restLength )
+ParticleBungee::ParticleBungee( std::shared_ptr<Particle> otherParticle, const float& springConstant, const float& restLength )
     : m_otherParticle( otherParticle ), m_springConstant( springConstant ), m_restLength( restLength )
 {
 }
@@ -17,7 +17,7 @@ ParticleBungee::ParticleBungee( Particle* otherParticle, const float& springCons
  * @param particle
  * @param duration
 */
-void ParticleBungee::updateForce( Particle* particle, float duration )
+void ParticleBungee::updateForce( std::shared_ptr<Particle> particle, float duration )
 {
     // Vecteur du ressort
     Vector3 force( particle->getPosition() );

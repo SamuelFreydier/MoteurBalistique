@@ -16,7 +16,7 @@ ParticleBuoyancy::ParticleBuoyancy( const float& maxDepth, const float& volume, 
  * @param particle 
  * @param duration 
 */
-void ParticleBuoyancy::updateForce( Particle* particle, float duration )
+void ParticleBuoyancy::updateForce( std::shared_ptr<Particle> particle, float duration )
 {
     // Calcul de la profondeur de la particule dans le liquide
     float depth = particle->getPosition().getY();

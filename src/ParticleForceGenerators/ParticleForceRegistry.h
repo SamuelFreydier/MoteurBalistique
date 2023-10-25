@@ -8,8 +8,8 @@ class ParticleForceRegistry
 public:
     struct ParticleForceRegistration
     {
-        Particle* particle;
-        ParticleForceGenerator* forceGenerator;
+        std::shared_ptr<Particle> particle;
+        std::shared_ptr<ParticleForceGenerator> forceGenerator;
     };
 
     typedef std::vector<ParticleForceRegistration> Registry;
@@ -18,9 +18,9 @@ private:
     Registry m_registry;
 
 public:
-    void add( Particle* particle, ParticleForceGenerator* forceGenerator );
-    void remove( Particle* particle, ParticleForceGenerator* forceGenerator );
-    void remove( Particle* particle );
+    void add( std::shared_ptr<Particle> particle, std::shared_ptr<ParticleForceGenerator> forceGenerator );
+    void remove( std::shared_ptr<Particle> particle, std::shared_ptr<ParticleForceGenerator> forceGenerator );
+    void remove( std::shared_ptr<Particle> particle );
     void clear();
     void updateForces( const float& secondsElapsedSincePreviousUpdate);
 };

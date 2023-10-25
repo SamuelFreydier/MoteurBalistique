@@ -11,7 +11,7 @@ ParticleContactResolver::ParticleContactResolver( const int& iterations )
  * @param numContacts 
  * @param duration 
 */
-void ParticleContactResolver::resolveContacts( ParticleContact* contactArray, const int& numContacts, const float& duration )
+void ParticleContactResolver::resolveContacts( std::vector<ParticleContact>& contactArray, const int& numContacts, const float& duration )
 {
     int index;
 

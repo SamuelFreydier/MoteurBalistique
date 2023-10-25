@@ -199,7 +199,7 @@ void ofApp::mousePressed( int x, int y, int button )
         }
         else if (button == 2) // si clic droit, alors on essaie d'exploser des boules
         {
-            Particle* clickedParticle = Engine::getInstance()->clickedParticle(x, y);
+            std::shared_ptr<Particle> clickedParticle = Engine::getInstance()->clickedParticle(x, y);
             if (clickedParticle != nullptr)
             {
                 clickedParticle->clicked();
@@ -212,10 +212,10 @@ void ofApp::mousePressed( int x, int y, int button )
         if (button == 0) // si clic gauche on essaie de cliquer sur une particule
         {
             const Vector3 mecanicSponePosition = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(Vector3(x, y), false);
-            Blob* newBlob = new Blob(mecanicSponePosition);
+            std::shared_ptr<Blob> newBlob = std::make_shared<Blob>(mecanicSponePosition);
             Engine::Particles blobParticles = newBlob->getBlobParticles();
 
-            for (Particle* blobParticle : blobParticles)
+            for (std::shared_ptr<Particle> blobParticle : blobParticles)
             {
                 Engine::getInstance()->addParticle(blobParticle);
             }
@@ -224,7 +224,7 @@ void ofApp::mousePressed( int x, int y, int button )
         }
         else if (button == 1) // si clic molette 
         {
-            Particle* clickedParticle = Engine::getInstance()->clickedParticle(x, y);
+            std::shared_ptr<Particle> clickedParticle = Engine::getInstance()->clickedParticle(x, y);
             if (clickedParticle != nullptr) // si on a cliqué sur une particule
             {
                 Engine::getInstance()->destroyCorruptedBlobs(clickedParticle); // on détruit tous les blobs dont cette particule fait partie mais on ne détruit pas les particules
@@ -239,7 +239,7 @@ void ofApp::mousePressed( int x, int y, int button )
         }
         else if (button == 2) // si clic droit, alors on essaie d'exploser des boules
         {
-            Particle* clickedParticle = Engine::getInstance()->clickedParticle(x, y);
+            std::shared_ptr<Particle> clickedParticle = Engine::getInstance()->clickedParticle(x, y);
             if (clickedParticle != nullptr)
             {
                 clickedParticle->m_destroyedLater = true;
@@ -303,7 +303,7 @@ void ofApp::mouseReleased( int x, int y, int button )
             {
                 if (draggerSelection.getSelectedParticles().size() >= 2) // Il faut minimum deux particules pour créer un blob
                 {
-                    Blob* newBlob = new Blob(draggerSelection.getSelectedParticles());
+                    std::shared_ptr<Blob> newBlob = std::make_shared<Blob>(draggerSelection.getSelectedParticles());
                     Engine::getInstance()->addBlob(newBlob);
                 }
             }
