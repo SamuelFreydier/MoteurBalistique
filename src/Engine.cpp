@@ -423,7 +423,7 @@ void Engine::unmergeBlobParticles( std::shared_ptr<Particle> selectedParticle, f
         // Mise à jour d'autres valeurs intéressantes comme la masse
         for( std::shared_ptr<Particle> childParticle : newParticles )
         {
-            childParticle->setMassReverse( selectedParticle->getInverseMass() * nbParticles );
+            childParticle->setMassReverse( selectedParticle->getMass() / nbParticles );
             childParticle->setColor( selectedParticle->getColor() );
             childParticle->setPosition( Vector3( selectedParticle->getPosition().x + cos( childIndex * radianOffset ) * selectedParticle->getRadius() * 2,
                                                  selectedParticle->getPosition().y + sin( childIndex * radianOffset ) * selectedParticle->getRadius() * 2,
