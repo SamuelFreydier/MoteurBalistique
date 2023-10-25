@@ -28,7 +28,7 @@ protected:
     void resolve( const float& duration );
 
     // Calcul de la vélocité de séparation au contact
-    float calculateClosingVelocity() const;
+    float calculateSeparatingVelocity() const;
 
 private:
     // Gère les calculs d'impulsions pour la collision
