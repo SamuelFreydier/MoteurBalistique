@@ -70,7 +70,7 @@ void ParticleContact::resolveVelocity( const float& duration )
     // Calcul de l'impulsion
     float impulse = deltaVelocity / totalInverseMass;
 
-    // Montant d'impulsion par unité d'inverse de masse
+    // Montant d'impulsion par unité d'inverse de masse. L'impulsion est déjà négative donc pas besoin de multiplier par -1.
     Vector3 impulsePerInverseMass = m_contactNormal * impulse;
 
     Vector3 newVelocityParticle0 = m_particles[0]->getVelocity();
