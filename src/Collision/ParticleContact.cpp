@@ -73,12 +73,12 @@ void ParticleContact::resolveVelocity( const float& duration )
     // Montant d'impulsion par unité d'inverse de masse
     Vector3 impulsePerInverseMass = m_contactNormal * impulse;
 
-    Vector3 newVelocityparticle0 = m_particles[0]->getVelocity();
+    Vector3 newVelocityParticle0 = m_particles[0]->getVelocity();
 
     // pour appliquer la friction, on a besoin du projeté du vecteur velocity dans le plan orthogonal au vecteur contact/rebond
     // projeté du vecteur u dans le plan orthogonal au vecteur v: Proj(u) = u- ((u.n)/(n.n))*n
     Vector3 contactNormalised = m_contactNormal.normalized();
-    Vector3 velocityParticle0Normalised = newVelocityparticle0;
+    Vector3 velocityParticle0Normalised = newVelocityParticle0;
     velocityParticle0Normalised -= contactNormalised * (velocityParticle0Normalised.dotProduct(contactNormalised) / contactNormalised.dotProduct(contactNormalised)); // m_velocityParticle0Normalized est la projection de la direction de déplacement de la balle dans le plan de la surface
     velocityParticle0Normalised = velocityParticle0Normalised.normalized();
 
@@ -93,9 +93,9 @@ void ParticleContact::resolveVelocity( const float& duration )
             {
                 // frictions statiques
                 friction = 0.6 * abs(forceNormale); //métal sur métal
-                if (friction > newVelocityparticle0.dotProduct(velocityParticle0Normalised))
+                if (friction > newVelocityParticle0.dotProduct(velocityParticle0Normalised))
                 {
-                    friction = newVelocityparticle0.dotProduct(velocityParticle0Normalised);
+                    friction = newVelocityParticle0.dotProduct(velocityParticle0Normalised);
                 }
             }
             else
@@ -104,14 +104,14 @@ void ParticleContact::resolveVelocity( const float& duration )
                 friction = 0.4 * abs(forceNormale);
             }
             //newVelocityparticle0.show();
-            newVelocityparticle0 -= velocityParticle0Normalised*friction;
+            newVelocityParticle0 -= velocityParticle0Normalised*friction;
         }
     }
-    newVelocityparticle0 += impulsePerInverseMass * m_particles[0]->getInverseMass();
+    newVelocityParticle0 += impulsePerInverseMass * m_particles[0]->getInverseMass();
 
     // Application des impulsions => en direction du contact, proportionnelles à l'inverse de la masse, et avec ajustement post-friction
     // Première particule
-    m_particles[ 0 ]->setVelocity( newVelocityparticle0 );
+    m_particles[ 0 ]->setVelocity( newVelocityParticle0 );
 
     // Deuxième particule
     if( m_particles[ 1 ] )
