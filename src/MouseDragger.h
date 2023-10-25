@@ -6,30 +6,30 @@
 class MouseDragger
 {
 	private:
-		bool isCurrentlyDragging;
-		Vector3 startMousePosition;
-		Vector3 startThingPosition;
+		bool m_isCurrentlyDragging;
+		Vector3 m_startMousePosition;
+		Vector3 m_startThingPosition;
 
-		Engine::Particles selectedParticles;
+		Engine::Particles m_selectedParticles;
 
-		float particleMass = 5;
-		float particleRadius = 5;
+		float m_particleMass = 5;
+		float m_particleRadius = 5;
 
 	public:
 		MouseDragger();
 		MouseDragger(const Vector3& newStartMousePosition, const Vector3& newStartThingPosition = Vector3());
 		MouseDragger(const Vector3& newStartMousePosition, const float& newParticleRadius);
-		void draggingIsOver() { isCurrentlyDragging = false; };
+		void draggingIsOver() { m_isCurrentlyDragging = false; };
 		void drawDragger() const;
 		void drawSelectionDragger() const;
 
-		const bool isDragging() const { return isCurrentlyDragging; };
-		const Vector3 getStartMousePosition() const { return startMousePosition; };
-		const Vector3 getStartThingPosition() const { return startThingPosition; };
-		const float& getParticleMass() const { return particleMass; };
-		const float& getParticleRadius() const { return particleRadius; };
+		const bool isDragging() const { return m_isCurrentlyDragging; };
+		const Vector3 getStartMousePosition() const { return m_startMousePosition; };
+		const Vector3 getStartThingPosition() const { return m_startThingPosition; };
+		const float& getParticleMass() const { return m_particleMass; };
+		const float& getParticleRadius() const { return m_particleRadius; };
 
-		const Engine::Particles& getSelectedParticles() { return selectedParticles; };
+		const Engine::Particles& getSelectedParticles() { return m_selectedParticles; };
 		void setSelectedParticles(const Engine::Particles& newSelectedParticles);
 
 		void changeParticleMass(const ofMouseEventArgs& mouse);

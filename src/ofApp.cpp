@@ -112,16 +112,38 @@ void ofApp::draw()
 //--------------------------------------------------------------
 void ofApp::keyPressed( int key )
 {
-    if (key == OF_KEY_DEL)
+    switch( key )
     {
-        Engine::getInstance()->clear();
+        // Nettoyage des particules
+        case OF_KEY_DEL:
+            Engine::getInstance()->clear();
+            break;
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased( int key )
 {
-
+    switch( key )
+    {
+        // Fusion des particules du blob sélectionné
+        case OF_KEY_F1: 
+        {
+            std::shared_ptr<Particle> clickedParticle = Engine::getInstance()->clickedParticle( ofGetMouseX(), ofGetMouseY() );
+            if( clickedParticle )
+            {
+                Engine::getInstance()->mergeBlobParticles( clickedParticle );
+            }
+        } break;
+        case OF_KEY_F2: 
+        {
+            std::shared_ptr<Particle> clickedParticle = Engine::getInstance()->clickedParticle( ofGetMouseX(), ofGetMouseY() );
+            if( clickedParticle )
+            {
+                Engine::getInstance()->unmergeBlobParticles( clickedParticle );
+            }
+        } break;
+    }
 }
 
 //--------------------------------------------------------------
@@ -176,7 +198,7 @@ void ofApp::mouseDragged( int x, int y, int button )
         }
         else // si le dragOrigin n'est pas encore actif, alors on en créée un nouveau et on fait rien de plus
         {
-            draggerReferentialOrigin = MouseDragger(Vector3(x, y), Engine::getInstance()->getReferential().getPointOrigine());
+            draggerReferentialOrigin = MouseDragger(Vector3(x, y), Engine::getInstance()->getReferential().getOriginPoint());
         }
     }
 }
@@ -287,7 +309,7 @@ void ofApp::mouseReleased( int x, int y, int button )
                 // on determine l'angle de lancer (cliquer en (1,0) mécanique = 0° et (0,1) = 90° car cercle trigo)
                 float shootingAngle = atan2(clicSourisMecanique.getY(), clicSourisMecanique.getX());
                 // on affiche dans la console l'angle et l'impulsion
-                std::cout << "Shooting Angle : " << shootingAngle << " / Impulse : " << m_impulseSlider << std::endl;
+                //std::cout << "Shooting Angle : " << shootingAngle << " / Impulse : " << m_impulseSlider << std::endl;
 
                 // on lance la particule avec l'angle et l'impulsion détermines
                 const Vector3 initialVelocity = Vector3({ m_impulseSlider * cos(shootingAngle), m_impulseSlider * sin(shootingAngle), 0.0 });

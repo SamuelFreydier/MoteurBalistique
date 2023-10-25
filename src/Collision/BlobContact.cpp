@@ -12,7 +12,7 @@ void BlobContact::init(std::vector<std::shared_ptr<Blob>>* blobs)
 * @brief Génère les collisions pour éviter que l'élasticité ne soit dépassé pour chaque couple de blob
 * @param contact
 * @param limit (>= 1)
-* @return 0 si le câble n'est pas sur-étendu. 1 si une collision est nécessaire.
+* @return Le nombre de câbles ayant détecté un écart trop grand pour un couple de particules.
 */
 int BlobContact::addContact( ParticleContact* contact, const int& limit ) const
 {
@@ -28,19 +28,27 @@ int BlobContact::addContact( ParticleContact* contact, const int& limit ) const
             std::shared_ptr<Particle> particle1 = blobParticleAssociation.firstParticle;
             std::shared_ptr<Particle> particle2 = blobParticleAssociation.secondParticle;
 
-            ParticleCable CableContact;
-            CableContact.m_maxLength = blobParticleAssociation.associationElasticity;
-            CableContact.m_restitution = blobParticleAssociation.associationRestitution;
-            CableContact.m_particles[ 0 ] = blobParticleAssociation.firstParticle;
-            CableContact.m_particles[ 1 ] = blobParticleAssociation.secondParticle;
-            
-            int used = CableContact.addContact( contact, limit );
-            count += used;
-            contact += used;
+            // Vecteur entre les deux particules
+            Vector3 midline = particle1->getPosition() - particle2->getPosition();
+            float midlineSize = midline.norm();
 
-            if (count >= limit)
+            // Assez grande distance
+            if( midlineSize >= particle1->getRadius() + particle2->getRadius() + blobParticleAssociation.associationElasticity )
             {
-                break;
+                ParticleCable CableContact;
+                CableContact.m_maxLength = blobParticleAssociation.associationElasticity;
+                CableContact.m_restitution = blobParticleAssociation.associationRestitution;
+                CableContact.m_particles[ 0 ] = blobParticleAssociation.firstParticle;
+                CableContact.m_particles[ 1 ] = blobParticleAssociation.secondParticle;
+
+                int used = CableContact.addContact( contact, limit );
+                count += used;
+                contact += used;
+
+                if( count >= limit )
+                {
+                    break;
+                }
             }
         }
 

@@ -125,8 +125,11 @@ class Engine
         void addTempAshFallParticles( std::shared_ptr<Particle> particle) { m_tempAshFallParticles.push_back(particle); }
 
         Blobs& getBlobs() { return m_blobs; }
-        void addBlob(std::shared_ptr<Blob> blob) { m_blobs.push_back(blob); }
+        void addBlob( std::shared_ptr<Blob> blob );
         void destroyCorruptedBlobs(std::shared_ptr<Particle> corruptedParticle);
+
+        void mergeBlobParticles( std::shared_ptr<Particle> selectedParticle );
+        void unmergeBlobParticles( std::shared_ptr<Particle> selectedParticle, float childrenRadius = 2.5f );
 
         const Vector3& getGravity() const { return m_gravity; }
         void setGravity( const Vector3& gravity ) { m_gravity = gravity; }

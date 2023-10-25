@@ -3,7 +3,7 @@
 
 #include "ParticleForceGenerator.h"
 
-// Applique une force de flottabilité par rapport à un plan liquide sur le plan XZ
+// WIP ATTENTION WIP : Applique une force de flottabilité par rapport à un plan liquide sur le plan XZ
 class ParticleBuoyancy : public ParticleForceGenerator
 {
 private:

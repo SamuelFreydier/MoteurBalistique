@@ -103,7 +103,7 @@ void ParticleContact::resolveVelocity( const float& duration )
                 // frictions dynamiques
                 friction = 0.4 * abs(forceNormale);
             }
-            newVelocityparticle0.show();
+            //newVelocityparticle0.show();
             newVelocityparticle0 -= velocityParticle0Normalised*friction;
         }
     }
@@ -147,15 +147,7 @@ void ParticleContact::resolveInterpenetration( const float& duration )
 
     // Application des montants de mouvement pour chaque particule pour la résolution de pénétration, proportionnellement à leur masse
     // Première particule
-    //std::cout << "Floor height: " << ofGetWindowHeight() << '\n';
-    //std::cout << "Particle radius: " << m_particles[ 0 ]->getRadius() << '\n';
-    //std::cout << "Position before: ";
-    //m_particles[ 0 ]->getPosition().show();
-    //std::cout << "Movement Per Inverse Mass";
-    //movementPerInverseMass.show();
     m_particles[ 0 ]->setPosition( m_particles[ 0 ]->getPosition() + movementPerInverseMass * m_particles[ 0 ]->getInverseMass() );
-    //std::cout << "Position after: ";
-    //m_particles[ 0 ]->getPosition().show();
     // Deuxième particule
     if( m_particles[ 1 ] )
     {

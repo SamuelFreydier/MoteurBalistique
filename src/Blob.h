@@ -11,34 +11,36 @@ class Blob
 		{
 			std::shared_ptr<Particle> firstParticle;
 			std::shared_ptr<Particle> secondParticle;
-			float associationElasticity = 15.f;
-			float associationRestLength = 1.f;
-			float associationRestitution = 1.f;
+			float associationElasticity = 30.f;
+			float associationRestLength = 5.f;
+			float associationRestitution = 0.1f;
 		};
 
 		typedef std::vector< ParticleAssociation_t> Partuples;
 
 	private :
-		std::vector<std::shared_ptr<Particle>> blobParticles;
-		Partuples particleAssociations;
+		std::vector<std::shared_ptr<Particle>> m_blobParticles;
+		Partuples m_particleAssociations;
 
-		const int nbrParticle = 10;
-		const float sponeRadius = 5;
-
+		const int NBR_PARTICLE = 10;
+		const float SPAWN_RADIUS = 5;
 
 	public:
-		Blob(const Vector3& sponePosition = Vector3());
+		Blob(const Vector3& spawnPosition = Vector3());
 		Blob(const std::vector<std::shared_ptr<Particle>>& particlesToAssembly);
-		// TO DO destructeur ~Blob()
 
 		void initParticleAssociations();
 		void eraseDeadParticle(std::shared_ptr<Particle> deadParticle);
 
-		const std::vector<std::shared_ptr<Particle>>& getBlobParticles() { return blobParticles; };
-		const Partuples& getParticleAssociations() { return particleAssociations; };
+		const std::vector<std::shared_ptr<Particle>>& getBlobParticles() { return m_blobParticles; }
+		std::vector<std::shared_ptr<Particle>>& getBlobParticlesMutable() { return m_blobParticles; }
+		void addParticle( std::shared_ptr<Particle> particle ) { m_blobParticles.push_back( particle ); }
+		const Partuples& getParticleAssociations() { return m_particleAssociations; }
 
-		//void move();
+		void clearParticleAssociations() { m_particleAssociations.clear(); }
+		void clearBlobParticles() { m_blobParticles.clear(); }
 
+		// void move();
 };
 
 #endif

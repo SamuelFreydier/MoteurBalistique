@@ -113,10 +113,6 @@ void Particle::draw() const
     ofSetColor(drawColor.getX(), drawColor.getY(), drawColor.getZ());
     ofDrawCircle(positionGraphique.v3(), m_radius / scaleReferential); // On dessine sans oublier d'également mettre la taille de la particule à l'échelle
 
-    if (getRadius() <= (0.3 * 0.6))
-    {
-        int lol = 2;
-    }
     if (m_showParticleInfos)
     {
         // calcul de la vitesse en m/s pour affichage en temps réel;

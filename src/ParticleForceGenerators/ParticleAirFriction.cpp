@@ -8,6 +8,11 @@ ParticleAirFriction::ParticleAirFriction(const Vector3& worldWind)
 }
 
 
+/**
+ * @brief Applique une force de vent à la particule
+ * @param particle 
+ * @param secondsElapsedSincePreviousUpdate 
+*/
 void ParticleAirFriction::updateForce( std::shared_ptr<Particle> particle, float secondsElapsedSincePreviousUpdate)
 {
     bool isFrictionGlitch = false;

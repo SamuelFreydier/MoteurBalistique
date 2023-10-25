@@ -1,11 +1,14 @@
 #include "Blob.h"
 
-
-Blob::Blob(const Vector3& sponePosition)
+/**
+ * @brief Construction d'un blob de NBR_PARTICLE à la position spawnPosition
+ * @param spawnPosition 
+*/
+Blob::Blob(const Vector3& spawnPosition)
 {
 	const float particleMass = 5;
 
-	for (int i = 0; i < nbrParticle; i++)
+	for (int i = 0; i < NBR_PARTICLE; i++)
 	{
 		const float rand1 = (float)(rand() % 1001) / 1000;
 		const float rand2 = (float)(rand() % 1001) / 1000;
@@ -14,8 +17,8 @@ Blob::Blob(const Vector3& sponePosition)
 
 		const float particleRadius = 1.5 * rand1 + 0.5;
 
-		const Vector3 particleSponeVelocity = Vector3(rand1 * 2 * sponeRadius - sponeRadius, rand2 * 2 * sponeRadius - sponeRadius);
-		const Vector3 particleSponePosition = sponePosition + Vector3(rand3 * 2 * sponeRadius - sponeRadius, rand4 * 2 * sponeRadius - sponeRadius);
+		const Vector3 particleSpawnVelocity = Vector3(rand1 * 2 * SPAWN_RADIUS - SPAWN_RADIUS, rand2 * 2 * SPAWN_RADIUS - SPAWN_RADIUS);
+		const Vector3 particleSpawnPosition = spawnPosition + Vector3(rand3 * 2 * SPAWN_RADIUS - SPAWN_RADIUS, rand4 * 2 * SPAWN_RADIUS - SPAWN_RADIUS);
 
 		Vector3 particleColor = Vector3(255, 100, 100);
 		if (i == 0)
@@ -24,34 +27,40 @@ Blob::Blob(const Vector3& sponePosition)
 		}
 
 		//Engine::Particles lol = Engine::getInstance()->getParticles();
-		std::shared_ptr<Particle> newBlobParticle = std::make_shared<Particle>(particleMass, particleRadius, particleSponeVelocity, particleSponePosition, particleColor);
+		std::shared_ptr<Particle> newBlobParticle = std::make_shared<Particle>(particleMass, particleRadius, particleSpawnVelocity, particleSpawnPosition, particleColor);
+
 		//Engine::getInstance()->addParticle(newBlobParticle);
-		blobParticles.push_back(newBlobParticle);
+		m_blobParticles.push_back(newBlobParticle);
 	}
 
 	initParticleAssociations();
 }
 
 
-
+/**
+ * @brief Construction d'un blob à partir d'un ensemble de particules
+ * @param particlesToAssembly 
+*/
 Blob::Blob(const std::vector<std::shared_ptr<Particle>>& particlesToAssembly)
 {
-	blobParticles = particlesToAssembly;
+	m_blobParticles = particlesToAssembly;
 
 	initParticleAssociations();
 }
 
 
-
+/**
+ * @brief Initialisation des associations entre les particules du blob
+*/
 void Blob::initParticleAssociations()
 {
 	// Très moche mais ça sert à ne pas avoir de boucle infinie
 	int nbrMaxAssos;
-	if (blobParticles.size() >= 3)
+	if (m_blobParticles.size() >= 3)
 	{
 		nbrMaxAssos = 2;
 	}
-	else if (blobParticles.size() == 2)
+	else if (m_blobParticles.size() == 2)
 	{
 		nbrMaxAssos = 1;
 	}
@@ -60,7 +69,7 @@ void Blob::initParticleAssociations()
 		nbrMaxAssos = 0;
 	}
 
-	for ( std::shared_ptr<Particle> blobParticle : blobParticles) // On déclare certains couples de particules qui seront reliées par un ressort. Chaque particule doit avoir au moins nbrMaxAssos ressorts
+	for ( std::shared_ptr<Particle> blobParticle : m_blobParticles) // On déclare certains couples de particules qui seront reliées par un ressort. Chaque particule doit avoir au moins nbrMaxAssos ressorts
 	{
 		// par exemple avec 10 particules et nbrMaxAssos, il est possible qu'un groupe de 3 particules attachées entre elles de façon circulaire se 
 		// détache du blob principal mais la proba est faible. Il faudrait faire un algo de parcours de graphe pour etre sur que ça n'arrive pas
@@ -70,16 +79,16 @@ void Blob::initParticleAssociations()
 
 		while (nbrAssos < nbrMaxAssos)
 		{
-			const int randIndex = rand() % blobParticles.size();
+			const int randIndex = rand() % m_blobParticles.size();
 
-			if (blobParticles[randIndex] != blobParticle)
+			if (m_blobParticles[randIndex] != blobParticle)
 			{
 				bool assoAlreadyExists = false;
 
-				for (ParticleAssociation_t asso : particleAssociations)
+				for (ParticleAssociation_t asso : m_particleAssociations)
 				{
-					if ((asso.firstParticle == blobParticle && asso.secondParticle == blobParticles[randIndex])
-						|| (asso.secondParticle == blobParticle && asso.firstParticle == blobParticles[randIndex]))
+					if ((asso.firstParticle == blobParticle && asso.secondParticle == m_blobParticles[randIndex])
+						|| (asso.secondParticle == blobParticle && asso.firstParticle == m_blobParticles[randIndex]))
 					{
 						assoAlreadyExists = true;
 						nbrAssos++;
@@ -89,7 +98,7 @@ void Blob::initParticleAssociations()
 
 				if (assoAlreadyExists == false)
 				{
-					particleAssociations.push_back(ParticleAssociation_t({ blobParticle, blobParticles[randIndex] }));
+					m_particleAssociations.push_back(ParticleAssociation_t({ blobParticle, m_blobParticles[randIndex] }));
 					nbrAssos++;
 				}
 			}
@@ -98,22 +107,25 @@ void Blob::initParticleAssociations()
 }
 
 
-
+/**
+ * @brief Supprime les particules ayant été supprimées au préalable par Engine du blob
+ * @param deadParticle 
+*/
 void Blob::eraseDeadParticle( std::shared_ptr<Particle> deadParticle)
 {
 	bool isParticleInBlob = false;
 		
-	for (int i = 0; i < blobParticles.size(); i++)
+	for (int i = 0; i < m_blobParticles.size(); i++)
 	{
-		if (blobParticles[i] == deadParticle)
+		if (m_blobParticles[i] == deadParticle)
 		{
 			isParticleInBlob = true;
-			blobParticles.erase(blobParticles.begin() + i);
+			m_blobParticles.erase(m_blobParticles.begin() + i);
 			break;
 		}
 	}
 
-	if (blobParticles.size() == 0)
+	if (m_blobParticles.size() == 0)
 	{
 		// TO DO il faut se débrouiller pour enlever le blob entièrement mort de Engine::m_blobs
 	}
@@ -123,7 +135,7 @@ void Blob::eraseDeadParticle( std::shared_ptr<Particle> deadParticle)
 		{
 			Partuples tempParticleAssociations;
 
-			for (ParticleAssociation_t asso : particleAssociations)
+			for (ParticleAssociation_t asso : m_particleAssociations)
 			{
 				if (asso.firstParticle != deadParticle && asso.secondParticle != deadParticle)
 				{
@@ -133,7 +145,7 @@ void Blob::eraseDeadParticle( std::shared_ptr<Particle> deadParticle)
 				}
 			}
 
-			particleAssociations = tempParticleAssociations;
+			m_particleAssociations = tempParticleAssociations;
 		}
 	}
 }
