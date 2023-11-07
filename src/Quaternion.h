@@ -24,16 +24,38 @@ public:
 
     // Normalise le quaternion pour que sa norme soit de 1 et qu'il devienne un quaternion de rotation valide
     void normalize();
+    
+    // Norme du quaternion
+    float getNorm() const;
 
-    // Multiplications entre quaternions
-    Quaternion operator*( const Quaternion& other );
+    // Conjugué du quaternion
+    Quaternion getConjugate() const;
+
+    // Inverse du quaternion
+    Quaternion getInverse() const;
+
+    // Exponentation : fraction de la rotation du quaternion
+    Quaternion getExponentiation( const float& fraction );
+
+    // Interpolation linéaire sphérique (Spherical linear interpolation) entre le quaternion courant et un quaternion de destination en utilisant l'exponentiation
+    Quaternion slerp( const Quaternion& destination, const float& fraction );
+
+    // Opérations entre quaternions
+    Quaternion operator*( const Quaternion& other ) const;
     Quaternion& operator*=( const Quaternion& other );
+    Quaternion operator-() const;
 
-    // Tourne le quaternion d'un certain montant, indiqué par un vecteur
+    // Opérations avec des scalaires
+    Quaternion operator*( const float& scalar ) const;
+    Quaternion& operator*=( const float& scalar );
+    Quaternion operator/( const float& scalar ) const;
+    Quaternion& operator/=( const float& scalar );
+
+    // Tourne le quaternion d'un certain montant, indiqué par un vecteur transformé en quaternion
     void rotateByVector( const Vector3& vector );
 
-    // Met à jour la rotation avec un vecteur et une échelle. Permet de mettre à jour le quaternion avec une nouvelle rotation et le temps
-    void addScaledVector( const Vector3& vector, float scale );
+    // Met à jour la rotation en fonction d'un vecteur et du temps (cf. Millington page 172)
+    void addScaledVector( const Vector3& vector, float duration );
 
     // Getters (pour s'assurer de rester en lecture seule dans certains cas)
     const float& getR() const { return r; }
