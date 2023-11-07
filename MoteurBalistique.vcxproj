@@ -124,6 +124,7 @@
     <ClCompile Include="src\ParticleForceGenerators\ParticleBungee.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleBuoyancy.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleAirFriction.cpp" />
+    <ClCompile Include="src\Quaternion.cpp" />
     <ClCompile Include="src\Referential.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleForceRegistry.cpp" />
     <ClCompile Include="src\ParticleForceGenerators\ParticleGravity.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="src\ParticleForceGenerators\ParticleBungee.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleBuoyancy.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleAirFriction.h" />
+    <ClInclude Include="src\Quaternion.h" />
     <ClInclude Include="src\Referential.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleForceGenerator.h" />
     <ClInclude Include="src\ParticleForceGenerators\ParticleForceRegistry.h" />
