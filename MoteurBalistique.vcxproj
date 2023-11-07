@@ -104,6 +104,8 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Matrix4x4.cpp" />
+    <ClCompile Include="src\Matrix3x3.cpp" />
     <ClCompile Include="src\Blob.cpp" />
     <ClCompile Include="src\Collision\BlobContact.cpp" />
     <ClCompile Include="src\Collision\ParticleSpontaneousCollision.cpp" />
@@ -141,6 +143,8 @@
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxToggle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Matrix4x4.h" />
+    <ClInclude Include="src\Matrix3x3.h" />
     <ClInclude Include="src\Blob.h" />
     <ClInclude Include="src\Collision\BlobContact.h" />
     <ClInclude Include="src\Collision\ParticleSpontaneousCollision.h" />

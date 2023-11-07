@@ -93,7 +93,7 @@ class Matrix4x4
 		* Calcul de le déterminant de la sous matrice Matrix3x3
 		* pour le calcul du cofacteur utilisé dans la détermination d'une matrice inverse
 		*/
-		float determinantSousMatrice(const Matrix3x3 value);
+		float determinantSousMatrice(const Matrix3x3 value) { return value.determinant(); }
 };
 
 
