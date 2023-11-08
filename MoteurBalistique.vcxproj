@@ -22,7 +22,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
@@ -61,7 +61,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxGui\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\MoteurBalistique\CoreBalistique\src;%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxGui\src</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ObjectFileName>$(IntDir)\Build\%(RelativeDir)\$(Configuration)\</ObjectFileName>
@@ -104,32 +104,8 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Blob.cpp" />
-    <ClCompile Include="src\Collision\BlobContact.cpp" />
-    <ClCompile Include="src\Collision\ParticleSpontaneousCollision.cpp" />
-    <ClCompile Include="src\Collision\GroundContacts.cpp" />
-    <ClCompile Include="src\Collision\ParticleCable.cpp" />
-    <ClCompile Include="src\Collision\ParticleContact.cpp" />
-    <ClCompile Include="src\Collision\ParticleContactResolver.cpp" />
-    <ClCompile Include="src\Collision\ParticleLink.cpp" />
-    <ClCompile Include="src\Collision\ParticleRod.cpp" />
-    <ClCompile Include="src\MouseDragger.cpp" />
-    <ClCompile Include="src\Fireball.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
-    <ClCompile Include="src\Engine.cpp" />
-    <ClCompile Include="src\Matrix.cpp" />
-    <ClCompile Include="src\Particle.cpp" />
-    <ClCompile Include="src\ParticleForceGenerators\ParticleAnchoredSpring.cpp" />
-    <ClCompile Include="src\ParticleForceGenerators\ParticleBungee.cpp" />
-    <ClCompile Include="src\ParticleForceGenerators\ParticleBuoyancy.cpp" />
-    <ClCompile Include="src\ParticleForceGenerators\ParticleAirFriction.cpp" />
-    <ClCompile Include="src\Quaternion.cpp" />
-    <ClCompile Include="src\Referential.cpp" />
-    <ClCompile Include="src\ParticleForceGenerators\ParticleForceRegistry.cpp" />
-    <ClCompile Include="src\ParticleForceGenerators\ParticleGravity.cpp" />
-    <ClCompile Include="src\ParticleForceGenerators\ParticleSpring.cpp" />
-    <ClCompile Include="src\Vector.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxBaseGui.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxButton.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxColorPicker.cpp" />
@@ -142,33 +118,7 @@
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxToggle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Blob.h" />
-    <ClInclude Include="src\Collision\BlobContact.h" />
-    <ClInclude Include="src\Collision\ParticleSpontaneousCollision.h" />
-    <ClInclude Include="src\Collision\GroundContacts.h" />
-    <ClInclude Include="src\Collision\ParticleCable.h" />
-    <ClInclude Include="src\Collision\ParticleContact.h" />
-    <ClInclude Include="src\Collision\ParticleContactGenerator.h" />
-    <ClInclude Include="src\Collision\ParticleContactResolver.h" />
-    <ClInclude Include="src\Collision\ParticleLink.h" />
-    <ClInclude Include="src\Collision\ParticleRod.h" />
-    <ClInclude Include="src\MouseDragger.h" />
-    <ClInclude Include="src\Fireball.h" />
     <ClInclude Include="src\ofApp.h" />
-    <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\Matrix.h" />
-    <ClInclude Include="src\Particle.h" />
-    <ClInclude Include="src\ParticleForceGenerators\ParticleAnchoredSpring.h" />
-    <ClInclude Include="src\ParticleForceGenerators\ParticleBungee.h" />
-    <ClInclude Include="src\ParticleForceGenerators\ParticleBuoyancy.h" />
-    <ClInclude Include="src\ParticleForceGenerators\ParticleAirFriction.h" />
-    <ClInclude Include="src\Quaternion.h" />
-    <ClInclude Include="src\Referential.h" />
-    <ClInclude Include="src\ParticleForceGenerators\ParticleForceGenerator.h" />
-    <ClInclude Include="src\ParticleForceGenerators\ParticleForceRegistry.h" />
-    <ClInclude Include="src\ParticleForceGenerators\ParticleGravity.h" />
-    <ClInclude Include="src\ParticleForceGenerators\ParticleSpring.h" />
-    <ClInclude Include="src\Vector.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxBaseGui.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxButton.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxColorPicker.h" />
@@ -185,6 +135,9 @@
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
       <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="CoreBalistique\CoreBalistique.vcxproj">
+      <Project>{10624fad-d1b5-47c1-b94e-3d4494589c05}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

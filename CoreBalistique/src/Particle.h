@@ -22,11 +22,11 @@ protected:
 
 
     // Force résultante sur la particule
-    typedef struct 
+    struct accumForceSansGlitchFriction_t
     {
         Vector3 accumForce;
         bool glitchFriction = false;
-    } accumForceSansGlitchFriction_t;
+    };
 
     accumForceSansGlitchFriction_t m_accumForce;
 

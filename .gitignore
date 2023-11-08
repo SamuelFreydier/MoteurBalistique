@@ -38,7 +38,13 @@ obj/x64/*
 TestBalistique/x64/*
 TestBalistique/bin/*.dll
 TestBalistique/bin/*.pdb
+CoreBalistique/x64/*
+CoreBalistique/bin/*.dll
+CoreBalistique/bin/*.pdb
 
 *.vcxproj.*
 bin/*.pdb
 bin/TestBalistique.*
+bin/CoreBalistique.*
+
+packages/Microsoft.googletest.v140.windesktop.msvcstl.dyn.rt-dyn.1.8.1/*

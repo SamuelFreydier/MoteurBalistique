@@ -59,7 +59,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\MoteurBalistique\src;..\MoteurBalistique;src;..\;..\..\..\libs\openFrameworks;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\MoteurBalistique\CoreBalistique\src;..\MoteurBalistique\CoreBalistique;..\MoteurBalistique;..\CoreBalistique\src;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -99,7 +99,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\libs\openFrameworks\ofMain.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -113,12 +112,12 @@
     <ClCompile Include="TestQuaternion.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MoteurBalistique.vcxproj">
-      <Project>{7fd42df7-442e-479a-ba76-d0022f99702a}</Project>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\CoreBalistique\CoreBalistique.vcxproj">
+      <Project>{10624fad-d1b5-47c1-b94e-3d4494589c05}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
