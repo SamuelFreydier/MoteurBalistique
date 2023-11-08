@@ -173,7 +173,7 @@ Quaternion Quaternion::operator/( const float& scalar ) const
 {
     if( scalar == 0 )
     {
-        return;
+        return Quaternion();
     }
 
     Quaternion NewQuaternion( *this );
