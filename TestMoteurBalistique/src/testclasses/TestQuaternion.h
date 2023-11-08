@@ -1,5 +1,0 @@
-#ifndef TESTQUATERNION_H
-#define TESTQUATERNION_H
-
-
-#endif

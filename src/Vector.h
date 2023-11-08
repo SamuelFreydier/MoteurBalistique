@@ -1,6 +1,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+//#include "../openFrameworks/ofMain.h"
 #include <ofMain.h>
 
 // Un vecteur de dimension 3 => (x, y, z)
