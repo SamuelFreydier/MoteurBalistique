@@ -36,3 +36,4 @@
 *\x64
 *.vcxproj.*
 *.pdb
+bin/TestBalistique.*
