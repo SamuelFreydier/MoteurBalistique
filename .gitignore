@@ -14,7 +14,7 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-*.dll
+bin/*.dll
 
 # Fortran module files
 *.mod
@@ -33,7 +33,12 @@ bin/*.lib
 
 
 *.vs/
-*\x64
+x64/*
+obj/x64/*
+TestBalistique/x64/*
+TestBalistique/bin/*.dll
+TestBalistique/bin/*.pdb
+
 *.vcxproj.*
-*.pdb
+bin/*.pdb
 bin/TestBalistique.*
