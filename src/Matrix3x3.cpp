@@ -79,9 +79,9 @@ Matrix3x3 Matrix3x3::inverted() const
 		float g_ = result.determinantSousMatrice(get(1), get(2), get(4), get(5));
 		float h_ = -result.determinantSousMatrice(get(0), get(2), get(3), get(5));
 		float i_ = result.determinantSousMatrice(get(0), get(1), get(3), get(4));
-		Matrix3x3 result(a_, b_, c_, d_, e_, f_, g_, h_, i_);
-		result.transpose();
-		return result /= determinant();
+		Matrix3x3 resultat(a_, b_, c_, d_, e_, f_, g_, h_, i_);
+		resultat.transpose();
+		return resultat /= determinant();
 	}
 	else
 		return Matrix3x3(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
