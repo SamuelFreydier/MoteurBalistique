@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "src/Vector.h"
+#include "Vector.h"
 
 // Define a tolerance for floating-point comparisons
 const float EPSILON = 1e-6;
@@ -76,9 +76,4 @@ TEST_F(Vector3Test, Distance) {
 TEST_F(Vector3Test, Clear) {
     v1.clear();
     ASSERT_EQ(v1, Vector3(0.0f, 0.0f, 0.0f));
-}
-
-int main(int argc, char** argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

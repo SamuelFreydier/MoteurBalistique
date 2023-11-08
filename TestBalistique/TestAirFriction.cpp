@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "src/Particle.h"
-#include "src/ParticleForceGenerators/ParticleAirFriction.h"
+#include "Particle.h"
+#include "ParticleForceGenerators/ParticleAirFriction.h"
 
 const float EPSILON = 1e-6;
 
@@ -23,6 +23,7 @@ TEST_F(ParticleAirFrictionTest, UpdateForce) {
     particleAirFriction.updateForce(particle, secondsElapsedSincePreviousUpdate);
 
     Vector3 expectedForce = Vector3(0.00057392572f, 0.00114785144f, 0.00172177716f);
+
     ASSERT_NEAR(particle->getAccumForce().x, expectedForce.x, EPSILON);
     ASSERT_NEAR(particle->getAccumForce().y, expectedForce.y, EPSILON);
     ASSERT_NEAR(particle->getAccumForce().z, expectedForce.z, EPSILON);
@@ -47,9 +48,4 @@ TEST_F(ParticleAirFrictionTest, GlitchDetection) {
 
     Vector3 expectedVelocity = Vector3(1.0f, 2.0f, 3.0f);
     ASSERT_EQ(particle->getVelocity(), expectedVelocity);
-}
-
-int main(int argc, char** argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }
