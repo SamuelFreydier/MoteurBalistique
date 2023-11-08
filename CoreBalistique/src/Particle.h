@@ -67,6 +67,11 @@ public:
     const bool& isStationary() const { return m_isStationary; }
     void setIsStationary(const bool isStationary) { m_isStationary = isStationary; }
 
+    const Vector3& getAccumForce() const { return m_accumForce.accumForce; }
+
+    const bool& isGlitchedFriction() const { return m_accumForce.glitchFriction; }
+    void setIsGlitchedFriction(const bool isGlitchedFriction) { m_accumForce.glitchFriction = isGlitchedFriction; }
+
     bool toBeDestroyed() const { return m_destroyedLater; }
 
     // Gestion des forces

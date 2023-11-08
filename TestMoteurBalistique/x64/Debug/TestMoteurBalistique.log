@@ -1,0 +1,5 @@
+﻿  TestVector3.cpp
+E:\Cours\UQAC\Cours\Math_Physique_JV\of_v0.12.0_vs_release\apps\myApps\MoteurBalistique\src\Vector.h(4,10): fatal  error C1083: Impossible d'ouvrir le fichier include : 'ofMain.h' : No such file or directory
+  test_main.cpp
+E:\Cours\UQAC\Cours\Math_Physique_JV\of_v0.12.0_vs_release\apps\myApps\MoteurBalistique\src\Vector.h(4,10): fatal  error C1083: Impossible d'ouvrir le fichier include : 'ofMain.h' : No such file or directory
+  Génération de code en cours...
