@@ -30,7 +30,6 @@ namespace GroundContactsTest
 
     TEST_F(TestGroundContacts, SingleContact)
     {
-        // Un seul contact avec le sol, la fonction doit ajouter un contact à la liste
         std::shared_ptr<Particle> particle = std::make_shared<Particle>();
         particle->setPosition(Vector3(0.0f, -1.0f, 0.0f));
         particles.push_back(particle);
@@ -38,7 +37,6 @@ namespace GroundContactsTest
         ParticleContact contact;
         int result = groundContacts.addContact(&contact, 1);
 
-        // Ajoutez des assertions pour vérifier que le nombre de contacts est correct, que le contact est non nul et que les valeurs du contact sont correctes
         EXPECT_EQ(result, 1);
         EXPECT_EQ(contact.m_particles[0], particle);
         EXPECT_EQ(contact.m_particles[1], nullptr);
