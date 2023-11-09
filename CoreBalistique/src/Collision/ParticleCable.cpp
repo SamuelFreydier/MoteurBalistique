@@ -1,6 +1,5 @@
 #include "ParticleCable.h"
 
-
 /**
 * @brief Génère les collisions pour éviter que le câble soit brisé.
 * @param contact
@@ -13,7 +12,7 @@ int ParticleCable::addContact( ParticleContact* contact, const int& limit ) cons
     float length = currentLength();
 
     // Est-ce que le câble est trop étendu ?
-    if( length < m_maxLength )
+    if( length <= m_maxLength )
     {
         // Si non => pas besoin de collision
         return 0;

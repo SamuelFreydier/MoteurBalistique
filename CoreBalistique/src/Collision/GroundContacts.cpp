@@ -22,7 +22,6 @@ int GroundContacts::addContact( ParticleContact* contact, const int& limit ) con
             contact->m_restitution = 0.7f;
             contact++;
             count++;
-
         }
 
         if( count >= limit )

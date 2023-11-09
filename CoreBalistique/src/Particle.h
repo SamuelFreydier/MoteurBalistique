@@ -75,7 +75,7 @@ public:
     bool toBeDestroyed() const { return m_destroyedLater; }
 
     // Gestion des forces
-    void addForce( const Vector3& forceVector, const bool& isFrictionGlitch = false);
+    void addForce( const Vector3& forceVector, const bool& isFrictionGlitch = false, const Vector3& worldWind = Vector3() );
     void clearAccum();
 
     // Mise à jour et affichage à chaque frame

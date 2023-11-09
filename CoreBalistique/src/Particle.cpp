@@ -31,10 +31,12 @@ void Particle::setMassReverse(const float& mass)
  * @brief Ajoute la force forceVector au vecteur d'accumulation m_accumForce
  * @param forceVector
 */
-void Particle::addForce( const Vector3& forceVector, const bool& isFrictionGlitch )
+void Particle::addForce( const Vector3& forceVector, const bool& isFrictionGlitch, const Vector3& worldWind )
 {
     if (isFrictionGlitch)
     {
+        // Correction du glitch en ajustant la vélocité de la particule
+        setVelocity(worldWind);
         m_accumForce.glitchFriction = true;
     }
     else
