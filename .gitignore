@@ -47,4 +47,4 @@ bin/*.pdb
 bin/TestBalistique.*
 bin/CoreBalistique.*
 
-packages/Microsoft.googletest.v140.windesktop.msvcstl.dyn.rt-dyn.1.8.1/*
+packages/Microsoft.googletest.v140.windesktop.msvcstl.dyn.rt-dyn.1.8.1.7/*

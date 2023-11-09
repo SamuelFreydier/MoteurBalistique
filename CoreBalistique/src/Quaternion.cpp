@@ -134,6 +134,16 @@ Quaternion Quaternion::operator-() const
 }
 
 /**
+ * @brief Produit scalaire entre deux quaternions
+ * @param other 
+ * @return 
+*/
+float Quaternion::dotProduct( const Quaternion& other ) const
+{
+    return r * other.r + i * other.i + j * other.j + k * other.k;
+}
+
+/**
  * @brief Produit du quaternion par un scalaire
  * @param scalar 
  * @return 
@@ -199,29 +209,23 @@ Quaternion& Quaternion::operator/=( const float& scalar )
 }
 
 /**
- * @brief Tourne le quaternion d'un certain montant, indiqué par un vecteur transformé en quaternion
- * @param vector 
-*/
-void Quaternion::rotateByVector( const Vector3& vector )
-{
-    Quaternion NewQuaternion( 0, vector.x, vector.y, vector.z );
-    ( *this ) *= NewQuaternion;
-}
-
-/**
- * @brief Met à jour la rotation en fonction d'un vecteur et du temps (cf. Millington page 172)
- * @param vector : vecteur à ajouter
+ * @brief Met à jour la rotation en fonction d'une vélocité angulaire et du temps. g'(t) = g0 + 1/2 * w * g(t) * deltaTime
+ * @param angularVelocity : vélocité angulaire <=> vecteur w calculé au préalable à partir de la fréquence angulaire (vitesse / rayon)
  * @param duration : montant du vecteur à ajouter
 */
-void Quaternion::addScaledVector( const Vector3& vector, float duration )
+void Quaternion::applyAngularVelocity( const Vector3& angularVelocity, float deltaTime )
 {
-    // Quaternion de vélocité angulaire en fonction du temps
-    Quaternion NewQuaternion( 0, vector.x * duration, vector.y * duration, vector.z * duration );
+    // Quaternion de vélocité angulaire omega
+    Quaternion w( 0, angularVelocity.x, angularVelocity.y, angularVelocity.z );
    
-    NewQuaternion *= ( *this );
+    // calculIntermediaire = 1/2 * w * g * deltaTime
+    w *= 0.5f;
+    w *= ( *this );
+    w *= deltaTime;
 
-    r += NewQuaternion.r * 0.5f;
-    i += NewQuaternion.i * 0.5f;
-    j += NewQuaternion.j * 0.5f;
-    k += NewQuaternion.k * 0.5f;
+    // g' = g + calculIntermediare
+    r += w.r;
+    i += w.i;
+    j += w.j;
+    k += w.k;
 }
