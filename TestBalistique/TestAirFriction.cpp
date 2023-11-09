@@ -24,9 +24,9 @@ TEST_F(ParticleAirFrictionTest, UpdateForce) {
 
     Vector3 expectedForce = Vector3(0.00057392572f, 0.00114785144f, 0.00172177716f);
 
-    ASSERT_NEAR(particle->getAccumForce().x, expectedForce.x, EPSILON);
-    ASSERT_NEAR(particle->getAccumForce().y, expectedForce.y, EPSILON);
-    ASSERT_NEAR(particle->getAccumForce().z, expectedForce.z, EPSILON);
+    EXPECT_FLOAT_EQ(particle->getAccumForce().x, expectedForce.x, EPSILON);
+    EXPECT_FLOAT_EQ(particle->getAccumForce().y, expectedForce.y, EPSILON);
+    EXPECT_FLOAT_EQ(particle->getAccumForce().z, expectedForce.z, EPSILON);
 }
 
 TEST_F(ParticleAirFrictionTest, GlitchDetection) {

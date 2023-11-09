@@ -112,6 +112,11 @@
     <ClCompile Include="TestBungee.cpp" />
     <ClCompile Include="TestAirFriction.cpp" />
     <ClCompile Include="TestGravity.cpp" />
+    <ClCompile Include="TestGroundContacts.cpp" />
+    <ClCompile Include="TestParticleCable.cpp" />
+    <ClCompile Include="TestParticleContact.cpp" />
+    <ClCompile Include="TestParticleRod.cpp" />
+    <ClCompile Include="TestParticleSpontaneousCollision.cpp" />
     <ClCompile Include="TestQuaternion.cpp" />
     <ClCompile Include="TestSpring.cpp" />
     <ClCompile Include="TestVector3.cpp" />
