@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include"pch.h"
-#include"src/Matrix3x3.h"
+#include"Matrix3x3.h"
 
 namespace Matrix3x3Tests {
 	Matrix3x3 matriceNulle(0, 0, 0, 0, 0, 0, 0, 0, 0);
