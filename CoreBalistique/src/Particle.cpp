@@ -2,9 +2,9 @@
 #include "Engine.h"
 
 Particle::Particle( const float& mass, const float& radius, const Vector3& velocity, const Vector3& position, const Vector3& color, const bool& showParticleInfos)
-    : m_inverseMass( 1 / mass ), m_radius( radius ), m_velocity( velocity ), m_position( position ), m_color( color ), m_showParticleInfos(showParticleInfos)
+    : m_radius( radius ), m_velocity( velocity ), m_position( position ), m_color( color ), m_showParticleInfos(showParticleInfos)
 {
-
+    setMassReverse(mass);
 }
 
 Particle::Particle( const Particle& particle )
@@ -14,15 +14,29 @@ Particle::Particle( const Particle& particle )
     m_accumForce = particle.m_accumForce;
 }
 
+void Particle::setMassReverse(const float& mass)
+{
+    if (mass == 0) 
+    {
+        m_inverseMass = std::numeric_limits<float>::max();
+    }
+    else
+    {
+        m_inverseMass = 1 / mass;
+    }
+}
+
 
 /**
  * @brief Ajoute la force forceVector au vecteur d'accumulation m_accumForce
  * @param forceVector
 */
-void Particle::addForce( const Vector3& forceVector, const bool& isFrictionGlitch )
+void Particle::addForce( const Vector3& forceVector, const bool& isFrictionGlitch, const Vector3& worldWind )
 {
     if (isFrictionGlitch)
     {
+        // Correction du glitch en ajustant la vélocité de la particule
+        setVelocity(worldWind);
         m_accumForce.glitchFriction = true;
     }
     else

@@ -41,7 +41,7 @@ public:
     // Accesseurs et Mutateurs
     const float& getInverseMass() const { return m_inverseMass; }
     float getMass() const { return 1 / m_inverseMass; }
-    void setMassReverse( const float& mass ) { m_inverseMass = 1 / mass; }
+    void setMassReverse(const float& mass);
 
     const bool& getShowParticleInfos() const { return m_showParticleInfos; }
     void setShowParticleInfos( const bool& showParticleInfos ) { m_showParticleInfos = showParticleInfos; }
@@ -67,10 +67,15 @@ public:
     const bool& isStationary() const { return m_isStationary; }
     void setIsStationary(const bool isStationary) { m_isStationary = isStationary; }
 
+    const Vector3& getAccumForce() const { return m_accumForce.accumForce; }
+
+    const bool& isGlitchedFriction() const { return m_accumForce.glitchFriction; }
+    void setIsGlitchedFriction(const bool isGlitchedFriction) { m_accumForce.glitchFriction = isGlitchedFriction; }
+
     bool toBeDestroyed() const { return m_destroyedLater; }
 
     // Gestion des forces
-    void addForce( const Vector3& forceVector, const bool& isFrictionGlitch = false);
+    void addForce( const Vector3& forceVector, const bool& isFrictionGlitch = false, const Vector3& worldWind = Vector3() );
     void clearAccum();
 
     // Mise à jour et affichage à chaque frame

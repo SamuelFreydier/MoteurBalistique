@@ -13,10 +13,9 @@ public:
     // Paire de particules connectées
     std::shared_ptr<Particle> m_particles[ 2 ];
 
-protected:
+public:
     float currentLength() const;
 
-public:
     /**
      * @brief Génère les collisions pour éviter que le lien soit brisé.
      * @param contact 
