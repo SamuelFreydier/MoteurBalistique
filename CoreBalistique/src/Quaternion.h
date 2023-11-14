@@ -44,6 +44,7 @@ public:
     Quaternion operator*( const Quaternion& other ) const;
     Quaternion& operator*=( const Quaternion& other );
     Quaternion operator-() const;
+    float dotProduct( const Quaternion& other ) const;
 
     // Opérations avec des scalaires
     Quaternion operator*( const float& scalar ) const;
@@ -51,11 +52,8 @@ public:
     Quaternion operator/( const float& scalar ) const;
     Quaternion& operator/=( const float& scalar );
 
-    // Tourne le quaternion d'un certain montant, indiqué par un vecteur transformé en quaternion
-    void rotateByVector( const Vector3& vector );
-
-    // Met à jour la rotation en fonction d'un vecteur et du temps (cf. Millington page 172)
-    void addScaledVector( const Vector3& vector, float duration );
+    // Met à jour la rotation en fonction d'une vélocité angulaire et du temps. g'(t) = g0 + 1/2 * w * g(t) * deltaTime
+    void applyAngularVelocity( const Vector3& angularVelocity, float deltaTime );
 
     // Getters (pour s'assurer de rester en lecture seule dans certains cas)
     const float& getR() const { return r; }
