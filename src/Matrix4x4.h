@@ -42,6 +42,7 @@ class Matrix4x4
 		Matrix4x4(std::vector<float> vecInit);
 
 
+
 		/**
 		* | a b c d |
 		* | e f g h |
@@ -68,7 +69,7 @@ class Matrix4x4
 		Matrix4x4 operator*(const vector<float>& value) const;
 
 		float determinant() const;
-		bool isInvertible() const { return determinant() == 0.0f; }
+		bool isInvertible() const { return determinant() != 0.0f; }
 		bool isOrthogonal() const;
 		bool isIdentity() const { return (get(0) == 1 && get(1) == 0 && get(2) == 0 && get(3) == 0 && get(4) == 0 && get(5) == 1 && get(6) == 0 && get(7) == 0 && get(8) == 0 && get(9) == 0 && get(10) == 1 && get(11) == 0 && get(12) == 0 && get(13) == 0 &&get(14) == 0 && get(15)==1); }
 		/*

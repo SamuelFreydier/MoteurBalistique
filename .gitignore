@@ -38,7 +38,7 @@ obj/x64/*
 TestBalistique/x64/*
 TestBalistique/bin/*.dll
 TestBalistique/bin/*.pdb
-
+packages/*
 *.vcxproj.*
 bin/*.pdb
 bin/TestBalistique.*

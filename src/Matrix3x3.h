@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector.h"
 #include<vector>
+#include "Quaternion.h"
 
 class Matrix3x3
 {
@@ -35,6 +36,11 @@ public:
 	*/
 	Matrix3x3(std::vector<float> vecInit);
 
+	/*
+	* Constructeur de matrice de rotation grâce à un quaternion selon la formule vue en cours (seance 8)
+	*/
+	Matrix3x3(Quaternion quaternion_);
+
 
 	/**
 	* | a b c |
@@ -59,7 +65,7 @@ public:
 	Matrix3x3 operator*(const Vector3& value) const;
 
 	float determinant() const;
-	bool isInvertible() const { return determinant() == 0.0f; }
+	bool isInvertible() const { return determinant() != 0.0f; }
 	bool isOrthogonal() const;
 	bool isIdentity() const { return (get(0) == 1 && get(1) == 0 && get(2) == 0 && get(3) == 0 && get(4) == 1 && get(5) == 0 && get(6) == 0 && get(7) == 0 && get(8) == 1); }
 	/*

@@ -87,7 +87,7 @@ Matrix4x4 Matrix4x4::inverted() const
 		float h_ = Matrix3x3(get(0), get(1), get(2), get(8), get(9), get(10), get(12), get(13), get(14)).determinant();
 
 		float i_ = Matrix3x3(get(1), get(2), get(3), get(5), get(6), get(7), get(13), get(14), get(15)).determinant();
-		float j_ =-Matrix3x3(get(0), get(2), get(3), get(4), get(6), get(7), get(12), get(14), get(15)).determinant();
+		float j_ = -Matrix3x3(get(0), get(2), get(3), get(4), get(6), get(7), get(12), get(14), get(15)).determinant();
 		float k_ = Matrix3x3(get(0), get(1), get(3), get(4), get(5), get(7), get(12), get(13), get(15)).determinant();
 		float l_ = -Matrix3x3(get(0), get(1), get(2), get(4), get(5), get(6), get(12), get(13), get(14)).determinant();
 
@@ -144,5 +144,5 @@ Matrix4x4 Matrix4x4::operator/(const float& value) const
 
 Matrix4x4& Matrix4x4::operator/=(const float& value)
 {
-	return *this = *this * value;
+	return *this = *this / value;
 }

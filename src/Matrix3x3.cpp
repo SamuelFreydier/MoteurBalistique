@@ -40,6 +40,24 @@ Matrix3x3::Matrix3x3(std::vector<float> vecInit)
 	}
 }
 
+Matrix3x3::Matrix3x3(Quaternion quaternion_)
+{
+	matrix.reserve(9);
+	float w = quaternion_.getR();
+	float x = quaternion_.getI();
+	float y = quaternion_.getJ();
+	float z = quaternion_.getK();
+	matrix.push_back(1 - 2 * (y * y + z * z));
+	matrix.push_back(2 * (x * y + z * w));
+	matrix.push_back(2 * (x * z + y * w));
+	matrix.push_back(2 * (x * y + z * w));
+	matrix.push_back(1 - 2 * (x * x + z * z));
+	matrix.push_back(2 * (y * z + x * w));
+	matrix.push_back(2 * (x * z + y * w));
+	matrix.push_back(2 * (y * z + x * w));
+	matrix.push_back(1 - 2*(x * x + y * y));
+}
+
 void Matrix3x3::transpose()
 {
 	// réutilisation du code pour éviter la redondance malgré une légère perte de performance
@@ -113,12 +131,12 @@ Matrix3x3 Matrix3x3::operator*(const Matrix3x3& value) const
 	return Matrix3x3(get(0) * value.get(0) + get(1) * value.get(3) + get(2) * value.get(6), //a 
 		get(0) * value.get(1) + get(1) * value.get(4) + get(2) * value.get(7), //b
 		get(0) * value.get(2) + get(1) * value.get(5) + get(2) * value.get(8),//c
-		get(1)* value.get(0) + get(4)* value.get(3) + get(7) * value.get(6),//d
-		get(1) * value.get(1) +get(4) * value.get(4) +get(7)* value.get(7), //e
-		get(1) * value.get(2) +get(4) * value.get(5) +get(7)* value.get(8), //f
-		get(2) * value.get(0) +get(5) * value.get(3) +get(8)* value.get(6), //g
-		get(2) * value.get(1) +get(5) * value.get(4) +get(8)* value.get(7), //h
-		get(2) * value.get(2) +get(5) * value.get(5) +get(8)* value.get(8) //i
+		get(3)* value.get(0) + get(4)* value.get(3) + get(5) * value.get(6),//d
+		get(3) * value.get(1) +get(4) * value.get(4) +get(5)* value.get(7), //e
+		get(3) * value.get(2) +get(4) * value.get(5) +get(5)* value.get(8), //f
+		get(6) * value.get(0) +get(7) * value.get(3) +get(8)* value.get(6), //g
+		get(6) * value.get(1) +get(7) * value.get(4) +get(8)* value.get(7), //h
+		get(6) * value.get(2) +get(7) * value.get(5) +get(8)* value.get(8) //i
 		);
 	
 }
