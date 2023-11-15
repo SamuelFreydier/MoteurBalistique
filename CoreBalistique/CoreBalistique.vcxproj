@@ -170,6 +170,7 @@
     <ClInclude Include="src\ParticleForceGenerators\ParticleSpring.h" />
     <ClInclude Include="src\Quaternion.h" />
     <ClInclude Include="src\Referential.h" />
+    <ClInclude Include="src\Rigidbody.h" />
     <ClInclude Include="src\Vector.h" />
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +206,7 @@
     <ClCompile Include="src\ParticleForceGenerators\ParticleSpring.cpp" />
     <ClCompile Include="src\Quaternion.cpp" />
     <ClCompile Include="src\Referential.cpp" />
+    <ClCompile Include="src\Rigidbody.cpp" />
     <ClCompile Include="src\Vector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
