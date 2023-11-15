@@ -58,8 +58,6 @@ void ofApp::update()
     // Mise à jour des forces configurées
     Engine::getInstance()->setGravity( Vector3( { 0.0, -m_gravitySlider, 0.0 } ) );
     Engine::getInstance()->setDamping( m_dampingSlider );
-    Engine::getInstance()->setRealisticAirResistance(m_realisticAirLossToggle);
-    Engine::getInstance()->setWind(Vector3(m_windX_slider, m_windY_slider));
     Engine::getInstance()->setColorShift( m_colorShiftSlider );
 
     // Calcul du temps en secondes écoulé depuis la précédente mise à jour -> essentiel pour un moteur physique réaliste

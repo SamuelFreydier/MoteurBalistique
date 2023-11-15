@@ -59,12 +59,6 @@ class Engine
         // Frottements pas réaliste
         static float s_damping;
 
-        // Frottement air réaliste
-        static bool s_realisticAirResistance;
-
-        // Vent
-        static Vector3 s_wind;
-
         // Variation des couleurs
         static int s_colorShift;
 
@@ -82,16 +76,6 @@ class Engine
         static Engine* getInstance( const int& maxContacts = 0, const int& iterations = 0 );
 
         static Referential& getReferential() { return s_referential; };
-
-        
-
-        static const bool& getRealisticAirResistance() { return s_realisticAirResistance; }
-        static void setRealisticAirResistance(const bool& newRealisticAirResistance) { s_realisticAirResistance = newRealisticAirResistance; }
-
-        static const Vector3& getWind() { return s_wind; }
-        static void setWind(const Vector3& newWind) { s_wind = newWind; }
-
-        
 
         // Tire une nouvelle particule depuis une position et avec un certain angle et une certaine force
         void shootParticle( const Vector3& initialPos, const Vector3& initialVelocity, const float& mass = 1.0, const float& radius = 1.0, const Vector3& color = Vector3( { 255, 0, 0 } ), bool isFireball = false, bool m_showParticleInfos = false);

@@ -23,7 +23,7 @@ void ParticleAirFriction::updateForce( std::shared_ptr<Particle> particle, float
     const float frontalSurface = PI * pow(particle->getRadius(), 2); // surface frontale de la particule ( = une sphère)
     const float masseVolumiqueAir = 1.2; // 1.2kg par m^3 pour air à 20°C
     const float coefSurfaceAeroDynamique = 0.45; // dans ces eaux-là pour une sphère mais à déterminer en soufflerie
-    const Vector3 airRelativeVelocity = particleVelocity - m_worldWind; // Vélocité relative de la particule par rapport à l'air
+    const Vector3 airRelativeVelocity = m_worldWind - particleVelocity; // Vélocité relative de la particule par rapport à l'air
 
 
     // donc
@@ -47,5 +47,5 @@ void ParticleAirFriction::updateForce( std::shared_ptr<Particle> particle, float
     }
 
 
-    particle->addForce(forceTrainee, isFrictionGlitch, m_worldWind);
+    particle->addForce(forceTrainee);
 }

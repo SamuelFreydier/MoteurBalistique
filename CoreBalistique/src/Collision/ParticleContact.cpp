@@ -85,18 +85,18 @@ void ParticleContact::resolveVelocity( const float& duration )
     // Montant d'impulsion par unité d'inverse de masse. L'impulsion est déjà négative donc pas besoin de multiplier par -1.
     Vector3 impulsePerInverseMass = m_contactNormal * impulse;
 
-    Vector3 newVelocityParticle0 = m_particles[0]->getVelocity();
+    Vector3 newVelocityParticle0 = m_particles[ 0 ]->getVelocity();
+
+    // pour appliquer la friction, on a besoin du projeté du vecteur velocity dans le plan orthogonal au vecteur contact/rebond
+    // projeté du vecteur u dans le plan orthogonal au vecteur v: Proj(u) = u- ((u.n)/(n.n))*n
+    Vector3 contactNormalised = m_contactNormal.normalized();
+    Vector3 velocityParticle0Normalised = newVelocityParticle0;
+    velocityParticle0Normalised -= contactNormalised * ( velocityParticle0Normalised.dotProduct( contactNormalised ) / contactNormalised.dotProduct( contactNormalised ) ); // m_velocityParticle0Normalized est la projection de la direction de déplacement de la balle dans le plan de la surface
+    velocityParticle0Normalised = velocityParticle0Normalised.normalized();
 
     // Gestion des frictions
     if( m_particles[1] == nullptr ) // pour l'instant on ne considère les frictions que contre des objets inamovibles de type "sol" ou "mur", on ignore les frictions particule-particule
     {
-        // pour appliquer la friction, on a besoin du projeté du vecteur velocity dans le plan orthogonal au vecteur contact/rebond
-        // projeté du vecteur u dans le plan orthogonal au vecteur v: Proj(u) = u- ((u.n)/(n.n))*n
-        Vector3 contactNormalised = m_contactNormal.normalized();
-        Vector3 velocityParticle0Normalised = newVelocityParticle0;
-        velocityParticle0Normalised -= contactNormalised * (velocityParticle0Normalised.dotProduct(contactNormalised) / contactNormalised.dotProduct(contactNormalised)); // m_velocityParticle0Normalized est la projection de la direction de déplacement de la balle dans le plan de la surface
-        velocityParticle0Normalised = velocityParticle0Normalised.normalized();
-
         if (-0.2 <= closingVelocity && closingVelocity <= 0.2)// l'objet est au repos modulo les micro rebonds théoriquement gérés 
         {
             float forceNormale = m_particles[0]->getAcceleration().dotProduct(m_contactNormal) * duration * (-1);

@@ -19,16 +19,8 @@ protected:
     // Facteur permettant de réduire la taille de la particule (< 1) ou de l'agrandir (> 1)
     float m_sizeModificator = 1.0;
 
-
-
     // Force résultante sur la particule
-    struct accumForceSansGlitchFriction_t
-    {
-        Vector3 accumForce;
-        bool glitchFriction = false;
-    };
-
-    accumForceSansGlitchFriction_t m_accumForce;
+    Vector3 m_accumForce;
 
 public:
     // Passe à true pour donner l'instruction à l'Engine de le détruire
@@ -67,15 +59,12 @@ public:
     const bool& isStationary() const { return m_isStationary; }
     void setIsStationary(const bool isStationary) { m_isStationary = isStationary; }
 
-    const Vector3& getAccumForce() const { return m_accumForce.accumForce; }
-
-    const bool& isGlitchedFriction() const { return m_accumForce.glitchFriction; }
-    void setIsGlitchedFriction(const bool isGlitchedFriction) { m_accumForce.glitchFriction = isGlitchedFriction; }
+    const Vector3& getAccumForce() const { return m_accumForce; }
 
     bool toBeDestroyed() const { return m_destroyedLater; }
 
     // Gestion des forces
-    void addForce( const Vector3& forceVector, const bool& isFrictionGlitch = false, const Vector3& worldWind = Vector3() );
+    void addForce( const Vector3& forceVector );
     void clearAccum();
 
     // Mise à jour et affichage à chaque frame
