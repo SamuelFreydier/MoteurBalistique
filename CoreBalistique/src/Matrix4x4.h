@@ -41,7 +41,10 @@ class Matrix4x4
 		*/
 		Matrix4x4(std::vector<float> vecInit);
 
-
+		/*
+		* constructeur d'une matrice 4x4 selon la définition vue en cours
+		*/
+		Matrix4x4(Quaternion quaternion_);
 
 		/**
 		* | a b c d |

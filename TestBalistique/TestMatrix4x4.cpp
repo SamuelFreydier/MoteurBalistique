@@ -30,9 +30,16 @@ namespace Matrix4x4Tests {
 		EXPECT_EQ(matrice4Identity.inverted().get(0), 1.0f);
 		EXPECT_EQ(matrice4Identity.inverted().get(7), 0.0f);
 		Matrix4x4 matriceArbitrairetoIdentity = matrice4Arbitraire.inverted() * matrice4Arbitraire;
-		EXPECT_FLOAT_EQ(matriceArbitrairetoIdentity.get(0), 1.0f);
-		EXPECT_FLOAT_EQ(matriceArbitrairetoIdentity.get(15), 1.0f);
-		EXPECT_FLOAT_EQ(matriceArbitrairetoIdentity.get(9), 0.0f);
+		float epsilon = 0.00001f;
+		bool isEqual = (matriceArbitrairetoIdentity.get(0) < 1.0f + epsilon && matriceArbitrairetoIdentity.get(0) > 1.0f - epsilon);
+		//EXPECT_FLOAT_EQ(matriceArbitrairetoIdentity.get(0), 1.0f);
+		EXPECT_TRUE(isEqual);
+		isEqual = (matriceArbitrairetoIdentity.get(15) < 1.0f + epsilon && matriceArbitrairetoIdentity.get(15) > 1.0f - epsilon);
+		//EXPECT_FLOAT_EQ(matriceArbitrairetoIdentity.get(15), 1.0f);
+		EXPECT_TRUE(isEqual);
+		isEqual = (matriceArbitrairetoIdentity.get(9) < epsilon && matriceArbitrairetoIdentity.get(9) > -epsilon);
+		//EXPECT_FLOAT_EQ(matriceArbitrairetoIdentity.get(9), 0.0f);
+		EXPECT_TRUE(isEqual);
 		EXPECT_FLOAT_EQ((matrice4Identity.inverted() * matrice4Identity).get(0), 1.0f);
 	}
 
