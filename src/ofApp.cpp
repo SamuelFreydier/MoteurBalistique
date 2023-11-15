@@ -50,6 +50,11 @@ void ofApp::setup()
 
     // Variable qui sert à compter le temps écoulé entre chaques "frames"
     dateOfBeginPreviousUpdate = std::chrono::system_clock::now(); 
+
+    m_moveSpeed = 250;
+    m_cameraInfoSaved = false;
+    initArrays();
+    Engine::getInstance()->moveCamera(Vector3(0, 50, 0));
 }
 
 //--------------------------------------------------------------
@@ -76,11 +81,24 @@ void ofApp::update()
         const Vector3 currentMousePosition = Vector3(ofGetMouseX(), ofGetMouseY());
         draggerSelection.setSelectedParticles( Engine::getInstance()->selectedParticles(draggerSelection.getStartMousePosition(), currentMousePosition));
     }
+
+    Vector3 cameraMovementDirection(0, 0, 0);
+
+    for (int i = 0; i < 6; i++)
+    {
+        if (m_mustMoveDirections[i])
+        {
+            cameraMovementDirection += m_moveDirections[i];
+        }
+    }
+
+    Engine::getInstance()->moveCamera(cameraMovementDirection * m_moveSpeed * elapsedSincePreviousUpdate.count());
 }
 
 //--------------------------------------------------------------
 void ofApp::draw()
 {
+    /*
     // Dessiner l'aire de sélection de la souris si il y en a une 
     if (draggerSelection.isDragging())
     {
@@ -107,16 +125,62 @@ void ofApp::draw()
     ofSetColor(255); // Définir la couleur du texte en blanc
     string fpsStr = ofToString(fps) + " fps";
     ofDrawBitmapString(fpsStr, ofGetWindowWidth()-60, 20); // Dessiner le texte à la position (20, 20)
+    */
+
+    Engine::getInstance()->beginCamera();
+
+    Engine::getInstance()->draw();
+
+    Engine::getInstance()->endCamera();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed( int key )
 {
+
     switch( key )
     {
         // Nettoyage des particules
         case OF_KEY_DEL:
             Engine::getInstance()->clear();
+            break;
+
+        case OF_KEY_F7:
+            m_cameraInfoSaved = true;
+
+            {
+                std::pair<glm::vec3, glm::vec3> cameraInfo = Engine::getInstance()->getCameraInfo();
+                m_shootPos = cameraInfo.first;
+                m_shootAxis = cameraInfo.second;
+            }
+            break;
+
+        case OF_KEY_F8:
+            m_cameraInfoSaved = false;
+            break;
+
+        case 'z':
+            m_mustMoveDirections[0] = true;
+            break;
+
+        case 's':
+            m_mustMoveDirections[1] = true;
+            break;
+
+        case 'q':
+            m_mustMoveDirections[2] = true;
+            break;
+
+        case 'd':
+            m_mustMoveDirections[3] = true;
+            break;
+
+        case 'a':
+            m_mustMoveDirections[4] = true;
+            break;
+
+        case 'e':
+            m_mustMoveDirections[5] = true;
             break;
     }
 }
@@ -124,8 +188,10 @@ void ofApp::keyPressed( int key )
 //--------------------------------------------------------------
 void ofApp::keyReleased( int key )
 {
+    
     switch( key )
     {
+        /*
         // Fusion des particules du blob sélectionné
         case OF_KEY_F1: 
         {
@@ -143,12 +209,39 @@ void ofApp::keyReleased( int key )
                 Engine::getInstance()->unmergeBlobParticles( clickedParticle );
             }
         } break;
+        */
+
+        case 'z':
+            m_mustMoveDirections[0] = false;
+            break;
+
+        case 's':
+            m_mustMoveDirections[1] = false;
+            break;
+
+        case 'q':
+            m_mustMoveDirections[2] = false;
+            break;
+
+        case 'd':
+            m_mustMoveDirections[3] = false;
+            break;
+
+        case 'a':
+            m_mustMoveDirections[4] = false;
+            break;
+
+        case 'e':
+            m_mustMoveDirections[5] = false;
+            break;
     }
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved( int x, int y )
 {
+    /*
     if (boolsMouseButtonPressed[0] == false)
     {
         draggerParticleLauncher.draggingIsOver();
@@ -157,11 +250,13 @@ void ofApp::mouseMoved( int x, int y )
     {
         draggerReferentialOrigin.draggingIsOver();
     }
+    */
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged( int x, int y, int button )
 {
+    /*
     if (button == 0) // si dragging du clic gauche 
     {
         if (m_isShootingTrigger)
@@ -201,11 +296,13 @@ void ofApp::mouseDragged( int x, int y, int button )
             draggerReferentialOrigin = MouseDragger(Vector3(x, y), Engine::getInstance()->getReferential().getOriginPoint());
         }
     }
+    */
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed( int x, int y, int button )
 {
+    /*
     // Quand un clic est détecté, on modifie le tableau de bools en conséquence
     boolsMouseButtonPressed[button] = true;
 
@@ -251,13 +348,11 @@ void ofApp::mousePressed( int x, int y, int button )
             {
                 Engine::getInstance()->destroyCorruptedBlobs(clickedParticle); // on détruit tous les blobs dont cette particule fait partie mais on ne détruit pas les particules
             }
-            /*
             else // si on a cliqué sur rien, alors on prend toutes les particules de la map et on les réunit en seul gros blob
             {
                 Blob* newBlob = new Blob(Engine::getInstance()->getParticles());
                 Engine::getInstance()->addBlob(newBlob);
             }
-            */
         }
         else if (button == 2) // si clic droit, alors on essaie d'exploser des boules
         {
@@ -269,13 +364,13 @@ void ofApp::mousePressed( int x, int y, int button )
             }
         }
     }
-
-
+    */
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased( int x, int y, int button )
 {
+    /*
     // Quand le relâchement d'un clic est détecté, on modifie le tableau de bools en conséquence
     boolsMouseButtonPressed[button] = false;
 
@@ -288,10 +383,10 @@ void ofApp::mouseReleased( int x, int y, int button )
             if (draggerParticleLauncher.isDragging()) // si draggerParticleLauncher est actif, alors on lance une particule puis on désactive
             {
                 // on lance la particule avec la position et la vélocité déterminée
-                Vector3 mecanicStartVelocity = Vector3({ 0.0, 0.0, 0.0 });
+                Vector3 mecanicStartVelocity = Vector3({ 0.0, 0.0, 20.0 });
                 if (draggerParticleLauncher.isDraggingBig()) // si le dragging est assez grand, alors on met une vélocité initiale non nulle
                 {
-                    Vector3 graphicStartVelocity = Vector3(draggerParticleLauncher.getStartMousePosition() - Vector3({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 }));
+                    Vector3 graphicStartVelocity = Vector3(draggerParticleLauncher.getStartMousePosition() - Vector3({ (float)ofGetMouseX(), (float)ofGetMouseY(), 20.0 }));
                     mecanicStartVelocity = Engine::getInstance()->getReferential().conversionVelocityMecaniqueGraphique(graphicStartVelocity, false);
                 }
                 Vector3 mecanicStartPosition = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(draggerParticleLauncher.getStartMousePosition(), false);
@@ -337,6 +432,16 @@ void ofApp::mouseReleased( int x, int y, int button )
     {
         draggerReferentialOrigin.draggingIsOver();
     }
+    */
+
+    if (m_cameraInfoSaved)
+    {
+        shootParticle({ m_shootPos, m_shootAxis });
+    }
+    else
+    {
+        shootParticle(Engine::getInstance()->getCameraInfo());
+    }
 }
 
 //--------------------------------------------------------------
@@ -372,6 +477,7 @@ void ofApp::dragEvent( ofDragInfo dragInfo )
 
 void ofApp::mouseScrolled(ofMouseEventArgs& mouse)
 {
+    /*
     //std::cout << "button " << mouse.type << "\n";
     if (boolsMouseButtonPressed[0] == false) // bouton du clic gauche de la souris pas appuyé
     {
@@ -385,4 +491,27 @@ void ofApp::mouseScrolled(ofMouseEventArgs& mouse)
             draggerParticleLauncher.changeParticleMass(mouse);
         }
     }
+    */
+}
+
+
+void ofApp::initArrays()
+{
+    for (int i = 0; i < 6; i++)
+    {
+        m_mustMoveDirections[i] = false;
+    }
+
+    m_moveDirections[0] = Vector3::forward;
+    m_moveDirections[1] = Vector3::backward;
+    m_moveDirections[2] = Vector3::left;
+    m_moveDirections[3] = Vector3::right;
+    m_moveDirections[4] = Vector3::down;
+    m_moveDirections[5] = Vector3::up;
+}
+
+
+void ofApp::shootParticle(std::pair<glm::vec3, glm::vec3> shootInfo) 
+{
+    Engine::getInstance()->shootParticle(shootInfo.first, shootInfo.second * 1000);
 }

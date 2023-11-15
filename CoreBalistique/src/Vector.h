@@ -13,6 +13,7 @@ public:
 public:
     Vector3( const float& newX = 0, const float& newY = 0, const float& newZ = 0 );
     Vector3( const Vector3& vector);
+    Vector3( const glm::vec3& vector);
 
     // Getters (pour s'assurer dans certains cas de retourner une référence constante)
     const float& getX() const { return x; }
@@ -58,6 +59,14 @@ public:
     float distance( const Vector3& vector ) const;
 
     void show( std::ostream& out = std::cout ) const;
+
+    static Vector3 zero;
+    static Vector3 right;
+    static Vector3 up;
+    static Vector3 forward;
+    static Vector3 left;
+    static Vector3 down;
+    static Vector3 backward;
 };
 
 #endif

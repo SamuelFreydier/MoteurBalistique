@@ -22,6 +22,11 @@ Vector3::Vector3( const Vector3& vector )
 {
 }
 
+Vector3::Vector3(const glm::vec3& vector)
+    : Vector3(vector.x, vector.y, vector.z)
+{
+}
+
 
 /**
 * @brief produit par un scalaire
@@ -235,3 +240,12 @@ void Vector3::show( std::ostream& out ) const
 {
     out << "(" << x << ", " << y << ", " << z << ")" << '\n';
 }
+
+
+Vector3     Vector3::zero = Vector3( 0,  0,  0);
+Vector3    Vector3::right = Vector3( 1,  0,  0);
+Vector3       Vector3::up = Vector3( 0,  1,  0);
+Vector3  Vector3::forward = Vector3( 0,  0,  1);
+Vector3     Vector3::left = Vector3(-1,  0,  0);
+Vector3     Vector3::down = Vector3( 0, -1,  0);
+Vector3 Vector3::backward = Vector3( 0,  0, -1);

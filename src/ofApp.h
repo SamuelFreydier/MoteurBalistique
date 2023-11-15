@@ -61,6 +61,17 @@ class ofApp : public ofBaseApp
         // Générateur de câble pour le comportement câble des ressorts des blobs
         BlobContact blobContactGenerator;
 
+        bool m_cameraInfoSaved;
+        glm::vec3 m_shootPos;
+        glm::vec3 m_shootAxis;
+
+        float m_moveSpeed;
+        bool m_mustMoveDirections[6];
+        Vector3 m_moveDirections[6];
+        void initArrays();
+
+        void shootParticle(std::pair<glm::vec3, glm::vec3>);
+
     private:
         MouseDragger draggerReferentialOrigin;
         MouseDragger draggerParticleLauncher;

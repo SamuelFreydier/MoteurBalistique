@@ -620,3 +620,25 @@ void Engine::showScore(const bool& boolShowScore) const
         ofDrawBitmapString("Score : " + ofToString(score), (Vector3({ (float)ofGetMouseX(), (float)ofGetMouseY(), 0.0 })).v3());
     }
 }
+
+
+std::pair<glm::vec3, glm::vec3> Engine::getCameraInfo() const
+{
+    glm::vec3 pos = m_camera.getGlobalPosition();
+    glm::vec3 lookAxis = m_camera.getLookAtDir();
+
+    return { pos, lookAxis };
+}
+
+void Engine::draw()
+{
+    drawGround();
+    drawParticles();
+}
+
+void Engine::drawGround() const
+{
+    ofPlanePrimitive ground(10000, 10000, 100, 100);
+    ground.tiltDeg(90);
+    ground.drawWireframe();
+}

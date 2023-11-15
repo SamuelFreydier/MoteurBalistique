@@ -110,7 +110,7 @@ const Vector3 Referential::conversionPositionMecaniqueGraphique(const Vector3& m
 
 	if (trueMecanique_falseGraphique) // transformations successives du référentiel mécanique pour le placer dans le référentiel graphique
 	{		
-		Vector3 sortieGraphique = Vector3({ monVecteur.getX(), -monVecteur.getY(), 0.0 }); // on inverse axe Y
+		Vector3 sortieGraphique = Vector3({ monVecteur.getX(), -monVecteur.getY(), monVecteur.getZ()}); // on inverse axe Y
 		sortieGraphique *= 1 / m_scale; // on met à l'échelle du référentiel graphique
 		sortieGraphique += m_originPoint; // on translate de sorte à se superposer à l'origine graphique du référentiel
 		
@@ -120,7 +120,7 @@ const Vector3 Referential::conversionPositionMecaniqueGraphique(const Vector3& m
 	{
 		Vector3 sortieMecanique = monVecteur - m_originPoint; // on translate de sorte à se superposer à l'origine de l'écran
 		sortieMecanique *= m_scale; // on met à l'échelle du référentiel mécanique
-		sortieMecanique = Vector3({ sortieMecanique.getX(), -sortieMecanique.getY(), 0.0 }); // on inverse axe Y
+		sortieMecanique = Vector3({ sortieMecanique.getX(), -sortieMecanique.getY(), sortieMecanique.getZ()}); // on inverse axe Y
 
 		vecteurSortie = sortieMecanique;
 	}
@@ -136,7 +136,7 @@ const Vector3 Referential::conversionVelocityMecaniqueGraphique(const Vector3& m
 
 	if (trueMecanique_falseGraphique) // transformations successives du référentiel mécanique pour le placer dans le référentiel graphique
 	{
-		Vector3 sortieGraphique = Vector3({ monVecteur.getX(), -monVecteur.getY(), 0.0 }); // on inverse axe Y
+		Vector3 sortieGraphique = Vector3({ monVecteur.getX(), -monVecteur.getY(), monVecteur.getZ()}); // on inverse axe Y
 		sortieGraphique *= 1 / m_scale; // on met à l'échelle du référentiel graphique
 
 		vecteurSortie = sortieGraphique;
@@ -144,7 +144,7 @@ const Vector3 Referential::conversionVelocityMecaniqueGraphique(const Vector3& m
 	else // transformations successives du référentiel graphique pour le placer dans le référentiel mécanique
 	{
 		Vector3 sortieMecanique = monVecteur * m_scale; // on met à l'échelle du référentiel mécanique
-		sortieMecanique = Vector3({ sortieMecanique.getX(), -sortieMecanique.getY(), 0.0 }); // on inverse axe Y
+		sortieMecanique = Vector3({ sortieMecanique.getX(), -sortieMecanique.getY(), sortieMecanique.getZ()}); // on inverse axe Y
 
 		vecteurSortie = sortieMecanique;
 	}

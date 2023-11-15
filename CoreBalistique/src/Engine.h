@@ -71,6 +71,8 @@ class Engine
         // score : +1 par boule de feu explosée !!
         int score = 0;
 
+        ofCamera m_camera;
+
     protected:
         Engine(const int& maxContacts, const int& iterations = 0);
         ~Engine();
@@ -146,6 +148,14 @@ class Engine
         const int& getScore() const { return score; };
         void increaseScore(const int& points = 1) { score += points; };
         void showScore(const bool& boolShowScore) const;
+
+        void beginCamera() { m_camera.begin(); }
+        void endCamera() { m_camera.end(); }
+        void moveCamera(Vector3 moveDirection) { moveDirection.z *= -1;  m_camera.move(moveDirection.v3()); }
+        std::pair<glm::vec3, glm::vec3> getCameraInfo() const;
+
+        void draw();
+        void drawGround() const;
 };
 
 #endif

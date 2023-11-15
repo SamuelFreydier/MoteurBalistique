@@ -95,7 +95,7 @@ void Particle::draw() const
     */
 
 
-
+    /*
     // Version Anaël avec ofDrawparticle() et manipulations du référentiel
     // 
     // transformations successives du référentiel mécanique pour le placer dans le référentiel graphique
@@ -110,7 +110,6 @@ void Particle::draw() const
         drawColor = Vector3(200, 200, 200);
     }
 
-    ofSetColor(drawColor.getX(), drawColor.getY(), drawColor.getZ());
     ofDrawCircle(positionGraphique.v3(), m_radius / scaleReferential); // On dessine sans oublier d'également mettre la taille de la particule à l'échelle
 
     if (m_showParticleInfos)
@@ -119,4 +118,9 @@ void Particle::draw() const
         float vitesseParticule = m_velocity.norm();
         ofDrawBitmapString(ofToString(vitesseParticule) + " m/s\n" + ofToString(1 / m_inverseMass) + " kg", (positionGraphique + Vector3({0.0, - 20 - m_radius / scaleReferential, 0.0})).v3());
     }
+    */
+
+
+    // Version oskour qu'est-ce que je fais
+    ofDrawSphere(m_position.v3(), m_radius);
 }
