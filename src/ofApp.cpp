@@ -25,7 +25,7 @@ void ofApp::setup()
     // Setup GUI
     m_worldForces.setName( "World Forces" );
     m_worldForces.add( m_gravitySlider.set( "Gravity", 9.81, 1, 20 ) );
-    m_worldForces.add(m_realisticAirLossToggle.set("Realistic air interaction", true));
+    m_worldForces.add(m_realisticAirLossToggle.set("Realistic air interaction", false));
     m_worldForces.add(m_windX_slider.set("Horizontal wind", 0, -20, 20));
     m_worldForces.add(m_windY_slider.set("Vertical wind", 0, -20, 20));
     m_worldForces.add( m_dampingSlider.set( "Damping", 0.94, 0.5, 1 ) );
@@ -251,6 +251,18 @@ void ofApp::mouseMoved( int x, int y )
         draggerReferentialOrigin.draggingIsOver();
     }
     */
+
+    std::pair<int, int> diffMousePos = { x - m_mousePos.first, y - m_mousePos.second };
+    m_mousePos = { x, y };
+
+    if (m_canRotateCamera)
+    {
+        Engine::getInstance()->rotateCamera(-diffMousePos.second, -diffMousePos.first);
+    }
+    else
+    {
+        m_canRotateCamera = true;
+    }
 }
 
 //--------------------------------------------------------------
@@ -513,5 +525,5 @@ void ofApp::initArrays()
 
 void ofApp::shootParticle(std::pair<glm::vec3, glm::vec3> shootInfo) 
 {
-    Engine::getInstance()->shootParticle(shootInfo.first, shootInfo.second * 1000);
+    Engine::getInstance()->shootParticle(shootInfo.first, shootInfo.second * 100);
 }

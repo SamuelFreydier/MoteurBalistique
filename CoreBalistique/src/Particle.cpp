@@ -122,5 +122,7 @@ void Particle::draw() const
 
 
     // Version oskour qu'est-ce que je fais
+    ofColor color(m_color.x, m_color.y, m_color.z);
+    ofSetColor(color);
     ofDrawSphere(m_position.v3(), m_radius);
 }

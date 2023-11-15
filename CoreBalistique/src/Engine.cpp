@@ -24,6 +24,9 @@ Engine::Engine( const int& maxContacts, const int& iterations )
     m_spontaneousCollisionGenerator->m_restitution = 1.f;
 
     m_calculateIterations = ( iterations == 0 );
+
+    glm::vec3 cameraOrientation = m_camera.getOrientationEulerDeg();
+    m_cameraRotation = { cameraOrientation.x, cameraOrientation.y };
 }
 
 Engine::~Engine()
@@ -630,8 +633,29 @@ std::pair<glm::vec3, glm::vec3> Engine::getCameraInfo() const
     return { pos, lookAxis };
 }
 
+void Engine::moveCamera(Vector3 moveDirection)
+{
+    Vector3 cameraPos(m_camera.getGlobalPosition());
+
+    Vector3 cameraMove = m_camera.getXAxis() * moveDirection.x + m_camera.getYAxis() * moveDirection.y - m_camera.getZAxis() * moveDirection.z;
+
+    m_camera.move(cameraMove.v3());
+}
+
+void Engine::rotateCamera(float aroundXAxis, float aroundYAxis)
+{
+    m_cameraRotation = { m_cameraRotation.first + aroundXAxis, m_cameraRotation.second + aroundYAxis };
+
+    float xAngle = m_cameraRotation.first;
+
+    m_cameraRotation.first = (xAngle > 90) ? 90 : (xAngle < -90) ? -90 : xAngle;
+
+    m_camera.setOrientation(glm::vec3(m_cameraRotation.first, m_cameraRotation.second, 0));
+}
+
 void Engine::draw()
 {
+    ofSetColor(200, 200, 200);
     drawGround();
     drawParticles();
 }

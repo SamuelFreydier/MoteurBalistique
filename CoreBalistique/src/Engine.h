@@ -151,7 +151,9 @@ class Engine
 
         void beginCamera() { m_camera.begin(); }
         void endCamera() { m_camera.end(); }
-        void moveCamera(Vector3 moveDirection) { moveDirection.z *= -1;  m_camera.move(moveDirection.v3()); }
+        void moveCamera(Vector3 moveDirection);
+        void rotateCamera(float aroundXAxis, float aroundYAxis);
+        std::pair<float, float> m_cameraRotation;
         std::pair<glm::vec3, glm::vec3> getCameraInfo() const;
 
         void draw();

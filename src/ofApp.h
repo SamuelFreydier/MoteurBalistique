@@ -61,13 +61,7 @@ class ofApp : public ofBaseApp
         // Générateur de câble pour le comportement câble des ressorts des blobs
         BlobContact blobContactGenerator;
 
-        bool m_cameraInfoSaved;
-        glm::vec3 m_shootPos;
-        glm::vec3 m_shootAxis;
-
-        float m_moveSpeed;
-        bool m_mustMoveDirections[6];
-        Vector3 m_moveDirections[6];
+        
         void initArrays();
 
         void shootParticle(std::pair<glm::vec3, glm::vec3>);
@@ -79,5 +73,17 @@ class ofApp : public ofBaseApp
 
         // l'indice 0 correspond au clic gauche, le 1 au clic scroll et le 2 au clic droit
         bool boolsMouseButtonPressed[3]; // initialisation à false sur tous les champs par défaut
+
+
+        bool m_cameraInfoSaved;
+        glm::vec3 m_shootPos;
+        glm::vec3 m_shootAxis;
+
+        float m_moveSpeed;
+        bool m_mustMoveDirections[6];
+        Vector3 m_moveDirections[6];
+
+        bool m_canRotateCamera;
+        std::pair<int, int> m_mousePos;
 
 };
