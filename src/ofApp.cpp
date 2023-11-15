@@ -51,7 +51,7 @@ void ofApp::setup()
     // Variable qui sert à compter le temps écoulé entre chaques "frames"
     dateOfBeginPreviousUpdate = std::chrono::system_clock::now(); 
 
-    m_moveSpeed = 250;
+    m_moveSpeed = 50;
     m_cameraInfoSaved = false;
     initArrays();
     Engine::getInstance()->moveCamera(Vector3(0, 50, 0));
@@ -542,5 +542,5 @@ std::pair<glm::vec3, glm::vec3> ofApp::getShootInfo() const
 
 void ofApp::shootParticle(std::pair<glm::vec3, glm::vec3> shootInfo) 
 {
-    Engine::getInstance()->shootParticle(shootInfo.first, shootInfo.second * 100);
+    Engine::getInstance()->shootParticle(shootInfo.first, shootInfo.second * 1);
 }

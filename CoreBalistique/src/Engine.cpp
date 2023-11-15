@@ -200,6 +200,14 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
 
     // Nettoyage des particules inutiles
     cleanup();
+
+    /*
+    for (std::shared_ptr<Particle>& particle : m_particles)
+    {
+        std::cout << particle->getPosition().y << std::endl;
+        std::cout << particle->getVelocity().y << std::endl;
+    }
+    */
 }
 
 
