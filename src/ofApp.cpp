@@ -518,6 +518,8 @@ void ofApp::mouseScrolled(ofMouseEventArgs& mouse)
 
 void ofApp::initArrays()
 {
+    //Init pour les touches ZS QD AE
+
     for (int i = 0; i < 6; i++)
     {
         m_mustMoveDirections[i] = false;
