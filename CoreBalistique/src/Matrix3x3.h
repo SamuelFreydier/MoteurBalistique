@@ -1,6 +1,6 @@
 #pragma once
 #include "Vector.h"
-#include<vector>
+#include <vector>
 #include "Quaternion.h"
 
 class Matrix3x3
@@ -24,7 +24,7 @@ public:
 	* | d e f |
 	* | g h i |
 	*/
-	Matrix3x3(float a, float b, float c, float d, float e, float f, float g, float h, float i);
+	Matrix3x3(float a=0, float b=0, float c=0, float d=0, float e=0, float f=0, float g=0, float h=0, float i=0);
 
 	/**
 	* Constructeur de Matrix3x3 avec un vector V de float tel que:
@@ -62,8 +62,6 @@ public:
 	*/
 	Matrix3x3 transposed() const;
 
-	Matrix3x3 operator*(const Vector3& value) const;
-
 	float determinant() const;
 	bool isInvertible() const { return determinant() != 0.0f; }
 	bool isOrthogonal() const;
@@ -80,13 +78,16 @@ public:
 	//multiplication par une matrice 3x3
 	Matrix3x3 operator*(const Matrix3x3& value) const;
 	Matrix3x3& operator*=(const Matrix3x3& value);
+	// Multiplication par un vecteur
+	Vector3 operator*( const Vector3& vector ) const;
+	Vector3 transform( const Vector3& vector ) const;
 	// division
 	Matrix3x3 operator/(const float& value) const;
 	Matrix3x3& operator/=(const float& value);
 
 	// operateurs []
 	float& operator[](const int& vectorIndex) { return matrix.at(vectorIndex); }
-
+	const float& operator[]( const int& vectorIndex ) const { return matrix.at( vectorIndex ); }
 
 	/*
 	* Calcul de le déterminant de la sous matrice

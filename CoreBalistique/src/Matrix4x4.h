@@ -28,7 +28,7 @@ class Matrix4x4
 		* | i j k l |
 		* | m n o p |
 		*/
-		Matrix4x4(float a, float b, float c, float d, float e, float f, float g, float h, float i, float j, float k, float l, float m, float n, float o, float p);
+		Matrix4x4(float a=0, float b=0, float c=0, float d=0, float e=0, float f=0, float g=0, float h=0, float i=0, float j=0, float k=0, float l=0, float m=0, float n=0, float o=0, float p=0);
 
 		/**
 		* Constructeur de Matrix4x4 avec un vector V de float tel que:
@@ -87,12 +87,16 @@ class Matrix4x4
 		//multiplication par une matrice 4x4
 		Matrix4x4 operator*(const Matrix4x4& value) const;
 		Matrix4x4& operator*=(const Matrix4x4& value);
+		// Multiplication par un vecteur
+		Vector3 operator*( const Vector3& vector ) const;
+		Vector3 transform( const Vector3& vector ) const;
+		Vector3 transformInverse( const Vector3& vector ) const;
 		// division
 		Matrix4x4 operator/(const float& value) const;
 		Matrix4x4& operator/=(const float& value);
 		// operateurs []
 	    float& operator[](const int& vectorIndex)  { return matrix.at(vectorIndex); }
-	
+		const float& operator[]( const int& vectorIndex ) const { return matrix.at( vectorIndex ); }
 
 		/*
 		* Calcul de le déterminant de la sous matrice Matrix3x3

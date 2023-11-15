@@ -164,6 +164,49 @@ Matrix4x4& Matrix4x4::operator*=(const Matrix4x4& value)
 	return *this = *this * value;
 }
 
+Vector3 Matrix4x4::operator*( const Vector3& vector ) const
+{
+	return Vector3(
+		vector.x * matrix[ 0 ] +
+		vector.y * matrix[ 1 ] +
+		vector.z * matrix[ 2 ] + matrix[ 3 ],
+
+		vector.x * matrix[ 4 ] +
+		vector.y * matrix[ 5 ] +
+		vector.z * matrix[ 6 ] + matrix[ 7 ],
+
+		vector.x * matrix[ 8 ] +
+		vector.y * matrix[ 9 ] +
+		vector.z * matrix[ 10 ] + matrix[ 11 ]
+	);
+}
+
+Vector3 Matrix4x4::transform( const Vector3& vector ) const
+{
+	return ( *this ) * vector;
+}
+
+Vector3 Matrix4x4::transformInverse( const Vector3& vector ) const
+{
+	Vector3 tmp = vector;
+	tmp.x -= matrix[ 3 ];
+	tmp.y -= matrix[ 7 ];
+	tmp.z -= matrix[ 11 ];
+	return Vector3(
+		tmp.x * matrix[ 0 ] +
+		tmp.y * matrix[ 4 ] +
+		tmp.z * matrix[ 8 ],
+
+		tmp.x * matrix[ 1 ] +
+		tmp.y * matrix[ 5 ] +
+		tmp.z * matrix[ 9 ],
+
+		tmp.x * matrix[ 2 ] +
+		tmp.y * matrix[ 6 ] +
+		tmp.z * matrix[ 10 ]
+	);
+}
+
 Matrix4x4 Matrix4x4::operator/(const float& value) const
 {
 	return Matrix4x4(get(0) / value, get(1) / value, get(2) / value, get(3) / value, get(4) / value, get(5) / value, get(6) / value, get(7) / value, get(8) / value, get(9) / value, get(10) / value, get(11) / value, get(12) / value, get(13) / value, get(14) / value, get(15) / value);

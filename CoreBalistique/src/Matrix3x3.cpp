@@ -69,9 +69,18 @@ Matrix3x3 Matrix3x3::transposed() const
 	return Matrix3x3(get(0), get(3), get(6), get(1), get(4), get (7), get(2), get(5), get(8));
 }
 
-Matrix3x3 Matrix3x3::operator*(const Vector3& value) const
+Vector3 Matrix3x3::operator*(const Vector3& vector) const
 {
-	return Matrix3x3(get('a')*value.getX(), get('b')*value.getY(), get('c')*value.getZ(), get('d')*value.getX(), get('e')*value.getY(), get('f')*value.getZ(), get('g')*value.getX(), get('h')*value.getY(), get('i')*value.getZ());
+	return Vector3(
+		vector.x * matrix[ 0 ] + vector.y * matrix[ 1 ] + vector.z * matrix[ 2 ],
+		vector.x * matrix[ 3 ] + vector.y * matrix[ 4 ] + vector.z * matrix[ 5 ],
+		vector.x * matrix[ 6 ] + vector.y * matrix[ 7 ] + vector.z * matrix[ 8 ]
+	);
+}
+
+Vector3 Matrix3x3::transform( const Vector3& vector ) const
+{
+	return ( *this ) * vector;
 }
 
 float Matrix3x3::determinant() const
