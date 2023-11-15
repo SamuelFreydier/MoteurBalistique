@@ -90,8 +90,9 @@ class Matrix4x4
 		// division
 		Matrix4x4 operator/(const float& value) const;
 		Matrix4x4& operator/=(const float& value);
-
-
+		// operateurs []
+	    float& operator[](const int& vectorIndex)  { return matrix.at(vectorIndex); }
+	
 
 		/*
 		* Calcul de le déterminant de la sous matrice Matrix3x3

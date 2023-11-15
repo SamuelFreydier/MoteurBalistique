@@ -84,6 +84,8 @@ public:
 	Matrix3x3 operator/(const float& value) const;
 	Matrix3x3& operator/=(const float& value);
 
+	// operateurs []
+	float& operator[](const int& vectorIndex) { return matrix.at(vectorIndex); }
 
 
 	/*
