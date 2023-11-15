@@ -6,7 +6,7 @@
 #include "ParticleForceGenerators/ParticleAirFriction.h"
 #include "ParticleForceGenerators/ParticleSpring.h"
 #include "Fireball.h"
-#include "Blob.h"
+#include "Rigidbody.h"
 #include "Collision/ParticleContactResolver.h"
 #include "Collision/ParticleContactGenerator.h"
 #include "Collision/ParticleSpontaneousCollision.h"
@@ -18,7 +18,8 @@ class Engine
     public:
         typedef std::vector<ParticleContactGenerator*> ContactGenerators;
         typedef std::vector<std::shared_ptr<Particle>> Particles;
-        typedef std::vector<std::shared_ptr<Blob>> Blobs;
+        typedef std::vector<std::shared_ptr<Rigidbody>> Rigidbodies;
+        //typedef std::vector<std::shared_ptr<Blob>> Blobs;
 
     private:
         // Singleton
@@ -27,10 +28,10 @@ class Engine
         // Referentiel cartésien
         static Referential s_referential;
 
+        // Objets principaux manipulés par le moteur
+        Rigidbodies m_rigidbodies;
         Particles m_particles;
         Particles m_tempAshFallParticles; // Pour éviter que le Integrate() d'une fireball ne modifie m_particles en droppant des ashfall ce qui fait planter le programme (bug d'itérateur)
-        
-        Blobs m_blobs;
 
         // Registre (associations particule / générateur de force) => Gère gravité/frottements/ressorts
         ParticleForceRegistry m_particleForceRegistry;
@@ -66,6 +67,8 @@ class Engine
         int score = 0;
 
         ofCamera m_camera;
+
+        //Blobs m_blobs;
 
     protected:
         Engine(const int& maxContacts, const int& iterations = 0);
@@ -104,18 +107,14 @@ class Engine
         // Renvoie la liste (vector) de particules présentes dans l'aire de sélection de la souris. Renvoie vector de taille 0 si rien n'a été sélectionné
         Particles selectedParticles(const Vector3& startMousePosition, const Vector3& currentMousePosition);
 
+        Rigidbodies& getRigidbodies() { return m_rigidbodies; }
+        void addRigidbody( std::shared_ptr<Rigidbody> rigidbody ) { m_rigidbodies.push_back( rigidbody ); }
+
         Particles& getParticles() { return m_particles; }
         void addParticle( std::shared_ptr<Particle> particle ) { m_particles.push_back( particle ); }
 
         Particles& getTempAshFallParticles() { return m_tempAshFallParticles; }
         void addTempAshFallParticles( std::shared_ptr<Particle> particle) { m_tempAshFallParticles.push_back(particle); }
-
-        Blobs& getBlobs() { return m_blobs; }
-        void addBlob( std::shared_ptr<Blob> blob );
-        void destroyCorruptedBlobs(std::shared_ptr<Particle> corruptedParticle);
-
-        void mergeBlobParticles( std::shared_ptr<Particle> selectedParticle );
-        void unmergeBlobParticles( std::shared_ptr<Particle> selectedParticle, float childrenRadius = 2.5f );
 
         const Vector3& getGravity() const { return m_gravity; }
         void setGravity( const Vector3& gravity ) { m_gravity = gravity; }
@@ -142,6 +141,14 @@ class Engine
 
         void draw();
         void drawGround() const;
+
+
+        //Blobs& getBlobs() { return m_blobs; }
+        //void addBlob( std::shared_ptr<Blob> blob );
+        //void destroyCorruptedBlobs(std::shared_ptr<Particle> corruptedParticle);
+
+        //void mergeBlobParticles( std::shared_ptr<Particle> selectedParticle );
+        //void unmergeBlobParticles( std::shared_ptr<Particle> selectedParticle, float childrenRadius = 2.5f );
 };
 
 #endif
