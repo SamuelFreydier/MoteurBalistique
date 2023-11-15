@@ -19,16 +19,8 @@ protected:
     // Facteur permettant de réduire la taille de la particule (< 1) ou de l'agrandir (> 1)
     float m_sizeModificator = 1.0;
 
-
-
     // Force résultante sur la particule
-    struct accumForceSansGlitchFriction_t
-    {
-        Vector3 accumForce;
-        bool glitchFriction = false;
-    };
-
-    accumForceSansGlitchFriction_t m_accumForce;
+    Vector3 m_accumForce;
 
 public:
     // Passe à true pour donner l'instruction à l'Engine de le détruire
@@ -41,7 +33,7 @@ public:
     // Accesseurs et Mutateurs
     const float& getInverseMass() const { return m_inverseMass; }
     float getMass() const { return 1 / m_inverseMass; }
-    void setMassReverse( const float& mass ) { m_inverseMass = 1 / mass; }
+    void setMassReverse(const float& mass);
 
     const bool& getShowParticleInfos() const { return m_showParticleInfos; }
     void setShowParticleInfos( const bool& showParticleInfos ) { m_showParticleInfos = showParticleInfos; }
@@ -67,10 +59,12 @@ public:
     const bool& isStationary() const { return m_isStationary; }
     void setIsStationary(const bool isStationary) { m_isStationary = isStationary; }
 
+    const Vector3& getAccumForce() const { return m_accumForce; }
+
     bool toBeDestroyed() const { return m_destroyedLater; }
 
     // Gestion des forces
-    void addForce( const Vector3& forceVector, const bool& isFrictionGlitch = false);
+    void addForce( const Vector3& forceVector );
     void clearAccum();
 
     // Mise à jour et affichage à chaque frame

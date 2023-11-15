@@ -44,6 +44,33 @@ Matrix4x4::Matrix4x4(std::vector<float> vecInit)
 	}
 }
 
+Matrix4x4::Matrix4x4(Quaternion quaternion_)
+{
+	float a_ = quaternion_.getR();
+	float b_ = quaternion_.getI();
+	float c_ = quaternion_.getJ();
+	float d_ = quaternion_.getK();
+	matrix.push_back(a_);
+	matrix.push_back(-d_);
+	matrix.push_back(c_);
+	matrix.push_back(b_);
+
+	matrix.push_back(d_);
+	matrix.push_back(a_);
+	matrix.push_back(-b_);
+	matrix.push_back(c_);
+
+	matrix.push_back(-c_);
+	matrix.push_back(b_);
+	matrix.push_back(a_);
+	matrix.push_back(d_);
+
+	matrix.push_back(-b_);
+	matrix.push_back(-c_);
+	matrix.push_back(-d_);
+	matrix.push_back(a_);
+}
+
 void Matrix4x4::transpose()
 {
 	*this = transposed();

@@ -2,9 +2,9 @@
 #include "Engine.h"
 
 Particle::Particle( const float& mass, const float& radius, const Vector3& velocity, const Vector3& position, const Vector3& color, const bool& showParticleInfos)
-    : m_inverseMass( 1 / mass ), m_radius( radius ), m_velocity( velocity ), m_position( position ), m_color( color ), m_showParticleInfos(showParticleInfos)
+    : m_radius( radius ), m_velocity( velocity ), m_position( position ), m_color( color ), m_showParticleInfos(showParticleInfos)
 {
-
+    setMassReverse(mass);
 }
 
 Particle::Particle( const Particle& particle )
@@ -14,21 +14,27 @@ Particle::Particle( const Particle& particle )
     m_accumForce = particle.m_accumForce;
 }
 
+void Particle::setMassReverse(const float& mass)
+{
+    if (mass == 0) 
+    {
+        m_inverseMass = std::numeric_limits<float>::max();
+    }
+    else
+    {
+        m_inverseMass = 1 / mass;
+    }
+}
+
 
 /**
  * @brief Ajoute la force forceVector au vecteur d'accumulation m_accumForce
  * @param forceVector
 */
-void Particle::addForce( const Vector3& forceVector, const bool& isFrictionGlitch )
+void Particle::addForce( const Vector3& forceVector )
 {
-    if (isFrictionGlitch)
-    {
-        m_accumForce.glitchFriction = true;
-    }
-    else
-    {
-        m_accumForce.accumForce += forceVector;
-    }
+    m_accumForce += forceVector;
+
 }
 
 /**
@@ -36,8 +42,7 @@ void Particle::addForce( const Vector3& forceVector, const bool& isFrictionGlitc
 */
 void Particle::clearAccum()
 {
-    m_accumForce.accumForce.clear();
-    m_accumForce.glitchFriction = false;
+    m_accumForce.clear();
 }
 
 
@@ -47,6 +52,7 @@ void Particle::clearAccum()
 */
 void Particle::integrate( const float& secondsElapsedSincePreviousUpdate)
 {
+    /*
     if (m_accumForce.glitchFriction == true) // si il y a eu un glitch de friction, alors m_velocity = wind pour éviter des comportements illégaux (téléportations, partir dans le mauvais sens)
     {
         m_velocity = Engine::getWind(); 
@@ -55,15 +61,15 @@ void Particle::integrate( const float& secondsElapsedSincePreviousUpdate)
     if (Engine::getRealisticAirResistance() == true) // Choix de l'utilisateur entre frottements de l'air réalistes ou pas
     {
         m_velocity *= pow(Engine::getInstance()->getDamping(), secondsElapsedSincePreviousUpdate); // on applique
-    }
+    }*/
 
     // Maintenant on peut faire comme d'habitude avec l'intégrateur d'Euler :
 
     // Accélération
-    m_acceleration = m_accumForce.accumForce / getMass();
+    m_acceleration = m_accumForce * getInverseMass();
           
     // Vélocité
-    m_velocity += m_acceleration * secondsElapsedSincePreviousUpdate;
+    m_velocity = m_velocity * pow( Engine::getInstance()->getDamping(), secondsElapsedSincePreviousUpdate ) + m_acceleration * secondsElapsedSincePreviousUpdate;
             
     // Position
     m_position += m_velocity * secondsElapsedSincePreviousUpdate;

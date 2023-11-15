@@ -85,13 +85,13 @@ void ParticleContact::resolveVelocity( const float& duration )
     // Montant d'impulsion par unité d'inverse de masse. L'impulsion est déjà négative donc pas besoin de multiplier par -1.
     Vector3 impulsePerInverseMass = m_contactNormal * impulse;
 
-    Vector3 newVelocityParticle0 = m_particles[0]->getVelocity();
+    Vector3 newVelocityParticle0 = m_particles[ 0 ]->getVelocity();
 
     // pour appliquer la friction, on a besoin du projeté du vecteur velocity dans le plan orthogonal au vecteur contact/rebond
     // projeté du vecteur u dans le plan orthogonal au vecteur v: Proj(u) = u- ((u.n)/(n.n))*n
     Vector3 contactNormalised = m_contactNormal.normalized();
     Vector3 velocityParticle0Normalised = newVelocityParticle0;
-    velocityParticle0Normalised -= contactNormalised * (velocityParticle0Normalised.dotProduct(contactNormalised) / contactNormalised.dotProduct(contactNormalised)); // m_velocityParticle0Normalized est la projection de la direction de déplacement de la balle dans le plan de la surface
+    velocityParticle0Normalised -= contactNormalised * ( velocityParticle0Normalised.dotProduct( contactNormalised ) / contactNormalised.dotProduct( contactNormalised ) ); // m_velocityParticle0Normalized est la projection de la direction de déplacement de la balle dans le plan de la surface
     velocityParticle0Normalised = velocityParticle0Normalised.normalized();
 
     // Gestion des frictions
@@ -119,6 +119,7 @@ void ParticleContact::resolveVelocity( const float& duration )
             newVelocityParticle0 -= velocityParticle0Normalised*friction;
         }
     }
+
     newVelocityParticle0 += impulsePerInverseMass * m_particles[0]->getInverseMass();
 
     // Application des impulsions => en direction du contact, proportionnelles à l'inverse de la masse, et avec ajustement post-friction

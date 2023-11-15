@@ -2,8 +2,6 @@
 
 Engine* Engine::s_engine = nullptr;
 float Engine::s_damping = 0.94;
-bool Engine::s_realisticAirResistance = false;
-Vector3 Engine::s_wind = Vector3();
 int Engine::s_colorShift = 0;
 Referential Engine::s_referential = Referential();
 
@@ -142,12 +140,6 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
             particle->setIsStationary(false);
         // Gravité
         m_particleForceRegistry.add( particle, std::make_shared<ParticleGravity>( m_gravity ) );
-
-        // Frottements de l'air réalistes
-        if (s_realisticAirResistance)
-        {
-            m_particleForceRegistry.add(particle, std::make_shared<ParticleAirFriction>(getWind()));
-        }
     }
 
     // ajout des forces de ressort assurant l'intégrité des blobs
