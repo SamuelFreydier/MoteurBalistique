@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MoteurBalistique", "MoteurBalistique.vcxproj", "{7FD42DF7-442E-479A-BA76-D0022F99702A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{10624FAD-D1B5-47C1-B94E-3D4494589C05} = {10624FAD-D1B5-47C1-B94E-3D4494589C05}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openframeworksLib", "..\..\..\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj", "{5837595D-ACA9-485C-8E76-729040CE4B0B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestBalistique", "TestBalistique\TestBalistique.vcxproj", "{C5CF0A9D-FDAB-49AE-B089-3C3465053565}"
-	ProjectSection(ProjectDependencies) = postProject
-		{10624FAD-D1B5-47C1-B94E-3D4494589C05} = {10624FAD-D1B5-47C1-B94E-3D4494589C05}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoreBalistique", "CoreBalistique\CoreBalistique.vcxproj", "{10624FAD-D1B5-47C1-B94E-3D4494589C05}"
 EndProject

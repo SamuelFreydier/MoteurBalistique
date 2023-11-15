@@ -63,7 +63,7 @@ class ofApp : public ofBaseApp
 
         
         void initArrays();
-
+        std::pair<glm::vec3, glm::vec3> getShootInfo() const;
         void shootParticle(std::pair<glm::vec3, glm::vec3>);
 
     private:

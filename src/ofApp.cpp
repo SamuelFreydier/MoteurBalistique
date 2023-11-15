@@ -131,6 +131,22 @@ void ofApp::draw()
 
     Engine::getInstance()->draw();
 
+    if (m_cameraInfoSaved)
+    {
+        ofConePrimitive shootIndicator;
+        shootIndicator.setGlobalPosition(m_shootPos);
+        shootIndicator.lookAt(m_shootPos + m_shootAxis);
+        shootIndicator.tiltDeg(90);
+
+        shootIndicator.setScale(0.2);
+        ofSetColor(0, 0, 0);
+        shootIndicator.drawWireframe();
+
+        shootIndicator.setScale(0.19);
+        ofSetColor(25, 25, 200);
+        shootIndicator.draw();
+    }
+
     Engine::getInstance()->endCamera();
 }
 
@@ -446,14 +462,7 @@ void ofApp::mouseReleased( int x, int y, int button )
     }
     */
 
-    if (m_cameraInfoSaved)
-    {
-        shootParticle({ m_shootPos, m_shootAxis });
-    }
-    else
-    {
-        shootParticle(Engine::getInstance()->getCameraInfo());
-    }
+    shootParticle(getShootInfo());
 }
 
 //--------------------------------------------------------------
@@ -520,6 +529,12 @@ void ofApp::initArrays()
     m_moveDirections[3] = Vector3::right;
     m_moveDirections[4] = Vector3::down;
     m_moveDirections[5] = Vector3::up;
+}
+
+std::pair<glm::vec3, glm::vec3> ofApp::getShootInfo() const
+{
+    std::pair<glm::vec3, glm::vec3> savedShootInfo = { m_shootPos, m_shootAxis };
+    return m_cameraInfoSaved ? savedShootInfo : Engine::getInstance()->getCameraInfo();
 }
 
 
