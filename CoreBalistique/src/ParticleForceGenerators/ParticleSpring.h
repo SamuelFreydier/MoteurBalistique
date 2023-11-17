@@ -10,8 +10,11 @@ private:
     // Particule à l'autre bout du ressort
     std::shared_ptr<Particle> m_otherParticle;
 
-    //Rigidbody à l'autre bout du ressort
-    std::shared_ptr<Rigidbody> m_otherRigidbody;
+    //Point d'application du ressort sur ce rigidbody (coordonnées monde)
+    Vector3 m_localization;
+
+    //Point d'application du ressort sur le rigidbody à l'autre bout du ressort (coordonnées monde)
+    Vector3 m_otherLocalization;
 
     // Constante d'élasticité
     float m_springConstant;
@@ -21,7 +24,7 @@ private:
 
 public:
     ParticleSpring( std::shared_ptr<Particle> other, const float& springConstant, const float& restLength );
-    ParticleSpring( std::shared_ptr<Rigidbody> other, const float& springConstant, const float& restLength );
+    ParticleSpring( const Vector3& localization, const Vector3& otherLocalization, const float& springConstant, const float& restLength );
 
     const float& getSpringConstant() const { return m_springConstant; }
 

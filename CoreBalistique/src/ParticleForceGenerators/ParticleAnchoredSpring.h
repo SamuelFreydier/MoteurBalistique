@@ -10,6 +10,9 @@ private:
     // Ancre
     Vector3* m_anchor;
 
+    //Point d'application du ressort sur ce rigidbody (coordonnées monde)
+    Vector3 m_localization;
+
     // Constante d'élasticité
     float m_springConstant;
 
@@ -17,7 +20,7 @@ private:
     float m_restLength;
 
 public:
-    ParticleAnchoredSpring( Vector3* anchor, const float& springConstant, const float& restLength );
+    ParticleAnchoredSpring( Vector3* anchor, const Vector3& localization, const float& springConstant, const float& restLength );
 
     const float& getSpringConstant() const { return m_springConstant; }
 

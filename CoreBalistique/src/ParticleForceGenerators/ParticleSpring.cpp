@@ -17,8 +17,8 @@ ParticleSpring::ParticleSpring( std::shared_ptr<Particle> other, const float& sp
  * @param springConstant
  * @param restLength
 */
-ParticleSpring::ParticleSpring(std::shared_ptr<Rigidbody> other, const float& springConstant, const float& restLength)
-    : m_otherRigidbody(other), m_springConstant(springConstant), m_restLength(restLength)
+ParticleSpring::ParticleSpring(const Vector3& localization, const Vector3& otherLocalization, const float& springConstant, const float& restLength)
+    : m_localization(localization), m_otherLocalization(otherLocalization), m_springConstant(springConstant), m_restLength(restLength)
 {
 }
 
@@ -54,8 +54,7 @@ void ParticleSpring::updateForce( std::shared_ptr<Particle> particle, float dura
 void ParticleSpring::updateForce(std::shared_ptr<Rigidbody> rigidbody, float duration)
 {
     // Vecteur du ressort
-    Vector3 force(rigidbody->getPosition());
-    force -= m_otherRigidbody->getPosition();
+    Vector3 force = m_localization - m_otherLocalization;
 
     // Norme de la force
     float norm = force.norm(); // norm = l
@@ -67,5 +66,5 @@ void ParticleSpring::updateForce(std::shared_ptr<Rigidbody> rigidbody, float dur
     force *= -norm; // force = - k * (l - l0) dans la bonne direction
 
     // Ajout de la force
-    rigidbody->addForce(force);
+    rigidbody->addForceAtPoint(force, m_localization);
 }

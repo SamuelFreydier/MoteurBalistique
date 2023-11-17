@@ -9,7 +9,12 @@ class ParticleBungee : public ForceGenerator
 private:
     // Particule à l'autre bout du ressort
     std::shared_ptr<Particle> m_otherParticle;
-    std::shared_ptr<Rigidbody> m_otherRigidbody;
+
+    //Point d'application du ressort sur ce rigidbody (coordonnées monde)
+    Vector3 m_localization;
+
+    //Point d'application du ressort sur le rigidbody à l'autre bout du ressort (coordonnées monde)
+    Vector3 m_otherLocalization;
 
     // Constante d'élasticité
     float m_springConstant;
@@ -19,7 +24,7 @@ private:
 
 public:
     ParticleBungee( std::shared_ptr<Particle> otherParticle, const float& springConstant, const float& restLength);
-    ParticleBungee( std::shared_ptr<Rigidbody> otherRigidbody, const float& springConstant, const float& restLength);
+    ParticleBungee(const Vector3& localization, const Vector3& otherLocalization, const float& springConstant, const float& restLength);
 
     const float& getSpringConstant() const { return m_springConstant; }
 
