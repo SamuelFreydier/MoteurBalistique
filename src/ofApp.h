@@ -59,7 +59,7 @@ class ofApp : public ofBaseApp
         GroundContacts groundContactGenerator;
 
         // Générateur de câble pour le comportement câble des ressorts des blobs
-        BlobContact blobContactGenerator;
+        //BlobContact blobContactGenerator;
 
         
         void initArrays();

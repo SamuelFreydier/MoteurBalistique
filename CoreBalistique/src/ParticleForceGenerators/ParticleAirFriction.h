@@ -4,7 +4,7 @@
 #include "ParticleForceGenerator.h"
 
 // Frottements de l'air réalistes, les frottements de l'air pas réalistes n'étant pas vraiment une force, il sont directement traités dans Particle.update()
-class ParticleAirFriction : public ParticleForceGenerator
+class ParticleAirFriction : public ForceGenerator
 {
     private:
         Vector3 m_worldWind; // Vélocité de la masse d'air 

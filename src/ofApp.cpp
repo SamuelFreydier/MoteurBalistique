@@ -16,10 +16,10 @@ void ofApp::setup()
     }*/
 
     groundContactGenerator.init( &Engine::getInstance()->getParticles() );
-    blobContactGenerator.init( &Engine::getInstance()->getBlobs());
+    //blobContactGenerator.init( &Engine::getInstance()->getBlobs());
 
     Engine::getInstance()->addContactGenerator( &groundContactGenerator );
-    Engine::getInstance()->addContactGenerator(&blobContactGenerator);
+    //Engine::getInstance()->addContactGenerator(&blobContactGenerator);
 
 
     // Setup GUI

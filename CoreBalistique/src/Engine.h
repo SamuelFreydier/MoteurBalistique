@@ -34,7 +34,7 @@ class Engine
         Particles m_tempAshFallParticles; // Pour éviter que le Integrate() d'une fireball ne modifie m_particles en droppant des ashfall ce qui fait planter le programme (bug d'itérateur)
 
         // Registre (associations particule / générateur de force) => Gère gravité/frottements/ressorts
-        ParticleForceRegistry m_particleForceRegistry;
+        ForceRegistry m_forceRegistry;
 
         // Résolveur de collisions
         ParticleContactResolver m_contactResolver;
@@ -98,8 +98,9 @@ class Engine
         // Suppression de toutes les particules contenues dans Engine
         void clear();
 
-        // Mise à jour GRAPHIQUE des particules
+        // Mise à jour GRAPHIQUE des particules et rigidbodies
         void drawParticles() const;
+        void drawRigidbodies() const;
 
         // Renvoie la particule présente à l'endroit du clic souris. Renvoie nullptr si rien n'a été cliqué
         std::shared_ptr<Particle> clickedParticle( const float& x, const float& y );

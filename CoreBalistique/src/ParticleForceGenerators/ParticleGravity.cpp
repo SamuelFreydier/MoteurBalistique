@@ -15,3 +15,13 @@ void ParticleGravity::updateForce( std::shared_ptr<Particle> particle, float dur
         particle->addForce( m_gravity * particleMass);
     }
 }
+
+void ParticleGravity::updateForce(std::shared_ptr<Rigidbody> rigidbody, float duration)
+{
+    float rigidbodyMass = rigidbody->getMass();
+
+    if (rigidbodyMass > 0.f)
+    {
+        rigidbody->addForce(m_gravity * rigidbodyMass);
+    }
+}

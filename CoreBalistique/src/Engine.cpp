@@ -132,7 +132,7 @@ int Engine::generateContacts()
 */
 void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
 {
-    // Ajout des forces au registre
+    // Ajout des forces au registre des particules
     for( std::shared_ptr<Particle>& particle : m_particles )
     {
         if (particle->getVelocity().norm() < 0.2) //on garde une marge en cas de microrebonds
@@ -140,7 +140,13 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
         else
             particle->setIsStationary(false);
         // Gravité
-        m_particleForceRegistry.add( particle, std::make_shared<ParticleGravity>( m_gravity ) );
+        m_forceRegistry.add( particle, std::make_shared<ParticleGravity>( m_gravity ) );
+    }
+
+    //Ajout des forces au registre des rigidbody
+    for (std::shared_ptr<Rigidbody>& rigidbody : m_rigidbodies)
+    {
+        m_forceRegistry.add(rigidbody, std::make_shared <ParticleGravity>(m_gravity));
     }
 
     // ajout des forces de ressort assurant l'intégrité des blobs
@@ -156,10 +162,10 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     // }
 
     // Mise à jour des forces
-    m_particleForceRegistry.updateForces(secondsElapsedSincePreviousUpdate);
+    m_forceRegistry.updateForces(secondsElapsedSincePreviousUpdate);
 
-    // Nettoyage du registre
-    m_particleForceRegistry.clear();
+    // Nettoyage des registres
+    m_forceRegistry.clear();
 
     // Mise à jour physique de chaque rigidbody
     for( std::shared_ptr<Rigidbody> rigidbody : m_rigidbodies )
@@ -254,6 +260,16 @@ void Engine::drawParticles() const
     {
         currParticle->draw();
         currParticle->isSelected = false;
+    }
+}
+
+
+void Engine::drawRigidbodies() const
+{
+    for (const std::shared_ptr<Rigidbody>& currRigidbody : m_rigidbodies)
+    {
+        currRigidbody->draw();
+        currRigidbody->isSelected = false;
     }
 }
 

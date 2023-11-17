@@ -4,11 +4,12 @@
 #include "ParticleForceGenerator.h"
 
 // Applique une force de ressort uniquement lorsque le ressort s'étend (saut à l'élastique)
-class ParticleBungee : public ParticleForceGenerator
+class ParticleBungee : public ForceGenerator
 {
 private:
     // Particule à l'autre bout du ressort
     std::shared_ptr<Particle> m_otherParticle;
+    std::shared_ptr<Rigidbody> m_otherRigidbody;
 
     // Constante d'élasticité
     float m_springConstant;
@@ -18,12 +19,14 @@ private:
 
 public:
     ParticleBungee( std::shared_ptr<Particle> otherParticle, const float& springConstant, const float& restLength);
+    ParticleBungee( std::shared_ptr<Rigidbody> otherRigidbody, const float& springConstant, const float& restLength);
 
     const float& getSpringConstant() const { return m_springConstant; }
 
     const float& getRestLength() const { return m_restLength; }
 
     virtual void updateForce( std::shared_ptr<Particle> particle, float duration ) override;
+    virtual void updateForce( std::shared_ptr<Rigidbody> rigidbody, float duration ) override;
 };
 
 #endif

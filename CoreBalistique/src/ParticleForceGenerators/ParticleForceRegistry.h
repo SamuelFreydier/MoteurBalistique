@@ -3,24 +3,39 @@
 
 #include "ParticleForceGenerator.h"
 
-class ParticleForceRegistry
+class ForceRegistry
 {
 public:
     struct ParticleForceRegistration
     {
         std::shared_ptr<Particle> particle;
-        std::shared_ptr<ParticleForceGenerator> forceGenerator;
+        std::shared_ptr<ForceGenerator> forceGenerator;
     };
 
-    typedef std::vector<ParticleForceRegistration> Registry;
+    struct RigidbodyForceRegistration
+    {
+        std::shared_ptr<Rigidbody> rigidbody;
+        std::shared_ptr<ForceGenerator> forceGenerator;
+    };
+
+    typedef std::vector<ParticleForceRegistration> ParticleRegistry;
+    typedef std::vector<RigidbodyForceRegistration> RigidbodyRegistry;
  
 private:
-    Registry m_registry;
+    ParticleRegistry m_particleRegistry;
+    RigidbodyRegistry m_rigidbodyRegistry;
 
 public:
-    void add( std::shared_ptr<Particle> particle, std::shared_ptr<ParticleForceGenerator> forceGenerator );
-    void remove( std::shared_ptr<Particle> particle, std::shared_ptr<ParticleForceGenerator> forceGenerator );
+    //particules
+    void add( std::shared_ptr<Particle> particle, std::shared_ptr<ForceGenerator> forceGenerator );
+    void remove( std::shared_ptr<Particle> particle, std::shared_ptr<ForceGenerator> forceGenerator );
     void remove( std::shared_ptr<Particle> particle );
+
+    //rigidbodies
+    void add(std::shared_ptr<Rigidbody> rigidbody, std::shared_ptr<ForceGenerator> forceGenerator);
+    void remove(std::shared_ptr<Rigidbody> rigidbody, std::shared_ptr<ForceGenerator> forceGenerator);
+    void remove(std::shared_ptr<Rigidbody> rigidbody);
+
     void clear();
     void updateForces( const float& secondsElapsedSincePreviousUpdate);
 };
