@@ -12,10 +12,10 @@ protected:
     float m_inverseMass;
 
     // Montant de freinage appliqué au mouvement linéaire
-    float m_linearDamping;
+    float m_linearDamping = 1;
 
     // Montant de freinage appliqué au mouvement rotationnel
-    float m_angularDamping;
+    float m_angularDamping = 1;
     
     // Position du corps rigide
     Vector3 m_position;
@@ -56,7 +56,7 @@ public:
     bool m_destroyedLater = false;
     bool isSelected = false;
 
-    Rigidbody( const float& mass = 1.0, const Vector3& velocity = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& position = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& color = Vector3( { 255, 0, 0 } ) );
+    Rigidbody( const float& mass = 1.0, const Vector3& velocity = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& position = Vector3( { 0.0, 0.0, 0.0 } ), const Vector3& angularVelocity = Vector3({0.0, 0.0, 0.0}), const Vector3& color = Vector3({255, 0, 0}));
     Rigidbody( const Rigidbody& rigidbody );
 
     // Accesseurs et Mutateurs

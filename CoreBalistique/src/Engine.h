@@ -7,6 +7,7 @@
 #include "ParticleForceGenerators/ParticleSpring.h"
 #include "Fireball.h"
 #include "Rigidbody.h"
+#include "RigidbodyCube.h"
 #include "Collision/ParticleContactResolver.h"
 #include "Collision/ParticleContactGenerator.h"
 #include "Collision/ParticleSpontaneousCollision.h"
@@ -83,7 +84,7 @@ class Engine
         static Referential& getReferential() { return s_referential; };
 
         // Tire une nouvelle particule depuis une position et avec un certain angle et une certaine force
-        void shootParticle( const Vector3& initialPos, const Vector3& initialVelocity, const float& mass = 1.0, const float& radius = 1.0, const Vector3& color = Vector3( { 255, 0, 0 } ), bool isFireball = false, bool m_showParticleInfos = false);
+        void shootRigidbody(const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const float& mass, const float& size, const Vector3& color);
    
         // Appelle les générateurs de collision pour signaler les collisions. Retourne le nombre de collisions générées.
         int generateContacts();

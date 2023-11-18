@@ -36,6 +36,7 @@ void ofApp::setup()
     m_particleConfig.add( m_impulseSlider.set( "Impulse", 20, 1, 500 ) );
     m_particleConfig.add( m_massSlider.set( "Mass", 5, 1, 100 ) );
     m_particleConfig.add( m_radiusSlider.set( "Radius", 0.5, 0.01, 2 ) );
+    m_particleConfig.add(m_angularVelocitySlider.set("Angular velocity", ofVec3f(0.0, 5.0, 0.0), ofVec3f(0, 0, 0), ofVec3f(100.0, 100.0, 100.0)));
     m_particleConfig.add( m_isFireballToggle.set( "Fireball", false ) );
     m_particleConfig.add( m_colorSlider.set( "Color", ofVec3f( 200, 50, 50 ), ofVec3f( 0, 0, 0 ), ofVec3f( 255, 255, 255 ) ) );
     m_particleConfig.add( m_colorShiftSlider.set( "Color Shift", 20, 0, 100 ) );
@@ -460,7 +461,7 @@ void ofApp::mouseReleased( int x, int y, int button )
     }
     */
 
-    shootParticle(getShootInfo());
+    shootRigidbody(getShootInfo());
 }
 
 //--------------------------------------------------------------
@@ -538,7 +539,7 @@ std::pair<glm::vec3, glm::vec3> ofApp::getShootInfo() const
 }
 
 
-void ofApp::shootParticle(std::pair<glm::vec3, glm::vec3> shootInfo) 
+void ofApp::shootRigidbody(std::pair<glm::vec3, glm::vec3> shootInfo) 
 {
-    Engine::getInstance()->shootParticle(shootInfo.first, shootInfo.second * 1);
+    Engine::getInstance()->shootRigidbody(shootInfo.first, shootInfo.second * 1, Vector3({ m_angularVelocitySlider->x, m_angularVelocitySlider->y, m_angularVelocitySlider->z }), m_massSlider, m_radiusSlider, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }));
 }

@@ -10,7 +10,7 @@ private:
     // Ancre
     Vector3* m_anchor;
 
-    //Point d'application du ressort sur ce rigidbody (coordonnées monde)
+    //Point d'application du ressort sur ce rigidbody (coordonnées dans le référentiel de l'objet)
     Vector3 m_localization;
 
     // Constante d'élasticité

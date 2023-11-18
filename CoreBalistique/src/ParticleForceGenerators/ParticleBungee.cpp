@@ -17,8 +17,8 @@ ParticleBungee::ParticleBungee( std::shared_ptr<Particle> otherParticle, const f
  * @param springConstant
  * @param restLength
 */
-ParticleBungee::ParticleBungee(const Vector3& localization, const Vector3& otherLocalization, const float& springConstant, const float& restLength)
-    : m_localization(localization), m_otherLocalization(otherLocalization), m_springConstant(springConstant), m_restLength(restLength)
+ParticleBungee::ParticleBungee(std::shared_ptr<Rigidbody> other, const Vector3& localization, const Vector3& otherLocalization, const float& springConstant, const float& restLength)
+    : m_otherRigidbody(other), m_localization(localization), m_otherLocalization(otherLocalization), m_springConstant(springConstant), m_restLength(restLength)
 {
 }
 
@@ -65,7 +65,9 @@ void ParticleBungee::updateForce(std::shared_ptr<Particle> particle, float durat
 void ParticleBungee::updateForce( std::shared_ptr<Rigidbody> rigidbody, float duration )
 {
     // Vecteur du ressort
-    Vector3 force = m_localization - m_otherLocalization;
+    Vector3 worldLoc = rigidbody->getPointInWorldSpace(m_localization);
+    Vector3 worldOtherLoc = m_otherRigidbody->getPointInWorldSpace(m_otherLocalization);
+    Vector3 force = worldLoc - worldOtherLoc;
 
     // Longueur entre les deux particules
     float norm = force.norm(); // norm = l

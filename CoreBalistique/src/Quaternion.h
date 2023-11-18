@@ -60,6 +60,9 @@ public:
     const float& getI() const { return i; }
     const float& getJ() const { return j; }
     const float& getK() const { return k; }
+
+    // Quaternion graphique
+    glm::quat quat() const { return glm::quat(r, i, j, k); }
 };
 
 #endif

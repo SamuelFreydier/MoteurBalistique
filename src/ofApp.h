@@ -48,6 +48,7 @@ class ofApp : public ofBaseApp
         ofParameter<float> m_impulseSlider;
         ofParameter<float> m_massSlider;
         ofParameter<float> m_radiusSlider;
+        ofParameter<ofVec3f> m_angularVelocitySlider;
         ofParameter<bool> m_isFireballToggle;
         ofParameter<ofVec3f> m_colorSlider;
         ofParameter<int> m_colorShiftSlider;
@@ -64,7 +65,7 @@ class ofApp : public ofBaseApp
         
         void initArrays();
         std::pair<glm::vec3, glm::vec3> getShootInfo() const;
-        void shootParticle(std::pair<glm::vec3, glm::vec3>);
+        void shootRigidbody(std::pair<glm::vec3, glm::vec3>);
 
     private:
         MouseDragger draggerReferentialOrigin;

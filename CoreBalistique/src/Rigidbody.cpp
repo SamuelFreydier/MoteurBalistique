@@ -1,8 +1,8 @@
 #include "Rigidbody.h"
 #include "Engine.h"
 
-Rigidbody::Rigidbody( const float& mass, const Vector3& velocity, const Vector3& position, const Vector3& color )
-    : m_velocity( velocity ), m_position( position ), m_color( color )
+Rigidbody::Rigidbody( const float& mass, const Vector3& velocity, const Vector3& position, const Vector3& angularVelocity, const Vector3& color )
+    : m_velocity( velocity ), m_position( position ), m_angularVelocity(angularVelocity), m_color(color)
 {
     setMassReverse(mass);
 }
@@ -212,7 +212,7 @@ void Rigidbody::integrate( const float& secondsElapsedSincePreviousUpdate)
     m_velocity = m_velocity * pow( m_linearDamping, secondsElapsedSincePreviousUpdate ) + m_acceleration * secondsElapsedSincePreviousUpdate;
             
     // Vélocité angulaire
-    m_angularVelocity = m_angularVelocity * pow( m_angularDamping, secondsElapsedSincePreviousUpdate ) * angularAcceleration * secondsElapsedSincePreviousUpdate;
+    m_angularVelocity += m_angularVelocity * pow( m_angularDamping, secondsElapsedSincePreviousUpdate ) * angularAcceleration * secondsElapsedSincePreviousUpdate;
 
     // Position
     m_position += m_velocity * secondsElapsedSincePreviousUpdate;

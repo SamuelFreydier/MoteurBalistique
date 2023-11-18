@@ -45,7 +45,8 @@ void ParticleAnchoredSpring::updateForce( std::shared_ptr<Particle> particle, fl
 void ParticleAnchoredSpring::updateForce(std::shared_ptr<Rigidbody> rigidbody, float duration)
 {
     // Vecteur du ressort
-    Vector3 force = m_localization - *m_anchor;
+    Vector3 worldLoc = rigidbody->getPointInWorldSpace(m_localization);
+    Vector3 force = worldLoc - *m_anchor;
 
     // Norme de la force
     float norm = force.norm(); // norm = l

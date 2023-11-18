@@ -79,7 +79,7 @@ void Fireball::explode()
     for( float angleProjection = 0.0; angleProjection < 2 * PI; angleProjection += angleStep )
     {
         const Vector3 initialVelocity = getVelocity() + Vector3({ getVelocity().norm() * cos(angleProjection), getVelocity().norm() * sin(angleProjection), 0.0 }) * 2;
-        Engine::getInstance()->shootParticle( getPosition(), initialVelocity, getMass() / m_nbExplosionProjectiles, getRadius() * pow(m_nbExplosionProjectiles, -0.3333333), m_color, true); // le pow c'est pour trouver le rayon de sous-boules provenant de la fragmentation d'une boule tout en conservant le volume
+        //Engine::getInstance()->shootRigidbody( getPosition(), initialVelocity, getMass() / m_nbExplosionProjectiles, getRadius() * pow(m_nbExplosionProjectiles, -0.3333333), m_color, true); // le pow c'est pour trouver le rayon de sous-boules provenant de la fragmentation d'une boule tout en conservant le volume
     }
 
     // On laisse la responsabilité à l'Engine de détruire la boule

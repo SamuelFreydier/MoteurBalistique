@@ -59,21 +59,21 @@ Engine* Engine::getInstance( const int& maxContacts, const int& iterations )
  * @param color 
  * @param isFireball 
 */
-void Engine::shootParticle(const Vector3& initialPos, const Vector3& initialVelocity , const float& mass, const float& radius, const Vector3& color, bool isFireball, bool m_showParticleInfos)
+void Engine::shootRigidbody(const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const float& mass, const float& size, const Vector3& color)
 {
     // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
     // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps
-    std::shared_ptr<Particle> newParticle = nullptr;
-    if( isFireball == true )
-    {
-        newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos, s_colorShift );
-    }
-    else
-    {
-        newParticle = std::make_shared<Particle>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos);
-    }
+    std::shared_ptr<Rigidbody> newRB = std::make_shared<RigidbodyCube>(size, mass, initialVelocity, initialPos, initialAngularVelocity, color);
+    //if( isFireball == true )
+    //{
+    //    newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos, s_colorShift );
+    //}
+    //else
+    //{
+    //    newParticle = std::make_shared<Particle>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos);
+    //}
 
-    m_particles.push_back( newParticle );
+    m_rigidbodies.push_back(newRB);
 }
 
 /**
@@ -463,6 +463,7 @@ void Engine::draw()
     ofSetColor(200, 200, 200);
     drawGround();
     drawParticles();
+    drawRigidbodies();
 }
 
 void Engine::drawGround() const

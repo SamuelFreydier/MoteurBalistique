@@ -171,6 +171,7 @@
     <ClInclude Include="src\Quaternion.h" />
     <ClInclude Include="src\Referential.h" />
     <ClInclude Include="src\Rigidbody.h" />
+    <ClInclude Include="src\RigidbodyCube.h" />
     <ClInclude Include="src\Vector.h" />
   </ItemGroup>
   <ItemGroup>
@@ -207,6 +208,7 @@
     <ClCompile Include="src\Quaternion.cpp" />
     <ClCompile Include="src\Referential.cpp" />
     <ClCompile Include="src\Rigidbody.cpp" />
+    <ClCompile Include="src\RigidbodyCube.cpp" />
     <ClCompile Include="src\Vector.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
