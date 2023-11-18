@@ -170,6 +170,7 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     // Mise à jour physique de chaque rigidbody
     for( std::shared_ptr<Rigidbody> rigidbody : m_rigidbodies )
     {
+        rigidbody->calculateDerivedData();
         rigidbody->integrate( secondsElapsedSincePreviousUpdate );
     }
 

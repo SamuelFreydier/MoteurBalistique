@@ -8,7 +8,7 @@ class ParticleAnchoredSpring : public ForceGenerator
 {
 private:
     // Ancre
-    Vector3* m_anchor;
+    Vector3 m_anchor;
 
     //Point d'application du ressort sur ce rigidbody (coordonnées dans le référentiel de l'objet)
     Vector3 m_localization;
@@ -20,7 +20,7 @@ private:
     float m_restLength;
 
 public:
-    ParticleAnchoredSpring( Vector3* anchor, const Vector3& localization, const float& springConstant, const float& restLength );
+    ParticleAnchoredSpring( const Vector3& anchor, const Vector3& localization, const float& springConstant, const float& restLength );
 
     const float& getSpringConstant() const { return m_springConstant; }
 

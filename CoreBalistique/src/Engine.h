@@ -4,6 +4,7 @@
 #include "ParticleForceGenerators/ParticleForceRegistry.h"
 #include "ParticleForceGenerators/ParticleGravity.h"
 #include "ParticleForceGenerators/ParticleAirFriction.h"
+#include "ParticleForceGenerators/ParticleAnchoredSpring.h"
 #include "ParticleForceGenerators/ParticleSpring.h"
 #include "Fireball.h"
 #include "Rigidbody.h"
@@ -117,6 +118,8 @@ class Engine
 
         Particles& getTempAshFallParticles() { return m_tempAshFallParticles; }
         void addTempAshFallParticles( std::shared_ptr<Particle> particle) { m_tempAshFallParticles.push_back(particle); }
+
+        ForceRegistry& getForceRegistry() { return m_forceRegistry; }
 
         const Vector3& getGravity() const { return m_gravity; }
         void setGravity( const Vector3& gravity ) { m_gravity = gravity; }

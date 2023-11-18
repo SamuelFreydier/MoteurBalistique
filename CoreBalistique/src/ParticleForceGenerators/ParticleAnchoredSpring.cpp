@@ -7,7 +7,7 @@
  * @param springConstant 
  * @param restLength 
 */
-ParticleAnchoredSpring::ParticleAnchoredSpring( Vector3* anchor, const Vector3& localization, const float& springConstant, const float& restLength )
+ParticleAnchoredSpring::ParticleAnchoredSpring( const Vector3& anchor, const Vector3& localization, const float& springConstant, const float& restLength )
     : m_anchor( anchor ), m_localization(localization), m_springConstant( springConstant ), m_restLength( restLength )
 {
 }
@@ -22,7 +22,7 @@ void ParticleAnchoredSpring::updateForce( std::shared_ptr<Particle> particle, fl
 {
     // Vecteur du ressort
     Vector3 force( particle->getPosition() );
-    force -= *m_anchor;
+    force -= m_anchor;
 
     // Norme de la force
     float norm = force.norm(); // norm = l
@@ -46,7 +46,7 @@ void ParticleAnchoredSpring::updateForce(std::shared_ptr<Rigidbody> rigidbody, f
 {
     // Vecteur du ressort
     Vector3 worldLoc = rigidbody->getPointInWorldSpace(m_localization);
-    Vector3 force = worldLoc - *m_anchor;
+    Vector3 force = worldLoc - m_anchor;
 
     // Norme de la force
     float norm = force.norm(); // norm = l
