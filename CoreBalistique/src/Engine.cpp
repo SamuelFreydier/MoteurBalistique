@@ -140,13 +140,13 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
         else
             particle->setIsStationary(false);
         // Gravité
-        m_forceRegistry.add( particle, std::make_shared<ParticleGravity>( m_gravity ) );
+        m_forceRegistry.add( particle, std::make_shared<Gravity>( m_gravity ) );
     }
 
     //Ajout des forces au registre des rigidbody
     for (std::shared_ptr<Rigidbody>& rigidbody : m_rigidbodies)
     {
-        m_forceRegistry.add(rigidbody, std::make_shared <ParticleGravity>(m_gravity));
+        m_forceRegistry.add(rigidbody, std::make_shared <Gravity>(m_gravity));
     }
 
     // ajout des forces de ressort assurant l'intégrité des blobs

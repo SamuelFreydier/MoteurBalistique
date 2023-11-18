@@ -4,13 +4,13 @@
 #include "ParticleForceGenerator.h"
 
 // Frottements de l'air réalistes, les frottements de l'air pas réalistes n'étant pas vraiment une force, il sont directement traités dans Particle.update()
-class ParticleAirFriction : public ForceGenerator
+class AirFriction : public ForceGenerator
 {
     private:
         Vector3 m_worldWind; // Vélocité de la masse d'air 
 
     public:
-        ParticleAirFriction(const Vector3& worldWind = Vector3()); 
+        AirFriction(const Vector3& worldWind = Vector3()); 
 
         virtual void updateForce( std::shared_ptr<Particle> particle, float secondsElapsedSincePreviousUpdate) override;
 

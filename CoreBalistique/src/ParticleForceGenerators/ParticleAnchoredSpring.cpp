@@ -3,11 +3,23 @@
 
 /**
  * @brief Constructeur à partir d'un point fixe de l'espace, de la constante d'élasticité et de la longueur au repos du ressort
+ * @param anchor
+ * @param springConstant
+ * @param restLength
+*/
+AnchoredSpring::AnchoredSpring(const Vector3& anchor, const float& springConstant, const float& restLength)
+    : m_anchor(anchor), m_springConstant(springConstant), m_restLength(restLength)
+{
+}
+
+/**
+ * @brief Constructeur à partir d'un point fixe de l'espace, un point d'application sur l'objet, de la constante d'élasticité et de la longueur au repos du ressort
  * @param anchor 
+ * @param localization
  * @param springConstant 
  * @param restLength 
 */
-ParticleAnchoredSpring::ParticleAnchoredSpring( const Vector3& anchor, const Vector3& localization, const float& springConstant, const float& restLength )
+AnchoredSpring::AnchoredSpring( const Vector3& anchor, const Vector3& localization, const float& springConstant, const float& restLength )
     : m_anchor( anchor ), m_localization(localization), m_springConstant( springConstant ), m_restLength( restLength )
 {
 }
@@ -18,7 +30,7 @@ ParticleAnchoredSpring::ParticleAnchoredSpring( const Vector3& anchor, const Vec
  * @param particle
  * @param duration
 */
-void ParticleAnchoredSpring::updateForce( std::shared_ptr<Particle> particle, float duration )
+void AnchoredSpring::updateForce( std::shared_ptr<Particle> particle, float duration )
 {
     // Vecteur du ressort
     Vector3 force( particle->getPosition() );
@@ -42,7 +54,7 @@ void ParticleAnchoredSpring::updateForce( std::shared_ptr<Particle> particle, fl
  * @param particle
  * @param duration
 */
-void ParticleAnchoredSpring::updateForce(std::shared_ptr<Rigidbody> rigidbody, float duration)
+void AnchoredSpring::updateForce(std::shared_ptr<Rigidbody> rigidbody, float duration)
 {
     // Vecteur du ressort
     Vector3 worldLoc = rigidbody->getPointInWorldSpace(m_localization);

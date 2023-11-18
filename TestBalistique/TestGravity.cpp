@@ -8,13 +8,13 @@ namespace ParticleGravityTest
 
     class TestParticleGravity : public testing::Test {
     protected:
-        ParticleGravity gravityForce;
+        Gravity gravityForce;
         std::shared_ptr<Particle> particle;
         Vector3 gravity;
 
         void SetUp() override {
             gravity = Vector3(0.0f, -9.8f, 0.0f);
-            gravityForce = ParticleGravity(gravity);
+            gravityForce = Gravity(gravity);
             particle = std::make_shared<Particle>(1.0f, 2.0f, Vector3(1.0f, 1.0f, 1.0f));
         }
     };

@@ -6,7 +6,7 @@
  * @param springConstant
  * @param restLength
 */
-ParticleBuoyancy::ParticleBuoyancy( const float& maxDepth, const float& volume, const float& waterHeight, const float& liquidDensity )
+Buoyancy::Buoyancy( const float& maxDepth, const float& volume, const float& waterHeight, const float& liquidDensity )
     : m_maxDepth( maxDepth ), m_volume( volume ), m_waterHeight( waterHeight ), m_liquidDensity( liquidDensity )
 {
 }
@@ -16,7 +16,7 @@ ParticleBuoyancy::ParticleBuoyancy( const float& maxDepth, const float& volume, 
  * @param particle 
  * @param duration 
 */
-void ParticleBuoyancy::updateForce( std::shared_ptr<Particle> particle, float duration )
+void Buoyancy::updateForce( std::shared_ptr<Particle> particle, float duration )
 {
     // Calcul de la profondeur de la particule dans le liquide
     float depth = particle->getPosition().getY();
@@ -49,7 +49,7 @@ void ParticleBuoyancy::updateForce( std::shared_ptr<Particle> particle, float du
  * @param particle
  * @param duration
 */
-void ParticleBuoyancy::updateForce(std::shared_ptr<Rigidbody> rigidbody, float duration)
+void Buoyancy::updateForce(std::shared_ptr<Rigidbody> rigidbody, float duration)
 {
     // Calcul de la profondeur de la particule dans le liquide
     float depth = rigidbody->getPosition().getY();

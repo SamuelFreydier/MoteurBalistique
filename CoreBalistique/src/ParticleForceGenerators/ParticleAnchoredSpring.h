@@ -4,7 +4,7 @@
 #include "ParticleForceGenerator.h"
 
 // Applique une force de ressort, avec une extrémité fixée à un point de l'espace
-class ParticleAnchoredSpring : public ForceGenerator
+class AnchoredSpring : public ForceGenerator
 {
 private:
     // Ancre
@@ -20,7 +20,11 @@ private:
     float m_restLength;
 
 public:
-    ParticleAnchoredSpring( const Vector3& anchor, const Vector3& localization, const float& springConstant, const float& restLength );
+    // Application sur le centre de masse (particule)
+    AnchoredSpring(const Vector3& anchor, const float& springConstant, const float& restLength);
+
+    // Application sur un point précis (rigidbody)
+    AnchoredSpring( const Vector3& anchor, const Vector3& localization, const float& springConstant, const float& restLength );
 
     const float& getSpringConstant() const { return m_springConstant; }
 

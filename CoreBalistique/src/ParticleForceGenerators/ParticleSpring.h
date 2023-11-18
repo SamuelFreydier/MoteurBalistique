@@ -4,7 +4,7 @@
 #include "ParticleForceGenerator.h"
 
 // Applique une force de ressort
-class ParticleSpring : public ForceGenerator
+class Spring : public ForceGenerator
 {
 private:
     // Particule à l'autre bout du ressort
@@ -25,8 +25,8 @@ private:
     float m_restLength;
 
 public:
-    ParticleSpring( std::shared_ptr<Particle> other, const float& springConstant, const float& restLength );
-    ParticleSpring( std::shared_ptr<Rigidbody> other, const Vector3& localization, const Vector3& otherLocalization, const float& springConstant, const float& restLength );
+    Spring( std::shared_ptr<Particle> other, const float& springConstant, const float& restLength );
+    Spring( std::shared_ptr<Rigidbody> other, const Vector3& localization, const Vector3& otherLocalization, const float& springConstant, const float& restLength );
 
     const float& getSpringConstant() const { return m_springConstant; }
 

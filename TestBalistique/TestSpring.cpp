@@ -10,7 +10,7 @@ namespace SpringTest
         float duration = 1.0f;
         std::shared_ptr<Particle> particle1 = std::make_shared<Particle>(1.0f, 2.0f, Vector3(1.0f, 0.0f, 0.0f));
         std::shared_ptr<Particle> particle2 = std::make_shared<Particle>(1.0f, 2.0f, Vector3(0.0f, 0.0f, 0.0f));
-        ParticleSpring springForce = ParticleSpring(particle2, 1.0f, 2.0f);
+        Spring springForce = Spring(particle2, 1.0f, 2.0f);
 
         springForce.updateForce(particle1, duration);
 
