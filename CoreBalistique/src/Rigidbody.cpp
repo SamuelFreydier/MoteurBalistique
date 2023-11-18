@@ -203,7 +203,7 @@ void Rigidbody::integrate( const float& secondsElapsedSincePreviousUpdate)
 {
     // Accélération linéaire
     m_lastFrameAcceleration = m_acceleration;
-    m_lastFrameAcceleration = m_accumForce * getInverseMass();
+    m_acceleration = m_accumForce * getInverseMass();
     
     // Accélération angulaire
     Vector3 angularAcceleration = m_inverseInertiaTensorWorld.transform( m_accumTorque );
