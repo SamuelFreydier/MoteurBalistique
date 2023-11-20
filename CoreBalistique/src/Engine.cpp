@@ -144,9 +144,12 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     }
 
     //Ajout des forces au registre des rigidbody
+    int i = 0;
     for (std::shared_ptr<Rigidbody>& rigidbody : m_rigidbodies)
     {
         m_forceRegistry.add(rigidbody, std::make_shared <Gravity>(m_gravity));
+        m_forceRegistry.add(rigidbody, m_anchoredSprings[i]);
+        ++i;
     }
 
     // ajout des forces de ressort assurant l'intégrité des blobs

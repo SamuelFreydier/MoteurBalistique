@@ -46,6 +46,8 @@ void ofApp::setup()
 
     m_gui.setup( m_mainGroup );
 
+    m_spawnSpring = false;
+
     // Initialisation des coordonnées du point d'origine du référentiel cartésien
     Engine::getInstance()->getReferential().setPointOrigine(200, ofGetScreenHeight() - 50);
 
@@ -197,6 +199,8 @@ void ofApp::keyPressed( int key )
         case 'e':
             m_mustMoveDirections[5] = true;
             break;
+        case 'm':
+            m_spawnSpring = !m_spawnSpring;
     }
 }
 
@@ -541,5 +545,8 @@ std::pair<glm::vec3, glm::vec3> ofApp::getShootInfo() const
 
 void ofApp::shootRigidbody(std::pair<glm::vec3, glm::vec3> shootInfo) 
 {
-    Engine::getInstance()->shootRigidbody(shootInfo.first, shootInfo.second * 1, Vector3({ m_angularVelocitySlider->x, m_angularVelocitySlider->y, m_angularVelocitySlider->z }), m_massSlider, m_radiusSlider, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }));
+    Engine* instance = Engine::getInstance();
+    instance->shootRigidbody(shootInfo.first, shootInfo.second * 1, Vector3({ m_angularVelocitySlider->x, m_angularVelocitySlider->y, m_angularVelocitySlider->z }), m_massSlider, m_radiusSlider, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }));
+    std::shared_ptr<AnchoredSpring> spring = std::make_shared<AnchoredSpring>(shootInfo.first, Vector3(0.0f, 0.5f, 0.5f), 5, 1);
+    instance->getAnchoredSprings().push_back(spring);
 }

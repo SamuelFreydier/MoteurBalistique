@@ -21,6 +21,7 @@ class Engine
         typedef std::vector<ParticleContactGenerator*> ContactGenerators;
         typedef std::vector<std::shared_ptr<Particle>> Particles;
         typedef std::vector<std::shared_ptr<Rigidbody>> Rigidbodies;
+        typedef std::vector<std::shared_ptr<AnchoredSpring>> AnchoredSprings;
         //typedef std::vector<std::shared_ptr<Blob>> Blobs;
 
     private:
@@ -69,6 +70,8 @@ class Engine
         int score = 0;
 
         ofCamera m_camera;
+
+        AnchoredSprings m_anchoredSprings;
 
         //Blobs m_blobs;
 
@@ -120,6 +123,9 @@ class Engine
         void addTempAshFallParticles( std::shared_ptr<Particle> particle) { m_tempAshFallParticles.push_back(particle); }
 
         ForceRegistry& getForceRegistry() { return m_forceRegistry; }
+
+        AnchoredSprings& getAnchoredSprings() { return m_anchoredSprings; }
+        void addTempAshFallParticles(std::shared_ptr<AnchoredSpring> spring) { m_anchoredSprings.push_back(spring); }
 
         const Vector3& getGravity() const { return m_gravity; }
         void setGravity( const Vector3& gravity ) { m_gravity = gravity; }
