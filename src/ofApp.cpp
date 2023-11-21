@@ -63,6 +63,9 @@ void ofApp::setup()
 //--------------------------------------------------------------
 void ofApp::update()
 {
+    // Nettoyage de la physique
+    Engine::getInstance()->clearRegisteries();
+
     // Mise à jour des forces configurées
     Engine::getInstance()->setGravity( Vector3( { 0.0, -m_gravitySlider, 0.0 } ) );
     Engine::getInstance()->setDamping( m_dampingSlider );
@@ -333,6 +336,12 @@ void ofApp::mouseDragged( int x, int y, int button )
 //--------------------------------------------------------------
 void ofApp::mousePressed( int x, int y, int button )
 {
+    // Clic sur un rigidbody permet de faire spawn un rigidbody lié à celui cliqué par un ressort
+    if (button == 2)
+    {
+        std::shared_ptr<Particle> clickedParticle = Engine::getInstance()->clickedParticle(x, y);
+    }
+
     /*
     // Quand un clic est détecté, on modifie le tableau de bools en conséquence
     boolsMouseButtonPressed[button] = true;

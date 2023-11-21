@@ -187,9 +187,6 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     // Mise à jour des forces
     m_forceRegistry.updateForces(secondsElapsedSincePreviousUpdate);
 
-    // Nettoyage des registres
-    m_forceRegistry.clear();
-
     // Mise à jour physique de chaque rigidbody
     for( std::shared_ptr<Rigidbody> rigidbody : m_rigidbodies )
     {
@@ -249,6 +246,11 @@ void Engine::clear()
     //m_blobs.clear();
 }
 
+void Engine::clearRegisteries()
+{
+    m_forceRegistry.clear();
+}
+
 /**
  * @brief Supprime les particules sorties de l'écran ou trop petites
 */
@@ -287,7 +289,9 @@ void Engine::drawParticles() const
     }
 }
 
-
+/**
+ * @brief Dessine les rigidbodies
+*/
 void Engine::drawRigidbodies() const
 {
     for (const std::shared_ptr<Rigidbody>& currRigidbody : m_rigidbodies)
@@ -295,6 +299,16 @@ void Engine::drawRigidbodies() const
         currRigidbody->draw();
         currRigidbody->isSelected = false;
     }
+}
+
+/**
+ * @brief Dessine les forces pouvant être représentées par une ligne (springs et bungee)
+ * 
+ * Dessine seulement les force sur les rigidbodies
+*/
+void Engine::drawForces()
+{
+    m_forceRegistry.drawForces();
 }
 
 
@@ -379,6 +393,50 @@ std::shared_ptr<Particle> Engine::clickedParticle( const float& x, const float& 
     }
 
     return clickedParticle;
+}
+
+/**
+ * @brief Gère le comportement des rigidbodies face à un clic de souris.
+ * @param x
+ * @param y
+*/
+void Engine::clickedRigidbody(const float& x, const float& y)
+{
+    bool clicked = false;
+    std::shared_ptr<Rigidbody> clickedParticle = nullptr;
+
+
+    const bool conversionIsFromGraphicToMecanic = false;
+
+    std::vector<std::shared_ptr<Rigidbody>>::iterator rbIterator = m_rigidbodies.begin();
+    while (rbIterator != m_rigidbodies.end() && clicked == false)
+    {
+        const float rbPositionX = (*rbIterator)->getPosition().getX();
+        const float rbPositionY = (*rbIterator)->getPosition().getY();
+
+        if (auto cubePtr = std::dynamic_pointer_cast<RigidbodyCube>(*rbIterator))
+        {
+            float cubeHalfSize = cubePtr->getSize() / 2;
+
+            if ((rbPositionX - cubeHalfSize < x && rbPositionX + cubeHalfSize > x)
+                && (rbPositionY - cubeHalfSize < y && rbPositionY + cubeHalfSize > y))
+            {
+                clicked = true;
+                clickedParticle = *rbIterator;
+
+            }
+        }
+        /*
+        if( ( *particleIterator )->toBeDestroyed() )
+        {
+            particleIterator = m_particles.erase( particleIterator );
+        }
+        else
+        {
+            particleIterator++;
+        }*/
+        rbIterator++;
+    }
 }
 
 
@@ -488,6 +546,7 @@ void Engine::draw()
     drawGround();
     drawParticles();
     drawRigidbodies();
+    drawForces();
 }
 
 void Engine::drawGround() const

@@ -142,3 +142,11 @@ void ForceRegistry::updateForces( const float& secondsElapsedSincePreviousUpdate
         registration.forceGenerator->updateForce(registration.rigidbody, secondsElapsedSincePreviousUpdate);
     }
 }
+
+void ForceRegistry::drawForces()
+{
+    for (RigidbodyForceRegistration& registration : m_rigidbodyRegistry)
+    {
+        registration.forceGenerator->draw(registration.rigidbody);
+    }
+}

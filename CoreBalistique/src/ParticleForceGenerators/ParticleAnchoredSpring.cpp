@@ -24,6 +24,20 @@ AnchoredSpring::AnchoredSpring( const Vector3& anchor, const Vector3& localizati
 {
 }
 
+/**
+ * @brief Permet de dessiner une ligne modélisant la force
+ * @param rigidbody
+*/
+void AnchoredSpring::draw(std::shared_ptr<Rigidbody> rigidbody) const
+{
+    Vector3 worldLoc = rigidbody->getPointInWorldSpace(m_localization);
+
+    ofColor color(255, 255, 255);
+    ofSetColor(color);
+
+    ofDrawLine(m_anchor.v3(), worldLoc.v3());
+}
+
 
 /**
  * @brief Applique la force de ressort à particle. Formule : f = -k (l - l0)

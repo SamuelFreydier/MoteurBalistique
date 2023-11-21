@@ -38,6 +38,7 @@ public:
 
     void clear();
     void updateForces( const float& secondsElapsedSincePreviousUpdate);
+    void drawForces();
 };
 
 #endif

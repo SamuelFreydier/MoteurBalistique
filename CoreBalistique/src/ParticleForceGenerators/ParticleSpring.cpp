@@ -23,6 +23,21 @@ Spring::Spring(std::shared_ptr<Rigidbody> other, const Vector3& localization, co
 }
 
 /**
+ * @brief Permet de dessiner une ligne modélisant la force
+ * @param rigidbody
+*/
+void Spring::draw(std::shared_ptr<Rigidbody> rigidbody) const
+{
+    Vector3 worldLoc = rigidbody->getPointInWorldSpace(m_localization);
+    Vector3 worldOtherLoc = m_otherRigidbody->getPointInWorldSpace(m_otherLocalization);
+
+    ofColor color(255, 255, 255);
+    ofSetColor(color);
+
+    ofDrawLine(worldLoc.v3(), worldOtherLoc.v3());
+}
+
+/**
  * @brief Applique la force de ressort à particle. Formule : f = -k (l - l0)
  * @param particle 
  * @param duration 

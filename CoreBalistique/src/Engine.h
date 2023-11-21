@@ -87,8 +87,9 @@ class Engine
 
         static Referential& getReferential() { return s_referential; };
 
-        // Tire une nouvelle particule depuis une position et avec un certain angle et une certaine force
+        // Tire un nouveau rigidbody
         void shootRigidbody(const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const float& mass, const float& size, const Vector3& color, const bool& useSpring);
+        //void shootRigidbody(const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, , const float& mass, const float& size, const Vector3& color, const bool& useSpring);
    
         // Appelle les générateurs de collision pour signaler les collisions. Retourne le nombre de collisions générées.
         int generateContacts();
@@ -103,12 +104,17 @@ class Engine
         // Suppression de toutes les particules contenues dans Engine
         void clear();
 
-        // Mise à jour GRAPHIQUE des particules et rigidbodies
+        // Suppression de toutes les forces dans les registres
+        void clearRegisteries();
+
+        // Mise à jour GRAPHIQUE des particules / rigidbodies / et forces
         void drawParticles() const;
         void drawRigidbodies() const;
+        void drawForces();
 
-        // Renvoie la particule présente à l'endroit du clic souris. Renvoie nullptr si rien n'a été cliqué
+        // Renvoie la particule / le rigidbody présent.e à l'endroit du clic souris. Renvoie nullptr si rien n'a été cliqué
         std::shared_ptr<Particle> clickedParticle( const float& x, const float& y );
+        void clickedRigidbody( const float& x, const float& y );
 
         // Renvoie la liste (vector) de particules présentes dans l'aire de sélection de la souris. Renvoie vector de taille 0 si rien n'a été sélectionné
         Particles selectedParticles(const Vector3& startMousePosition, const Vector3& currentMousePosition);

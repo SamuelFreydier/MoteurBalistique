@@ -30,6 +30,8 @@ public:
 
     const float& getRestLength() const { return m_restLength; }
 
+    void draw(std::shared_ptr<Rigidbody> rigidbody) const override;
+
     virtual void updateForce( std::shared_ptr<Particle> particle, float duration ) override;
     virtual void updateForce( std::shared_ptr<Rigidbody> rigidbody, float duration ) override;
 };
