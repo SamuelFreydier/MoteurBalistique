@@ -88,5 +88,5 @@ void Bungee::updateForce( std::shared_ptr<Rigidbody> rigidbody, float duration )
     force *= -norm; // force = - k * (l - l0) dans la bonne direction
 
     // Ajout de la force
-    rigidbody->addForceAtPoint( force, m_localization );
+    rigidbody->addForceAtPoint( force, worldLoc );
 }
