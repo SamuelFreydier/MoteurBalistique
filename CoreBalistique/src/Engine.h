@@ -10,6 +10,7 @@
 #include "Rigidbody.h"
 #include "RigidbodyCube.h"
 #include "RigidbodyCuboid.h"
+#include "RigidbodyCylinder.h"
 #include "Collision/ParticleContactResolver.h"
 #include "Collision/ParticleContactGenerator.h"
 #include "Collision/ParticleSpontaneousCollision.h"

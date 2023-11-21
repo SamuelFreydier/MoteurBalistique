@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="src\RigidbodyCone.h" />
     <ClInclude Include="src\RigidbodyCuboid.h" />
     <ClInclude Include="src\Blob.h" />
     <ClInclude Include="src\Collision\BlobContact.h" />
@@ -183,6 +184,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\RigidbodyCone.cpp" />
     <ClCompile Include="src\RigidbodyCuboid.cpp" />
     <ClCompile Include="src\Blob.cpp" />
     <ClCompile Include="src\Collision\BlobContact.cpp" />
