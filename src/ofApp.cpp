@@ -266,18 +266,6 @@ void ofApp::mouseMoved( int x, int y )
         draggerReferentialOrigin.draggingIsOver();
     }
     */
-
-    std::pair<int, int> diffMousePos = { x - m_mousePos.first, y - m_mousePos.second };
-    m_mousePos = { x, y };
-
-    if (m_canRotateCamera)
-    {
-        Engine::getInstance()->rotateCamera(-diffMousePos.second, -diffMousePos.first);
-    }
-    else
-    {
-        m_canRotateCamera = true;
-    }
 }
 
 //--------------------------------------------------------------
@@ -324,6 +312,14 @@ void ofApp::mouseDragged( int x, int y, int button )
         }
     }
     */
+
+    if (button == 2)
+    {
+        std::pair<int, int> diffMousePos = { x - m_mousePos.first, y - m_mousePos.second };
+        m_mousePos = { x, y };
+
+        Engine::getInstance()->rotateCamera(-diffMousePos.second, -diffMousePos.first);
+    }
 }
 
 //--------------------------------------------------------------
@@ -392,6 +388,11 @@ void ofApp::mousePressed( int x, int y, int button )
         }
     }
     */
+
+    if (button == 2)
+    {
+        m_mousePos = { x, y };
+    }
 }
 
 //--------------------------------------------------------------
@@ -461,7 +462,11 @@ void ofApp::mouseReleased( int x, int y, int button )
     }
     */
 
-    shootRigidbody(getShootInfo());
+    if (button == 0)
+    {
+        shootRigidbody(getShootInfo());
+    }
+    
 }
 
 //--------------------------------------------------------------

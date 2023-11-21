@@ -84,7 +84,6 @@ class ofApp : public ofBaseApp
         bool m_mustMoveDirections[6];
         Vector3 m_moveDirections[6];
 
-        bool m_canRotateCamera;
         std::pair<int, int> m_mousePos;
 
 };
