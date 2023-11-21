@@ -72,7 +72,7 @@ class ofApp : public ofBaseApp
         MouseDragger draggerParticleLauncher;
         MouseDragger draggerSelection;
 
-        bool m_spawnSpring;
+        bool m_useSpring;
 
         // l'indice 0 correspond au clic gauche, le 1 au clic scroll et le 2 au clic droit
         bool boolsMouseButtonPressed[3]; // initialisation à false sur tous les champs par défaut

@@ -59,11 +59,11 @@ Engine* Engine::getInstance( const int& maxContacts, const int& iterations )
  * @param color 
  * @param isFireball 
 */
-void Engine::shootRigidbody(const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const float& mass, const float& size, const Vector3& color)
+void Engine::shootRigidbody(const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const float& mass, const float& size, const Vector3& color, const bool& useSpring)
 {
     // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
     // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps
-    std::shared_ptr<Rigidbody> newRB = std::make_shared<RigidbodyCube>(size, mass, initialVelocity, initialPos, initialAngularVelocity, color);
+    //std::shared_ptr<Particle> newParticle = nullptr;
     //if( isFireball == true )
     //{
     //    newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos, s_colorShift );
@@ -73,6 +73,20 @@ void Engine::shootRigidbody(const Vector3& initialPos, const Vector3& initialVel
     //    newParticle = std::make_shared<Particle>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos);
     //}
 
+    // Création du rigidbody
+    std::shared_ptr<Rigidbody> newRB = std::make_shared<RigidbodyCube>(size, mass, initialVelocity, initialPos, initialAngularVelocity, color);
+    newRB->calculateDerivedData();
+
+    // Utilisation ou non d'un ressort
+    std::shared_ptr<AnchoredSpring> spring = nullptr;
+    if (useSpring) 
+    {
+        Vector3 rbPos = newRB->getPosition();
+        Vector3 springContactPoint(0.5, 0, 0);
+        spring = std::make_shared<AnchoredSpring>(rbPos, springContactPoint, 5, 1);
+    }
+
+    m_anchoredSprings.push_back(spring);
     m_rigidbodies.push_back(newRB);
 }
 
@@ -147,8 +161,14 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     int i = 0;
     for (std::shared_ptr<Rigidbody>& rigidbody : m_rigidbodies)
     {
+        // Gravité
         m_forceRegistry.add(rigidbody, std::make_shared <Gravity>(m_gravity));
-        m_forceRegistry.add(rigidbody, m_anchoredSprings[i]);
+
+        // Ressort si non null pour ce rigidbody
+        if (m_anchoredSprings[i])
+        {
+            m_forceRegistry.add(rigidbody, m_anchoredSprings[i]);
+        }
         ++i;
     }
 
