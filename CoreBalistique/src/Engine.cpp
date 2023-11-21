@@ -63,7 +63,7 @@ void Engine::shootRigidbody(const Vector3& initialPos, const Vector3& initialVel
 {
     // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
     // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps
-    std::shared_ptr<Rigidbody> newRB = std::make_shared<RigidbodyCube>(size, mass, initialVelocity, initialPos, initialAngularVelocity, color);
+    std::shared_ptr<Rigidbody> newRB = std::make_shared<RigidbodyCuboid>(size,size*1.8, size*0.6, mass, initialVelocity, initialPos, initialAngularVelocity, color);
     //if( isFireball == true )
     //{
     //    newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos, s_colorShift );
