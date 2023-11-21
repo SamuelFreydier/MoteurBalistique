@@ -6,7 +6,7 @@
  * @param springConstant 
  * @param restLength 
 */
-ParticleSpring::ParticleSpring( std::shared_ptr<Particle> other, const float& springConstant, const float& restLength )
+Spring::Spring( std::shared_ptr<Particle> other, const float& springConstant, const float& restLength )
     : m_otherParticle( other ), m_springConstant( springConstant ), m_restLength( restLength )
 {
 }
@@ -17,7 +17,7 @@ ParticleSpring::ParticleSpring( std::shared_ptr<Particle> other, const float& sp
  * @param springConstant
  * @param restLength
 */
-ParticleSpring::ParticleSpring(std::shared_ptr<Rigidbody> other, const Vector3& localization, const Vector3& otherLocalization, const float& springConstant, const float& restLength)
+Spring::Spring(std::shared_ptr<Rigidbody> other, const Vector3& localization, const Vector3& otherLocalization, const float& springConstant, const float& restLength)
     : m_otherRigidbody(other), m_localization(localization), m_otherLocalization(otherLocalization), m_springConstant(springConstant), m_restLength(restLength)
 {
 }
@@ -27,7 +27,7 @@ ParticleSpring::ParticleSpring(std::shared_ptr<Rigidbody> other, const Vector3& 
  * @param particle 
  * @param duration 
 */
-void ParticleSpring::updateForce( std::shared_ptr<Particle> particle, float duration )
+void Spring::updateForce( std::shared_ptr<Particle> particle, float duration )
 {
     // Vecteur du ressort
     Vector3 force( particle->getPosition() );
@@ -51,7 +51,7 @@ void ParticleSpring::updateForce( std::shared_ptr<Particle> particle, float dura
  * @param particle
  * @param duration
 */
-void ParticleSpring::updateForce(std::shared_ptr<Rigidbody> rigidbody, float duration)
+void Spring::updateForce(std::shared_ptr<Rigidbody> rigidbody, float duration)
 {
     // Vecteur du ressort
     Vector3 worldLoc = rigidbody->getPointInWorldSpace(m_localization);
@@ -68,5 +68,5 @@ void ParticleSpring::updateForce(std::shared_ptr<Rigidbody> rigidbody, float dur
     force *= -norm; // force = - k * (l - l0) dans la bonne direction
 
     // Ajout de la force
-    rigidbody->addForceAtPoint(force, m_localization);
+    rigidbody->addForceAtPoint(force, worldLoc);
 }

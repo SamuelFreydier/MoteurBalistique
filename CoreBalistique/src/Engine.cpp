@@ -63,7 +63,7 @@ void Engine::shootRigidbody(const Vector3& initialPos, const Vector3& initialVel
 {
     // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
     // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps
-    std::shared_ptr<Rigidbody> newRB = std::make_shared<RigidbodyCube>(size, mass, initialVelocity, initialPos, initialAngularVelocity, color);
+    std::shared_ptr<Rigidbody> newRB = std::make_shared<RigidbodyCuboid>(size,size*1.8, size*0.6, mass, initialVelocity, initialPos, initialAngularVelocity, color);
     //if( isFireball == true )
     //{
     //    newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos, s_colorShift );
@@ -140,13 +140,16 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
         else
             particle->setIsStationary(false);
         // Gravité
-        m_forceRegistry.add( particle, std::make_shared<ParticleGravity>( m_gravity ) );
+        m_forceRegistry.add( particle, std::make_shared<Gravity>( m_gravity ) );
     }
 
     //Ajout des forces au registre des rigidbody
+    int i = 0;
     for (std::shared_ptr<Rigidbody>& rigidbody : m_rigidbodies)
     {
-        m_forceRegistry.add(rigidbody, std::make_shared <ParticleGravity>(m_gravity));
+        m_forceRegistry.add(rigidbody, std::make_shared <Gravity>(m_gravity));
+        m_forceRegistry.add(rigidbody, m_anchoredSprings[i]);
+        ++i;
     }
 
     // ajout des forces de ressort assurant l'intégrité des blobs
@@ -170,6 +173,7 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     // Mise à jour physique de chaque rigidbody
     for( std::shared_ptr<Rigidbody> rigidbody : m_rigidbodies )
     {
+        rigidbody->calculateDerivedData();
         rigidbody->integrate( secondsElapsedSincePreviousUpdate );
     }
 

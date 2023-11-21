@@ -11,7 +11,7 @@ namespace ParticleBungeeTest
         float duration = 1.0f;
         std::shared_ptr<Particle> particle1 = std::make_shared<Particle>(1.0f, 2.0f, Vector3(1.0f, 0.0f, 0.0f));
         std::shared_ptr<Particle> particle2 = std::make_shared<Particle>(1.0f, 2.0f, Vector3(0.0f, 0.0f, 0.0f));
-        ParticleBungee bungee = ParticleBungee(particle2, 1.0f, 2.0f);
+        Bungee bungee = Bungee(particle2, 1.0f, 2.0f);
 
         bungee.updateForce(particle1, duration);
 
@@ -31,7 +31,7 @@ namespace ParticleBungeeTest
         float duration = 1.0f;
         std::shared_ptr<Particle> particle1 = std::make_shared<Particle>(1.0f, 2.0f, Vector3(1.0f, 0.0f, 0.0f));
         std::shared_ptr<Particle> particle2 = std::make_shared<Particle>(1.0f, 2.0f, Vector3(0.0f, 0.0f, 0.0f));
-        ParticleBungee bungee = ParticleBungee(particle2, 1.0f, 2.0f);
+        Bungee bungee = Bungee(particle2, 1.0f, 2.0f);
 
         particle1->setPosition(Vector3(0.0f, 0.0f, 0.0f));
 

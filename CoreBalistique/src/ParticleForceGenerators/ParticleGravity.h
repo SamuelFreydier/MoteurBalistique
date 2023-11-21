@@ -4,13 +4,13 @@
 #include "ParticleForceGenerator.h"
 
 // Générateur de gravité
-class ParticleGravity : public ForceGenerator
+class Gravity : public ForceGenerator
 {
 private:
     Vector3 m_gravity;
 
 public:
-    ParticleGravity( const Vector3& gravity = Vector3( 0, -9.81, 0 ) );
+    Gravity( const Vector3& gravity = Vector3( 0, -9.81, 0 ) );
 
     virtual void updateForce( std::shared_ptr<Particle> particle, float duration ) override;
     virtual void updateForce( std::shared_ptr<Rigidbody> rigidbody, float duration ) override;

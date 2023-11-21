@@ -3,6 +3,8 @@
 RigidbodyCube::RigidbodyCube(const float size, const float& mass, const Vector3& velocity, const Vector3& position, const Vector3& angularVelocity, const Vector3& color)
     : Rigidbody(mass, velocity, position, angularVelocity, color), m_size(size)
 {
+    float coeff = (6.0f * m_inverseMass / pow(m_size, 2));
+    m_inverseInertiaTensor = Matrix3x3(coeff, 0, 0, 0, coeff, 0, 0, 0, coeff);
 }
 
 void RigidbodyCube::draw() const

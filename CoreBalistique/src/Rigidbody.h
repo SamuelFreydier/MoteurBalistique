@@ -31,7 +31,6 @@ protected:
 
     // Accélération linéaire du corps
     Vector3 m_acceleration;
-    Vector3 m_lastFrameAcceleration;
 
     // Couleur du corps
     Vector3 m_color;
@@ -79,9 +78,6 @@ public:
     const Vector3& getAcceleration() const { return m_acceleration; }
     void setAcceleration( const Vector3& acceleration ) { m_acceleration = acceleration; }
 
-    const Vector3& getLastFrameAcceleration() const { return m_lastFrameAcceleration; }
-    void setLastFrameAcceleration( const Vector3& lastFrameAcceleration ) { m_lastFrameAcceleration = lastFrameAcceleration; }
-
     const Vector3& getPosition() const { return m_position; }
     void setPosition( const Vector3& position ) { m_position = position; }
 
@@ -116,7 +112,7 @@ public:
     // Gestion des données dérivées (pratiques mais techniquement redondantes)
     void calculateDerivedData();
     void calculateTransformMatrix( Matrix4x4& transformMatrix, const Vector3& position, const Quaternion& orientation );
-    void transformInertiaTensor( Matrix3x3& iitWorld, const Quaternion& q, const Matrix3x3& iitBody, const Matrix4x4& rotmat );
+    void transformInertiaTensor( Matrix3x3& iitWorld, const Matrix3x3& iitBody, const Matrix4x4& rotmat );
 
     // Mise à jour physique du rigidbody
     void integrate( const float& secondsElapsedSincePreviousUpdate );

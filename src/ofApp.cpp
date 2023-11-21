@@ -35,8 +35,8 @@ void ofApp::setup()
     m_particleConfig.add(m_showParticleInfosToggle.set("Show particle infos", true));
     m_particleConfig.add( m_impulseSlider.set( "Impulse", 20, 1, 500 ) );
     m_particleConfig.add( m_massSlider.set( "Mass", 5, 1, 100 ) );
-    m_particleConfig.add( m_radiusSlider.set( "Radius", 0.5, 0.01, 2 ) );
-    m_particleConfig.add(m_angularVelocitySlider.set("Angular velocity", ofVec3f(0.0, 5.0, 0.0), ofVec3f(0, 0, 0), ofVec3f(100.0, 100.0, 100.0)));
+    m_particleConfig.add( m_radiusSlider.set( "Radius", 1, 0.01, 2 ) );
+    m_particleConfig.add(m_angularVelocitySlider.set("Angular velocity", ofVec3f(0.0, 0.0, 0.0), ofVec3f(0, 0, 0), ofVec3f(100.0, 100.0, 100.0)));
     m_particleConfig.add( m_isFireballToggle.set( "Fireball", false ) );
     m_particleConfig.add( m_colorSlider.set( "Color", ofVec3f( 200, 50, 50 ), ofVec3f( 0, 0, 0 ), ofVec3f( 255, 255, 255 ) ) );
     m_particleConfig.add( m_colorShiftSlider.set( "Color Shift", 20, 0, 100 ) );
@@ -45,6 +45,8 @@ void ofApp::setup()
     m_mainGroup.add( m_particleConfig );
 
     m_gui.setup( m_mainGroup );
+
+    m_spawnSpring = false;
 
     // Initialisation des coordonnées du point d'origine du référentiel cartésien
     Engine::getInstance()->getReferential().setPointOrigine(200, ofGetScreenHeight() - 50);
@@ -197,6 +199,8 @@ void ofApp::keyPressed( int key )
         case 'e':
             m_mustMoveDirections[5] = true;
             break;
+        case 'm':
+            m_spawnSpring = !m_spawnSpring;
     }
 }
 
@@ -546,5 +550,13 @@ std::pair<glm::vec3, glm::vec3> ofApp::getShootInfo() const
 
 void ofApp::shootRigidbody(std::pair<glm::vec3, glm::vec3> shootInfo) 
 {
-    Engine::getInstance()->shootRigidbody(shootInfo.first, shootInfo.second * 1, Vector3({ m_angularVelocitySlider->x, m_angularVelocitySlider->y, m_angularVelocitySlider->z }), m_massSlider, m_radiusSlider, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }));
+    Engine* instance = Engine::getInstance();
+    instance->shootRigidbody(shootInfo.first, shootInfo.second * 1, Vector3({ m_angularVelocitySlider->x, m_angularVelocitySlider->y, m_angularVelocitySlider->z }), m_massSlider, m_radiusSlider, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }));
+
+    std::shared_ptr<Rigidbody> rbSpawned = instance->getRigidbodies().back();
+    rbSpawned->calculateDerivedData();
+    Vector3 rbPos = rbSpawned->getPosition();
+    Vector3 springContactPoint(0.5, 0, 0);
+    std::shared_ptr<AnchoredSpring> spring = std::make_shared<AnchoredSpring>(shootInfo.first, springContactPoint, 5, 1);
+    instance->getAnchoredSprings().push_back(spring);
 }

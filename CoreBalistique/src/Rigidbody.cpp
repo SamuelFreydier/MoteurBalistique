@@ -11,7 +11,6 @@ Rigidbody::Rigidbody( const Rigidbody& rigidbody )
     : Rigidbody(rigidbody.getMass(), rigidbody.getVelocity(), rigidbody.getPosition(), rigidbody.getColor() )
 {
     m_acceleration = rigidbody.m_acceleration;
-    m_lastFrameAcceleration = rigidbody.m_lastFrameAcceleration;
     m_accumForce = rigidbody.m_accumForce;
     m_accumTorque = rigidbody.m_accumTorque;
 }
@@ -120,7 +119,7 @@ void Rigidbody::calculateDerivedData()
     calculateTransformMatrix( m_transformMatrix, m_position, m_orientation );
 
     // Calcul du tenseur d'inertie en coordonnées monde
-    transformInertiaTensor( m_inverseInertiaTensorWorld, m_orientation, m_inverseInertiaTensor, m_transformMatrix );
+    transformInertiaTensor( m_inverseInertiaTensorWorld, m_inverseInertiaTensor, m_transformMatrix );
 }
 
 /**
@@ -153,7 +152,7 @@ void Rigidbody::calculateTransformMatrix( Matrix4x4& transformMatrix, const Vect
  * @param inverseInertiaTensorBody 
  * @param rotationMatrix 
 */
-void Rigidbody::transformInertiaTensor( Matrix3x3& inverseInertiaTensorWorld, const Quaternion& q, const Matrix3x3& inverseInertiaTensorBody, const Matrix4x4& rotationMatrix )
+void Rigidbody::transformInertiaTensor( Matrix3x3& inverseInertiaTensorWorld, const Matrix3x3& inverseInertiaTensorBody, const Matrix4x4& rotationMatrix )
 {
     float line0col0 = rotationMatrix[ 0 ] * inverseInertiaTensorBody[ 0 ] + rotationMatrix[ 1 ] * inverseInertiaTensorBody[ 3 ] + rotationMatrix[ 2 ] * inverseInertiaTensorBody[ 6 ];
     float line0col1 = rotationMatrix[ 0 ] * inverseInertiaTensorBody[ 1 ] + rotationMatrix[ 1 ] * inverseInertiaTensorBody[ 4 ] + rotationMatrix[ 2 ] * inverseInertiaTensorBody[ 7 ];
@@ -202,7 +201,6 @@ void Rigidbody::transformInertiaTensor( Matrix3x3& inverseInertiaTensorWorld, co
 void Rigidbody::integrate( const float& secondsElapsedSincePreviousUpdate)
 {
     // Accélération linéaire
-    m_lastFrameAcceleration = m_acceleration;
     m_acceleration = m_accumForce * getInverseMass();
     
     // Accélération angulaire
@@ -212,7 +210,7 @@ void Rigidbody::integrate( const float& secondsElapsedSincePreviousUpdate)
     m_velocity = m_velocity * pow( m_linearDamping, secondsElapsedSincePreviousUpdate ) + m_acceleration * secondsElapsedSincePreviousUpdate;
             
     // Vélocité angulaire
-    m_angularVelocity += m_angularVelocity * pow( m_angularDamping, secondsElapsedSincePreviousUpdate ) * angularAcceleration * secondsElapsedSincePreviousUpdate;
+    m_angularVelocity += angularAcceleration * secondsElapsedSincePreviousUpdate * pow(m_angularDamping, secondsElapsedSincePreviousUpdate);
 
     // Position
     m_position += m_velocity * secondsElapsedSincePreviousUpdate;

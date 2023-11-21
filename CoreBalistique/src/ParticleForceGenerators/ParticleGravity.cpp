@@ -1,12 +1,12 @@
 #include "ParticleGravity.h"
 
-ParticleGravity::ParticleGravity( const Vector3& gravity )
+Gravity::Gravity( const Vector3& gravity )
     : m_gravity( gravity )
 {
 
 }
 
-void ParticleGravity::updateForce( std::shared_ptr<Particle> particle, float duration )
+void Gravity::updateForce( std::shared_ptr<Particle> particle, float duration )
 {
     float particleMass = particle->getMass();
 
@@ -16,7 +16,7 @@ void ParticleGravity::updateForce( std::shared_ptr<Particle> particle, float dur
     }
 }
 
-void ParticleGravity::updateForce(std::shared_ptr<Rigidbody> rigidbody, float duration)
+void Gravity::updateForce(std::shared_ptr<Rigidbody> rigidbody, float duration)
 {
     float rigidbodyMass = rigidbody->getMass();
 

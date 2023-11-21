@@ -4,10 +4,12 @@
 #include "ParticleForceGenerators/ParticleForceRegistry.h"
 #include "ParticleForceGenerators/ParticleGravity.h"
 #include "ParticleForceGenerators/ParticleAirFriction.h"
+#include "ParticleForceGenerators/ParticleAnchoredSpring.h"
 #include "ParticleForceGenerators/ParticleSpring.h"
 #include "Fireball.h"
 #include "Rigidbody.h"
 #include "RigidbodyCube.h"
+#include "RigidbodyCuboid.h"
 #include "Collision/ParticleContactResolver.h"
 #include "Collision/ParticleContactGenerator.h"
 #include "Collision/ParticleSpontaneousCollision.h"
@@ -20,6 +22,7 @@ class Engine
         typedef std::vector<ParticleContactGenerator*> ContactGenerators;
         typedef std::vector<std::shared_ptr<Particle>> Particles;
         typedef std::vector<std::shared_ptr<Rigidbody>> Rigidbodies;
+        typedef std::vector<std::shared_ptr<AnchoredSpring>> AnchoredSprings;
         //typedef std::vector<std::shared_ptr<Blob>> Blobs;
 
     private:
@@ -69,6 +72,8 @@ class Engine
 
         ofCamera m_camera;
 
+        AnchoredSprings m_anchoredSprings;
+
         //Blobs m_blobs;
 
     protected:
@@ -117,6 +122,11 @@ class Engine
 
         Particles& getTempAshFallParticles() { return m_tempAshFallParticles; }
         void addTempAshFallParticles( std::shared_ptr<Particle> particle) { m_tempAshFallParticles.push_back(particle); }
+
+        ForceRegistry& getForceRegistry() { return m_forceRegistry; }
+
+        AnchoredSprings& getAnchoredSprings() { return m_anchoredSprings; }
+        void addTempAshFallParticles(std::shared_ptr<AnchoredSpring> spring) { m_anchoredSprings.push_back(spring); }
 
         const Vector3& getGravity() const { return m_gravity; }
         void setGravity( const Vector3& gravity ) { m_gravity = gravity; }
