@@ -7,8 +7,16 @@ RigidbodyCylinder::RigidbodyCylinder(const float radius, const float height, con
     {
         float coef = 1.0f / (12.0f * m_inverseMass);
         float coefxxyy = 3 * coef * pow(radius, 2) + coef * pow(height, 2);
-        float coefz = coef * pow(height, 2);
-        setInertiaTensor(Matrix3x3(coefxxyy, 0, 0, 0, coefxxyy, 0, 0, 0, coefz));
+        float coefz = 6*coef * pow(height, 2);
+        /* 
+        * | (m*r^2)/4 + (m*h^2)/2 0 0 |
+        * |0 (m*r^2)/4 + (m*h^2)/2  0 |
+        * | 0 0 (m*h^2)/2             |
+        * Pour un cylindre PLEIN
+        * 
+        * 
+        */
+        setInertiaTensor(Matrix3x3(coefxxyy, 0, 0, 0, coefxxyy, 0, 0, 0, coefz)); 
     }
     else
         std::cout << "RigidBodyCylinder initialisation: m_inverseMass = 0" << std::endl;
