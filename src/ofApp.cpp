@@ -58,6 +58,8 @@ void ofApp::setup()
     m_cameraInfoSaved = false;
     initArrays();
     Engine::getInstance()->moveCamera(Vector3(0, 50, 0));
+
+    ofEnableDepthTest();
 }
 
 //--------------------------------------------------------------

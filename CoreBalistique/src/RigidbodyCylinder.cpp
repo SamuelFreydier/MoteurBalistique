@@ -30,6 +30,9 @@ void RigidbodyCylinder::draw() const
     graphicCylinder.setHeight(m_height);
     graphicCylinder.setOrientation(m_orientation.quat());
 
+    ofSetColor(ofColor(0, 0, 0));
+    graphicCylinder.drawWireframe();
+
     ofColor color(m_color.x, m_color.y, m_color.z);
     ofSetColor(color);
 
