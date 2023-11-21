@@ -59,7 +59,7 @@ Engine* Engine::getInstance( const int& maxContacts, const int& iterations )
  * @param color 
  * @param isFireball 
 */
-void Engine::shootRigidbody(const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const float& mass, const float& size, const Vector3& color, const bool& useSpring)
+void Engine::shootRigidbody(const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const float& mass, const float& size, const Vector3& color, const bool& useSpring, const RigidbodyType& rbType)
 {
     // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
     // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps
@@ -74,7 +74,21 @@ void Engine::shootRigidbody(const Vector3& initialPos, const Vector3& initialVel
     //}
 
     // Création du rigidbody
-    std::shared_ptr<Rigidbody> newRB = std::make_shared<RigidbodyCube>(size, mass, initialVelocity, initialPos, initialAngularVelocity, color);
+    std::shared_ptr<Rigidbody> newRB = nullptr;
+
+    switch (rbType)
+    {
+        case RigidbodyType::CubeType:
+            newRB = std::make_shared<RigidbodyCube>(size, mass, initialVelocity, initialPos, initialAngularVelocity, color);
+            break;
+        case RigidbodyType::CylinderType:
+            newRB = std::make_shared<RigidbodyCylinder>(size * 0.5f, size * 2, mass, initialVelocity, initialPos, initialAngularVelocity, color);
+            break;
+        case RigidbodyType::CuboidType:
+            newRB = std::make_shared<RigidbodyCuboid>(size, size * 2, size, mass, initialVelocity, initialPos, initialAngularVelocity, color);
+            break;
+    }
+
     newRB->calculateDerivedData();
 
     // Utilisation ou non d'un ressort

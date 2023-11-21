@@ -9,6 +9,8 @@
 #include "Fireball.h"
 #include "Rigidbody.h"
 #include "RigidbodyCube.h"
+#include "RigidbodyCuboid.h"
+#include "RigidbodyCylinder.h"
 #include "Collision/ParticleContactResolver.h"
 #include "Collision/ParticleContactGenerator.h"
 #include "Collision/ParticleSpontaneousCollision.h"
@@ -23,6 +25,13 @@ class Engine
         typedef std::vector<std::shared_ptr<Rigidbody>> Rigidbodies;
         typedef std::vector<std::shared_ptr<AnchoredSpring>> AnchoredSprings;
         //typedef std::vector<std::shared_ptr<Blob>> Blobs;
+
+        enum RigidbodyType
+        {
+            CubeType,
+            CylinderType,
+            CuboidType
+        };
 
     private:
         // Singleton
@@ -88,8 +97,7 @@ class Engine
         static Referential& getReferential() { return s_referential; };
 
         // Tire un nouveau rigidbody
-        void shootRigidbody(const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const float& mass, const float& size, const Vector3& color, const bool& useSpring);
-        //void shootRigidbody(const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, , const float& mass, const float& size, const Vector3& color, const bool& useSpring);
+        void shootRigidbody(const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const float& mass, const float& size, const Vector3& color, const bool& useSpring, const RigidbodyType& rbType);
    
         // Appelle les générateurs de collision pour signaler les collisions. Retourne le nombre de collisions générées.
         int generateContacts();

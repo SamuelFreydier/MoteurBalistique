@@ -48,6 +48,8 @@ void ofApp::setup()
 
     m_useSpring = false;
 
+    m_rbType = Engine::RigidbodyType::CubeType;
+
     // Initialisation des coordonnées du point d'origine du référentiel cartésien
     Engine::getInstance()->getReferential().setPointOrigine(200, ofGetScreenHeight() - 50);
 
@@ -179,6 +181,18 @@ void ofApp::keyPressed( int key )
             m_cameraInfoSaved = false;
             break;
 
+        case OF_KEY_F1:
+            m_rbType = Engine::RigidbodyType::CubeType;
+            break;
+
+        case OF_KEY_F2:
+            m_rbType = Engine::RigidbodyType::CylinderType;
+            break;
+
+        case OF_KEY_F3:
+            m_rbType = Engine::RigidbodyType::CuboidType;
+            break;
+
         case 'z':
             m_mustMoveDirections[0] = true;
             break;
@@ -202,7 +216,7 @@ void ofApp::keyPressed( int key )
         case 'e':
             m_mustMoveDirections[5] = true;
             break;
-        case 'm':
+        case 'r':
             m_useSpring = !m_useSpring;
     }
 }
@@ -273,18 +287,6 @@ void ofApp::mouseMoved( int x, int y )
         draggerReferentialOrigin.draggingIsOver();
     }
     */
-
-    std::pair<int, int> diffMousePos = { x - m_mousePos.first, y - m_mousePos.second };
-    m_mousePos = { x, y };
-
-    if (m_canRotateCamera)
-    {
-        Engine::getInstance()->rotateCamera(-diffMousePos.second, -diffMousePos.first);
-    }
-    else
-    {
-        m_canRotateCamera = true;
-    }
 }
 
 //--------------------------------------------------------------
@@ -331,6 +333,14 @@ void ofApp::mouseDragged( int x, int y, int button )
         }
     }
     */
+
+    if (button == 2)
+    {
+        std::pair<int, int> diffMousePos = { x - m_mousePos.first, y - m_mousePos.second };
+        m_mousePos = { x, y };
+
+        Engine::getInstance()->rotateCamera(-diffMousePos.second, -diffMousePos.first);
+    }
 }
 
 //--------------------------------------------------------------
@@ -405,6 +415,11 @@ void ofApp::mousePressed( int x, int y, int button )
         }
     }
     */
+
+    if (button == 2)
+    {
+        m_mousePos = { x, y };
+    }
 }
 
 //--------------------------------------------------------------
@@ -474,7 +489,11 @@ void ofApp::mouseReleased( int x, int y, int button )
     }
     */
 
-    shootRigidbody(getShootInfo());
+    if (button == 0)
+    {
+        shootRigidbody(getShootInfo());
+    }
+    
 }
 
 //--------------------------------------------------------------
@@ -555,5 +574,5 @@ std::pair<glm::vec3, glm::vec3> ofApp::getShootInfo() const
 void ofApp::shootRigidbody(std::pair<glm::vec3, glm::vec3> shootInfo) 
 {
     Engine* instance = Engine::getInstance();
-    instance->shootRigidbody(shootInfo.first, shootInfo.second * 1, Vector3({ m_angularVelocitySlider->x, m_angularVelocitySlider->y, m_angularVelocitySlider->z }), m_massSlider, m_radiusSlider, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), m_useSpring);
+    instance->shootRigidbody(shootInfo.first, shootInfo.second * 1, Vector3({ m_angularVelocitySlider->x, m_angularVelocitySlider->y, m_angularVelocitySlider->z }), m_massSlider, m_radiusSlider, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), m_useSpring, m_rbType);
 }

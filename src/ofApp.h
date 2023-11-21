@@ -74,6 +74,8 @@ class ofApp : public ofBaseApp
 
         bool m_useSpring;
 
+        Engine::RigidbodyType m_rbType;
+
         // l'indice 0 correspond au clic gauche, le 1 au clic scroll et le 2 au clic droit
         bool boolsMouseButtonPressed[3]; // initialisation à false sur tous les champs par défaut
 
@@ -86,7 +88,6 @@ class ofApp : public ofBaseApp
         bool m_mustMoveDirections[6];
         Vector3 m_moveDirections[6];
 
-        bool m_canRotateCamera;
         std::pair<int, int> m_mousePos;
 
 };
