@@ -25,6 +25,9 @@ void RigidbodyCuboid::draw() const
     graphicCube.setDepth(m_height);
     graphicCube.setOrientation(m_orientation.quat());
 
+    ofSetColor(ofColor(0, 0, 0));
+    graphicCube.drawWireframe();
+
     ofColor color(m_color.x, m_color.y, m_color.z);
     ofSetColor(color);
 
