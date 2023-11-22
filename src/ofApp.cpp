@@ -6,6 +6,30 @@ void ofApp::setup()
     // Setup random generator
     srand( time( NULL ) );
 
+    // Setup GUI
+    m_worldForces.setName("World Forces");
+    m_worldForces.add(m_gravitySlider.set("Gravity", 9.81, 1, 20));
+    m_worldForces.add(m_realisticAirLossToggle.set("Realistic air interaction", false));
+    m_worldForces.add(m_windX_slider.set("Horizontal wind", 0, -20, 20));
+    m_worldForces.add(m_windY_slider.set("Vertical wind", 0, -20, 20));
+    m_worldForces.add(m_dampingSlider.set("Damping", 0.94, 0.5, 1));
+
+    m_particleConfig.setName("Particle Configuration");
+    m_particleConfig.add(m_isShootingTrigger.set("Is Shooting", true));
+    m_particleConfig.add(m_showParticleInfosToggle.set("Show particle infos", true));
+    m_particleConfig.add(m_impulseSlider.set("Impulse", 20, 1, 500));
+    m_particleConfig.add(m_massSlider.set("Mass", 5, 1, 100));
+    m_particleConfig.add(m_radiusSlider.set("Radius", 1, 0.01, 2));
+    m_particleConfig.add(m_angularVelocitySlider.set("Angular velocity", ofVec3f(0.0, 0.0, 0.0), ofVec3f(0, 0, 0), ofVec3f(100.0, 100.0, 100.0)));
+    m_particleConfig.add(m_isFireballToggle.set("Fireball", false));
+    m_particleConfig.add(m_colorSlider.set("Color", ofVec3f(200, 50, 50), ofVec3f(0, 0, 0), ofVec3f(255, 255, 255)));
+    m_particleConfig.add(m_colorShiftSlider.set("Color Shift", 20, 0, 100));
+
+    m_mainGroup.add(m_worldForces);
+    m_mainGroup.add(m_particleConfig);
+
+    m_gui.setup(m_mainGroup);
+
     // Setup App
     int maxContacts = 100000;
     Engine::getInstance( maxContacts );
@@ -20,31 +44,6 @@ void ofApp::setup()
 
     Engine::getInstance()->addContactGenerator( &groundContactGenerator );
     //Engine::getInstance()->addContactGenerator(&blobContactGenerator);
-
-
-    // Setup GUI
-    m_worldForces.setName( "World Forces" );
-    m_worldForces.add( m_gravitySlider.set( "Gravity", 9.81, 1, 20 ) );
-    m_worldForces.add(m_realisticAirLossToggle.set("Realistic air interaction", false));
-    m_worldForces.add(m_windX_slider.set("Horizontal wind", 0, -20, 20));
-    m_worldForces.add(m_windY_slider.set("Vertical wind", 0, -20, 20));
-    m_worldForces.add( m_dampingSlider.set( "Damping", 0.94, 0.5, 1 ) );
-    
-    m_particleConfig.setName( "Particle Configuration" );
-    m_particleConfig.add( m_isShootingTrigger.set( "Is Shooting", true) ); 
-    m_particleConfig.add(m_showParticleInfosToggle.set("Show particle infos", true));
-    m_particleConfig.add( m_impulseSlider.set( "Impulse", 20, 1, 500 ) );
-    m_particleConfig.add( m_massSlider.set( "Mass", 5, 1, 100 ) );
-    m_particleConfig.add( m_radiusSlider.set( "Radius", 1, 0.01, 2 ) );
-    m_particleConfig.add(m_angularVelocitySlider.set("Angular velocity", ofVec3f(0.0, 0.0, 0.0), ofVec3f(0, 0, 0), ofVec3f(100.0, 100.0, 100.0)));
-    m_particleConfig.add( m_isFireballToggle.set( "Fireball", false ) );
-    m_particleConfig.add( m_colorSlider.set( "Color", ofVec3f( 200, 50, 50 ), ofVec3f( 0, 0, 0 ), ofVec3f( 255, 255, 255 ) ) );
-    m_particleConfig.add( m_colorShiftSlider.set( "Color Shift", 20, 0, 100 ) );
-
-    m_mainGroup.add( m_worldForces );
-    m_mainGroup.add( m_particleConfig );
-
-    m_gui.setup( m_mainGroup );
 
     m_useSpring = false;
 
@@ -218,19 +217,14 @@ void ofApp::keyPressed( int key )
         case 'e':
             m_mustMoveDirections[5] = true;
             break;
-<<<<<<< HEAD
+
         case 'r':
             m_useSpring = !m_useSpring;
-=======
-
-        case 'm':
-            m_spawnSpring = !m_spawnSpring;
-            break;
 
         case 'w':
             Engine::getInstance()->clickedRigidbody(0, 0);
             break;
->>>>>>> origin/raycast-Select-Rigidbody
+
     }
 }
 
