@@ -362,6 +362,38 @@ std::shared_ptr<Particle> Engine::clickedParticle( const float& x, const float& 
 }
 
 
+std::shared_ptr<Rigidbody> Engine::clickedRigidbody(const float& x, const float& y)
+{
+    typedef std::shared_ptr<Rigidbody> RigidbodyPtr;
+
+    RigidbodyPtr clickedRigidbody = nullptr;
+    float rigidbodyDepth = 0;
+
+    for (std::vector<RigidbodyPtr>::iterator rigidbodyIterator = m_rigidbodies.begin(); rigidbodyIterator != m_rigidbodies.end(); rigidbodyIterator++)
+    {
+        glm::vec3 screenRbCoords = m_camera.worldToScreen((*rigidbodyIterator)->getPosition().v3());
+        //Si screenRbCoords > 1, alors le rb est derrière la caméra
+
+        //std::cout << screenRigidbodyCoords.x << " " << screenRigidbodyCoords.y << " " << screenRigidbodyCoords.z << std::endl;
+
+        if (ofInRange(screenRbCoords.x - x, -s_rigidbodySelectRadius, s_rigidbodySelectRadius) &&
+            ofInRange(screenRbCoords.y - y, -s_rigidbodySelectRadius, s_rigidbodySelectRadius) &&
+            screenRbCoords.z < 1
+        )
+        {
+            if (screenRbCoords.z < rigidbodyDepth || clickedRigidbody == nullptr)
+            {
+                clickedRigidbody = *rigidbodyIterator;
+                rigidbodyDepth = screenRbCoords.z;
+            }
+        }
+    }
+
+    return clickedRigidbody;
+}
+
+float Engine::s_rigidbodySelectRadius = 10;
+
 /**
  * @brief Renvoie toutes les particules prises dans une zone de sélection entre startMousePosition et currentMousePosition
  * @param startMousePosition 

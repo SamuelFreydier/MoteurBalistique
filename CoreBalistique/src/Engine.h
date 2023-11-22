@@ -77,6 +77,8 @@ class Engine
 
         //Blobs m_blobs;
 
+        static float s_rigidbodySelectRadius;
+
     protected:
         Engine(const int& maxContacts, const int& iterations = 0);
         ~Engine();
@@ -111,6 +113,8 @@ class Engine
 
         // Renvoie la particule présente à l'endroit du clic souris. Renvoie nullptr si rien n'a été cliqué
         std::shared_ptr<Particle> clickedParticle( const float& x, const float& y );
+
+        std::shared_ptr<Rigidbody> clickedRigidbody(const float& x, const float& y);
 
         // Renvoie la liste (vector) de particules présentes dans l'aire de sélection de la souris. Renvoie vector de taille 0 si rien n'a été sélectionné
         Particles selectedParticles(const Vector3& startMousePosition, const Vector3& currentMousePosition);
