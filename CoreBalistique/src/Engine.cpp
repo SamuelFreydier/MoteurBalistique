@@ -478,7 +478,11 @@ void Engine::showScore(const bool& boolShowScore) const
     }
 }
 
-
+/**
+ * @brief Renvoie les informations de position et de regard de la caméra
+ * 
+ * @return Une paire contenant les vecteurs de position et de regard
+ */
 std::pair<glm::vec3, glm::vec3> Engine::getCameraInfo() const
 {
     glm::vec3 pos = m_camera.getGlobalPosition();
@@ -487,6 +491,10 @@ std::pair<glm::vec3, glm::vec3> Engine::getCameraInfo() const
     return { pos, lookAxis };
 }
 
+/**
+ * @brief Déplace la caméra d'un vecteur de déplacement selon ses axes locaux
+ * @param moveDirection
+ */
 void Engine::moveCamera(Vector3 moveDirection)
 {
     Vector3 cameraPos(m_camera.getGlobalPosition());
@@ -496,6 +504,11 @@ void Engine::moveCamera(Vector3 moveDirection)
     m_camera.move(cameraMove.v3());
 }
 
+/**
+ * @brief Tourne la caméra selon ses axes X et Y
+ * @param aroundXAxis
+ * @param aroundYAxis
+ */
 void Engine::rotateCamera(float aroundXAxis, float aroundYAxis)
 {
     m_cameraRotation = { m_cameraRotation.first + aroundXAxis, m_cameraRotation.second + aroundYAxis };
@@ -507,6 +520,9 @@ void Engine::rotateCamera(float aroundXAxis, float aroundYAxis)
     m_camera.setOrientation(glm::vec3(m_cameraRotation.first, m_cameraRotation.second, 0));
 }
 
+/**
+* @brief Regroupe toutes les autres fonctions de dessin dans Engine
+*/
 void Engine::draw()
 {
     ofSetColor(200, 200, 200);
@@ -516,6 +532,9 @@ void Engine::draw()
     drawForces();
 }
 
+/**
+* @brief Dessine un plan représentant le sol en Y = 0;
+*/
 void Engine::drawGround() const
 {
     ofPlanePrimitive ground(10000, 10000, 100, 100);

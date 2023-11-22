@@ -75,10 +75,14 @@ class ofApp : public ofBaseApp
         // Générateur de câble pour le comportement câble des ressorts des blobs
         //BlobContact blobContactGenerator;
 
-        
+        //Fonction pour initialiser les arrays liés au déplacements de la caméra
         void initArrays();
+
+        //Fonction de récupération des infos de la caméra dans Engine
         std::pair<glm::vec3, glm::vec3> getShootInfo() const;
-        void shootRigidbody(const std::pair<glm::vec3, glm::vec3>& shootInfo);
+
+        //Fonction pour tirer un rigidbody depuis une position et dans une direction données
+        void shootRigidbody(std::pair<glm::vec3, glm::vec3>);
 
     private:
         MouseDragger draggerReferentialOrigin;
@@ -90,14 +94,16 @@ class ofApp : public ofBaseApp
         // l'indice 0 correspond au clic gauche, le 1 au clic scroll et le 2 au clic droit
         bool boolsMouseButtonPressed[3]; // initialisation à false sur tous les champs par défaut
 
-
+        //Variables pour sauvegarder la position et la direction de regard de la caméra
         bool m_cameraInfoSaved;
         glm::vec3 m_shootPos;
         glm::vec3 m_shootAxis;
 
+        //Variables pour contrôler les déplacements de la caméra
         float m_moveSpeed;
         bool m_mustMoveDirections[6];
         Vector3 m_moveDirections[6];
 
+        //Sauvegarde des positions de la souris pour changer l'orientation de la caméra
         std::pair<int, int> m_mousePos;
 };
