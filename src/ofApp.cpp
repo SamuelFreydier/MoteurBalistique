@@ -61,6 +61,8 @@ void ofApp::setup()
     initArrays();
     Engine::getInstance()->moveCamera(Vector3(0, 50, 0));
 
+
+    //Permet dessiner les éléments en fonction de leur profondeur plutôt que l'ordre d'appel de leur fonction de dessin
     ofEnableDepthTest();
 }
 
@@ -90,8 +92,10 @@ void ofApp::update()
         draggerSelection.setSelectedParticles( Engine::getInstance()->selectedParticles(draggerSelection.getStartMousePosition(), currentMousePosition));
     }
 
+    //Préparation du déplacement de la caméra
     Vector3 cameraMovementDirection(0, 0, 0);
 
+    //Calcul du des axes de déplacements
     for (int i = 0; i < 6; i++)
     {
         if (m_mustMoveDirections[i])
@@ -135,26 +139,34 @@ void ofApp::draw()
     ofDrawBitmapString(fpsStr, ofGetWindowWidth()-60, 20); // Dessiner le texte à la position (20, 20)
     */
 
+    //Activation du rendu 3D par la caméra de Engine
     Engine::getInstance()->beginCamera();
 
+    //Dessine les particules/rigidbodies/forces dans Engine ainsi que le sol
     Engine::getInstance()->draw();
 
+
+    //Si les infos de la caméra ont été sauvegardées, on dessine un cône pour représenter la position et le regard sauvegardés
     if (m_cameraInfoSaved)
     {
+        //Création du cône et calcul de son orientation
         ofConePrimitive shootIndicator;
         shootIndicator.setGlobalPosition(m_shootPos);
         shootIndicator.lookAt(m_shootPos + m_shootAxis);
         shootIndicator.tiltDeg(90);
 
+        //Dessin de ses arêtes en noir pour en percevoir sa perspective
         shootIndicator.setScale(0.2);
         ofSetColor(0, 0, 0);
         shootIndicator.drawWireframe();
 
-        shootIndicator.setScale(0.19);
+        //Dessin du cône avec ses faces
+        shootIndicator.setScale(0.2);
         ofSetColor(25, 25, 200);
         shootIndicator.draw();
     }
 
+    //Fin du rendu 3D
     Engine::getInstance()->endCamera();
 }
 
@@ -169,6 +181,7 @@ void ofApp::keyPressed( int key )
             Engine::getInstance()->clear();
             break;
 
+        //Sauvegarde des infos de la caméra
         case OF_KEY_F7:
             m_cameraInfoSaved = true;
 
@@ -179,6 +192,7 @@ void ofApp::keyPressed( int key )
             }
             break;
 
+        //Suppression de cette sauvegarde
         case OF_KEY_F8:
             m_cameraInfoSaved = false;
             break;
@@ -195,6 +209,7 @@ void ofApp::keyPressed( int key )
             m_rbType = Engine::RigidbodyType::CuboidType;
             break;
 
+        //Gestion de déplacement de la caméra
         case 'z':
             m_mustMoveDirections[0] = true;
             break;
@@ -218,6 +233,8 @@ void ofApp::keyPressed( int key )
         case 'e':
             m_mustMoveDirections[5] = true;
             break;
+
+        //Switch pour utiliser des ressorts ou non
         case 'r':
             m_useSpring = !m_useSpring;
     }
@@ -336,6 +353,7 @@ void ofApp::mouseDragged( int x, int y, int button )
     }
     */
 
+    //Rotation de la caméra si le clic droit est enfoncé
     if (button == 2)
     {
         std::pair<int, int> diffMousePos = { x - m_mousePos.first, y - m_mousePos.second };
@@ -418,6 +436,7 @@ void ofApp::mousePressed( int x, int y, int button )
     }
     */
 
+    //Sauvegarde des positions de la souris pour la rotation de la caméra
     if (button == 2)
     {
         m_mousePos = { x, y };
@@ -548,7 +567,9 @@ void ofApp::mouseScrolled(ofMouseEventArgs& mouse)
     */
 }
 
-
+/**
+* @brief Initialisation des tableaux pour le déplacement de la caméra
+*/
 void ofApp::initArrays()
 {
     //Init pour les touches ZS QD AE
@@ -566,13 +587,22 @@ void ofApp::initArrays()
     m_moveDirections[5] = Vector3::up;
 }
 
+
+/**
+* @brief Récupère les infos de la caméra dans Engine
+*
+* @return Une paire de vecteurs contenant sa position et sa direction de regard
+*/
 std::pair<glm::vec3, glm::vec3> ofApp::getShootInfo() const
 {
     std::pair<glm::vec3, glm::vec3> savedShootInfo = { m_shootPos, m_shootAxis };
     return m_cameraInfoSaved ? savedShootInfo : Engine::getInstance()->getCameraInfo();
 }
 
-
+/**
+* @brief Tire un rigidbody selon une position et un axe
+* @param shootInfo
+*/
 void ofApp::shootRigidbody(std::pair<glm::vec3, glm::vec3> shootInfo) 
 {
     Engine* instance = Engine::getInstance();

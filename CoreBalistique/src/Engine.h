@@ -115,6 +115,12 @@ class Engine
         // Suppression de toutes les forces dans les registres
         void clearRegisteries();
 
+        //Fonction globale de dessin qui regroupe toutes les autres fonctions de dessin de Engine
+        void draw();
+
+        //Dessine le plan représentant le sol en Y = 0
+        void drawGround() const;
+
         // Mise à jour GRAPHIQUE des particules / rigidbodies / et forces
         void drawParticles() const;
         void drawRigidbodies() const;
@@ -122,6 +128,7 @@ class Engine
 
         // Renvoie la particule / le rigidbody présent.e à l'endroit du clic souris. Renvoie nullptr si rien n'a été cliqué
         std::shared_ptr<Particle> clickedParticle( const float& x, const float& y );
+
         void clickedRigidbody( const float& x, const float& y );
 
         // Renvoie la liste (vector) de particules présentes dans l'aire de sélection de la souris. Renvoie vector de taille 0 si rien n'a été sélectionné
@@ -159,13 +166,18 @@ class Engine
 
         void beginCamera() { m_camera.begin(); }
         void endCamera() { m_camera.end(); }
-        void moveCamera(Vector3 moveDirection);
-        void rotateCamera(float aroundXAxis, float aroundYAxis);
-        std::pair<float, float> m_cameraRotation;
-        std::pair<glm::vec3, glm::vec3> getCameraInfo() const;
 
-        void draw();
-        void drawGround() const;
+        //Déplace la caméra d'un vecteur de déplacement donné selon ses axes locaux
+        void moveCamera(Vector3 moveDirection);
+
+        //Tourne la caméra selon ses axes X et Y
+        void rotateCamera(float aroundXAxis, float aroundYAxis);
+
+        //Sauvegarde de l'orientation de la caméra
+        std::pair<float, float> m_cameraRotation;
+
+        //Renvoie la position et la direction de regard de la caméra
+        std::pair<glm::vec3, glm::vec3> getCameraInfo() const;
 
 
         //Blobs& getBlobs() { return m_blobs; }
