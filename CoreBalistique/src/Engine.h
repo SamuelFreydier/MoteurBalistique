@@ -83,7 +83,6 @@ class Engine
         ofCamera m_camera;
 
         AnchoredSprings m_anchoredSprings;
-        Springs m_springs;
 
         //Blobs m_blobs;
 
@@ -102,8 +101,8 @@ class Engine
         static Referential& getReferential() { return s_referential; };
 
         // Tire un nouveau rigidbody
-        void shootRigidbody(const float& mass, const RigidbodyType& rbType, const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const Vector3& color, const std::vector<float>& rbParams, const bool& useSpring = false, const std::vector<float>& springParams = std::vector<float>(), const std::shared_ptr<Rigidbody> otherRB = nullptr);
-   
+        void shootRigidbody(const float& mass, const RigidbodyType& rbType, const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const Vector3& color, const std::vector<float>& rbParams, const bool& useSpring = false, const std::vector<float>& springParams = std::vector<float>());
+
         // Appelle les générateurs de collision pour signaler les collisions. Retourne le nombre de collisions générées.
         int generateContacts();
         void addContactGenerator( ParticleContactGenerator* contactGenerator ) { m_contactGenerators.push_back( contactGenerator ); }
@@ -114,7 +113,7 @@ class Engine
         // Nettoyage des particules non visibles
         void cleanup();
 
-        // Suppression de toutes les particules contenues dans Engine
+        // Suppression de toutes les particules et rigidbodies contenues dans Engine
         void clear();
 
         // Suppression de toutes les forces dans les registres

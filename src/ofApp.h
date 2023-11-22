@@ -78,7 +78,7 @@ class ofApp : public ofBaseApp
         
         void initArrays();
         std::pair<glm::vec3, glm::vec3> getShootInfo() const;
-        void shootRigidbody(const std::pair<glm::vec3, glm::vec3>& shootInfo, const std::shared_ptr<Rigidbody>& rbAimed = nullptr);
+        void shootRigidbody(const std::pair<glm::vec3, glm::vec3>& shootInfo);
 
     private:
         MouseDragger draggerReferentialOrigin;
@@ -100,5 +100,4 @@ class ofApp : public ofBaseApp
         Vector3 m_moveDirections[6];
 
         std::pair<int, int> m_mousePos;
-
 };

@@ -52,16 +52,18 @@ Engine* Engine::getInstance( const int& maxContacts, const int& iterations )
 
 
 /**
- * @brief Tire une particule à une certaine position, avec un certain angle et une certaine pulsion
- * @param initialPos 
- * @param initialAngle 
- * @param initialSpeed 
+ * @brief Tire un rigidbody à une certaine position, avec un certain angle et une certaine pulsion
  * @param mass 
- * @param radius 
+ * @param rbType 
+ * @param initialPos 
+ * @param initialVelocity 
+ * @param initialAngularVelocity 
  * @param color 
- * @param isFireball 
+ * @param rbParams 
+ * @param useSpring 
+ * @param springParams 
 */
-void Engine::shootRigidbody(const float& mass, const RigidbodyType& rbType, const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const Vector3& color, const std::vector<float>& rbParams, const bool& useSpring, const std::vector<float>& springParams, const std::shared_ptr<Rigidbody> otherRB)
+void Engine::shootRigidbody(const float& mass, const RigidbodyType& rbType, const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const Vector3& color, const std::vector<float>& rbParams, const bool& useSpring, const std::vector<float>& springParams)
 {
     // Création du rigidbody
     std::shared_ptr<Rigidbody> newRB = nullptr;
@@ -93,15 +95,7 @@ void Engine::shootRigidbody(const float& mass, const RigidbodyType& rbType, cons
         anchoredSpring = std::make_shared<AnchoredSpring>(rbPos, springContactPoint, springParams[3], springParams[4]);
     }
 
-    // Ressort entre deux rigidbodies
-    std::shared_ptr<Spring> spring = nullptr;
-    if (otherRB)
-    {
-        spring = std::make_shared<Spring>(otherRB, rbPos, rbPos, springParams[3], springParams[4]);
-    }
-
     m_anchoredSprings.push_back(anchoredSpring);
-    m_springs.push_back(spring);
     m_rigidbodies.push_back(newRB);
 }
 
@@ -183,12 +177,6 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
         if (m_anchoredSprings[i])
         {
             m_forceRegistry.add(rigidbody, m_anchoredSprings[i]);
-        }
-
-        // Ressort entre deux bodies si non null pour ce rigidbody
-        if (m_springs[i])
-        {
-            m_forceRegistry.add(rigidbody, m_springs[i]);
         }
 
         ++i;

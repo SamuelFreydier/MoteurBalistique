@@ -34,8 +34,8 @@ void ofApp::setup()
 
     m_SpringConfig.setName("Spring Configuration");
     m_SpringConfig.add(m_springContactPoint.set("Contact Point", ofVec3f(0, 0, 0), ofVec3f(-2.5, -2.5, -2.5), ofVec3f(2.5, 2.5, 2.5)));
-    m_SpringConfig.add(m_springConstant.set("Spring Constant", 5, 1, 20));
-    m_SpringConfig.add(m_springRestLength.set("Rest Length", 1, 1, 10));
+    m_SpringConfig.add(m_springConstant.set("Spring Constant", 5, 1, 50));
+    m_SpringConfig.add(m_springRestLength.set("Rest Length", 1, 1, 100));
 
     m_mainGroup.add(m_worldForces);
     m_mainGroup.add(m_RigidbodyConfig);
@@ -279,7 +279,7 @@ void ofApp::mousePressed( int x, int y, int button )
 
         if (clickedRB != nullptr)
         {
-            shootRigidbody(getShootInfo(), clickedRB);
+            clickedRB->setColor(Vector3(0, 255, 0));
         }
     }
 }
@@ -358,7 +358,7 @@ std::pair<glm::vec3, glm::vec3> ofApp::getShootInfo() const
  * @param shootInfo
  * @param rbAimed le rigidbody cliqué
 */
-void ofApp::shootRigidbody(const std::pair<glm::vec3, glm::vec3>& shootInfo, const std::shared_ptr<Rigidbody>& rbAimed) 
+void ofApp::shootRigidbody(const std::pair<glm::vec3, glm::vec3>& shootInfo) 
 {
     Engine* instance = Engine::getInstance();
 
@@ -395,5 +395,5 @@ void ofApp::shootRigidbody(const std::pair<glm::vec3, glm::vec3>& shootInfo, con
             break;
     }
 
-    instance->shootRigidbody(m_massSlider, m_rbType, shootInfo.first, shootInfo.second * impulse, initAngularVelocity, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), rbParameters, m_useSpring, springParameters, rbAimed);
+    instance->shootRigidbody(m_massSlider, m_rbType, shootInfo.first, shootInfo.second * impulse, initAngularVelocity, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), rbParameters, m_useSpring, springParameters);
 }
