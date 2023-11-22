@@ -218,8 +218,19 @@ void ofApp::keyPressed( int key )
         case 'e':
             m_mustMoveDirections[5] = true;
             break;
+<<<<<<< HEAD
         case 'r':
             m_useSpring = !m_useSpring;
+=======
+
+        case 'm':
+            m_spawnSpring = !m_spawnSpring;
+            break;
+
+        case 'w':
+            Engine::getInstance()->clickedRigidbody(0, 0);
+            break;
+>>>>>>> origin/raycast-Select-Rigidbody
     }
 }
 
@@ -417,8 +428,16 @@ void ofApp::mousePressed( int x, int y, int button )
         }
     }
     */
+    if (button == 1)
+    {
+        auto rbPtr = Engine::getInstance()->clickedRigidbody(x, y);
 
-    if (button == 2)
+        if (rbPtr != nullptr)
+        {
+            rbPtr->setColor({200, 200, 0});
+        }
+    }
+    else if (button == 2)
     {
         m_mousePos = { x, y };
     }

@@ -4,6 +4,7 @@ Engine* Engine::s_engine = nullptr;
 float Engine::s_damping = 0.94;
 int Engine::s_colorShift = 0;
 Referential Engine::s_referential = Referential();
+float Engine::s_rigidbodySelectRadius = 10;
 
 
 /**
@@ -409,50 +410,36 @@ std::shared_ptr<Particle> Engine::clickedParticle( const float& x, const float& 
     return clickedParticle;
 }
 
-/**
- * @brief Gère le comportement des rigidbodies face à un clic de souris.
- * @param x
- * @param y
-*/
-void Engine::clickedRigidbody(const float& x, const float& y)
+
+std::shared_ptr<Rigidbody> Engine::clickedRigidbody(const float& x, const float& y)
 {
-    bool clicked = false;
-    std::shared_ptr<Rigidbody> clickedParticle = nullptr;
+    typedef std::shared_ptr<Rigidbody> RigidbodyPtr;
 
+    RigidbodyPtr clickedRigidbody = nullptr;
+    float rigidbodyDepth = 0;
 
-    const bool conversionIsFromGraphicToMecanic = false;
-
-    std::vector<std::shared_ptr<Rigidbody>>::iterator rbIterator = m_rigidbodies.begin();
-    while (rbIterator != m_rigidbodies.end() && clicked == false)
+    for (std::vector<RigidbodyPtr>::iterator rigidbodyIterator = m_rigidbodies.begin(); rigidbodyIterator != m_rigidbodies.end(); rigidbodyIterator++)
     {
-        const float rbPositionX = (*rbIterator)->getPosition().getX();
-        const float rbPositionY = (*rbIterator)->getPosition().getY();
+        glm::vec3 screenRbCoords = m_camera.worldToScreen((*rigidbodyIterator)->getPosition().v3());
+        //Si screenRbCoords > 1, alors le rb est derrière la caméra
 
-        if (auto cubePtr = std::dynamic_pointer_cast<RigidbodyCube>(*rbIterator))
+        //std::cout << screenRigidbodyCoords.x << " " << screenRigidbodyCoords.y << " " << screenRigidbodyCoords.z << std::endl;
+
+        if (ofInRange(screenRbCoords.x - x, -s_rigidbodySelectRadius, s_rigidbodySelectRadius) &&
+            ofInRange(screenRbCoords.y - y, -s_rigidbodySelectRadius, s_rigidbodySelectRadius) &&
+            screenRbCoords.z < 1
+        )
         {
-            float cubeHalfSize = cubePtr->getSize() / 2;
-
-            if ((rbPositionX - cubeHalfSize < x && rbPositionX + cubeHalfSize > x)
-                && (rbPositionY - cubeHalfSize < y && rbPositionY + cubeHalfSize > y))
+            if (screenRbCoords.z < rigidbodyDepth || clickedRigidbody == nullptr)
             {
-                clicked = true;
-                clickedParticle = *rbIterator;
-
+                clickedRigidbody = *rigidbodyIterator;
+                rigidbodyDepth = screenRbCoords.z;
             }
         }
-        /*
-        if( ( *particleIterator )->toBeDestroyed() )
-        {
-            particleIterator = m_particles.erase( particleIterator );
-        }
-        else
-        {
-            particleIterator++;
-        }*/
-        rbIterator++;
     }
-}
 
+    return clickedRigidbody;
+}
 
 /**
  * @brief Renvoie toutes les particules prises dans une zone de sélection entre startMousePosition et currentMousePosition
