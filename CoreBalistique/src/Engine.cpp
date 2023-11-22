@@ -1,7 +1,8 @@
 #include "Engine.h"
 
 Engine* Engine::s_engine = nullptr;
-float Engine::s_damping = 0.94;
+float Engine::s_linearDamping = 0.94;
+float Engine::s_angularDamping = 0.94;
 int Engine::s_colorShift = 0;
 Referential Engine::s_referential = Referential();
 float Engine::s_rigidbodySelectRadius = 10;
@@ -60,48 +61,47 @@ Engine* Engine::getInstance( const int& maxContacts, const int& iterations )
  * @param color 
  * @param isFireball 
 */
-void Engine::shootRigidbody(const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const float& mass, const float& size, const Vector3& color, const bool& useSpring, const RigidbodyType& rbType)
+void Engine::shootRigidbody(const float& mass, const RigidbodyType& rbType, const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const Vector3& color, const std::vector<float>& rbParams, const bool& useSpring, const std::vector<float>& springParams, const std::shared_ptr<Rigidbody> otherRB)
 {
-    // Idéalement il faudrait plutôt utiliser un design pattern comme une Factory si on prévoit d'instancier plein de particules différentes, ça serait plus extensible et facile à maintenir sur le long terme
-    // Pour la phase 1, ça marche avec juste la boule de feu mais ça deviendra bien plus pertinent au fil du temps
-    //std::shared_ptr<Particle> newParticle = nullptr;
-    //if( isFireball == true )
-    //{
-    //    newParticle = std::make_shared<Fireball>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos, s_colorShift );
-    //}
-    //else
-    //{
-    //    newParticle = std::make_shared<Particle>( mass, radius, initialVelocity, initialPos, color, m_showParticleInfos);
-    //}
-
     // Création du rigidbody
     std::shared_ptr<Rigidbody> newRB = nullptr;
 
     switch (rbType)
     {
         case RigidbodyType::CubeType:
-            newRB = std::make_shared<RigidbodyCube>(size, mass, initialVelocity, initialPos, initialAngularVelocity, color);
+            newRB = std::make_shared<RigidbodyCube>(rbParams[0], mass, initialVelocity, initialPos, initialAngularVelocity, color);
             break;
         case RigidbodyType::CylinderType:
-            newRB = std::make_shared<RigidbodyCylinder>(size * 0.5f, size * 2, mass, initialVelocity, initialPos, initialAngularVelocity, color);
+            newRB = std::make_shared<RigidbodyCylinder>(rbParams[0], rbParams[1], mass, initialVelocity, initialPos, initialAngularVelocity, color);
             break;
         case RigidbodyType::CuboidType:
-            newRB = std::make_shared<RigidbodyCuboid>(size, size * 2, size, mass, initialVelocity, initialPos, initialAngularVelocity, color);
+            newRB = std::make_shared<RigidbodyCuboid>(rbParams[0], rbParams[1], rbParams[2], mass, initialVelocity, initialPos, initialAngularVelocity, color);
             break;
     }
 
+    // Initialise les données dérivées du body
     newRB->calculateDerivedData();
 
     // Utilisation ou non d'un ressort
-    std::shared_ptr<AnchoredSpring> spring = nullptr;
+    Vector3 rbPos = newRB->getPosition();
+    Vector3 springContactPoint(springParams[0], springParams[1], springParams[2]);
+
+    // Ressort ancré
+    std::shared_ptr<AnchoredSpring> anchoredSpring = nullptr;
     if (useSpring) 
     {
-        Vector3 rbPos = newRB->getPosition();
-        Vector3 springContactPoint(0.5, 0, 0);
-        spring = std::make_shared<AnchoredSpring>(rbPos, springContactPoint, 5, 1);
+        anchoredSpring = std::make_shared<AnchoredSpring>(rbPos, springContactPoint, springParams[3], springParams[4]);
     }
 
-    m_anchoredSprings.push_back(spring);
+    // Ressort entre deux rigidbodies
+    std::shared_ptr<Spring> spring = nullptr;
+    if (otherRB)
+    {
+        spring = std::make_shared<Spring>(otherRB, rbPos, rbPos, springParams[3], springParams[4]);
+    }
+
+    m_anchoredSprings.push_back(anchoredSpring);
+    m_springs.push_back(spring);
     m_rigidbodies.push_back(newRB);
 }
 
@@ -179,25 +179,20 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
         // Gravité
         m_forceRegistry.add(rigidbody, std::make_shared <Gravity>(m_gravity));
 
-        // Ressort si non null pour ce rigidbody
+        // Ressort ancré si non null pour ce rigidbody
         if (m_anchoredSprings[i])
         {
             m_forceRegistry.add(rigidbody, m_anchoredSprings[i]);
         }
+
+        // Ressort entre deux bodies si non null pour ce rigidbody
+        if (m_springs[i])
+        {
+            m_forceRegistry.add(rigidbody, m_springs[i]);
+        }
+
         ++i;
     }
-
-    // ajout des forces de ressort assurant l'intégrité des blobs
-    // for ( std::shared_ptr<Blob>& blob : m_blobs)
-    // {
-    //     Blob::Partuples blobParticleAssociations = blob->getParticleAssociations();
-    // 
-    //     for (Blob::ParticleAssociation_t blobParticleAssociation : blobParticleAssociations)
-    //     {
-    //         m_particleForceRegistry.add(blobParticleAssociation.firstParticle, std::make_shared<ParticleSpring>(blobParticleAssociation.secondParticle, blobParticleAssociation.associationElasticity, blobParticleAssociation.associationRestLength));
-    //         m_particleForceRegistry.add(blobParticleAssociation.secondParticle, std::make_shared<ParticleSpring>(blobParticleAssociation.firstParticle, blobParticleAssociation.associationElasticity, blobParticleAssociation.associationRestLength ));
-    //     }
-    // }
 
     // Mise à jour des forces
     m_forceRegistry.updateForces(secondsElapsedSincePreviousUpdate);
@@ -239,14 +234,6 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
 
     // Nettoyage des particules inutiles
     cleanup();
-
-    /*
-    for (std::shared_ptr<Particle>& particle : m_particles)
-    {
-        std::cout << particle->getPosition().y << std::endl;
-        std::cout << particle->getVelocity().y << std::endl;
-    }
-    */
 }
 
 
@@ -278,10 +265,6 @@ void Engine::cleanup()
         // on supprime les particules qui ont été marquées comme "à détruire" et celles qui sont devenues trop petites (le radius des trainées de cendres diminue automatiquement)
         if( ( *particleIterator )->getRadius() < 0.009 || (*particleIterator)->toBeDestroyed() ) 
         {
-            //for (std::shared_ptr<Blob> blob : m_blobs) // On l'efface d'abord des blobs dont elle faisait potentiellement partie
-            //{
-            //    blob->eraseDeadParticle(*particleIterator);
-            //}
             particleIterator = m_particles.erase( particleIterator ); // il manque un delete du pointeur non ? ce ne sont plus des shared_ptr...
         }
         else
@@ -393,24 +376,19 @@ std::shared_ptr<Particle> Engine::clickedParticle( const float& x, const float& 
         {
             clicked = true;
             clickedParticle = *particleIterator;
-            //( *particleIterator )->clicked();
         }
-        /*
-        if( ( *particleIterator )->toBeDestroyed() )
-        {
-            particleIterator = m_particles.erase( particleIterator );
-        }
-        else
-        {
-            particleIterator++;
-        }*/
         particleIterator++;
     }
 
     return clickedParticle;
 }
 
-
+/**
+ * @brief Gère le comportement des rigidbodies face à un clic de souris.
+ * @param x
+ * @param y
+ * @return
+*/
 std::shared_ptr<Rigidbody> Engine::clickedRigidbody(const float& x, const float& y)
 {
     typedef std::shared_ptr<Rigidbody> RigidbodyPtr;
@@ -556,220 +534,3 @@ void Engine::drawGround() const
     ground.tiltDeg(90);
     ground.drawWireframe();
 }
-
-
-/**
- * @brief Ajoute un blob à Engine, enlève les particules d'un ancien blob éventuel, et supprime les blobs ainsi vides
- * @param blob
-*/
-/*void Engine::addBlob(std::shared_ptr<Blob> blob)
-{
-    // Pour chaque particule du nouveau blob
-    for( std::shared_ptr<Particle> blobParticle : blob->getBlobParticles() )
-    {
-        // On cherche dans tous les blobs existants si la particule existe
-        Blobs::iterator existingBlobIterator = m_blobs.begin();
-        while( existingBlobIterator != m_blobs.end() )
-        {
-            Particles::iterator existingBlobParticleIterator = (*existingBlobIterator)->getBlobParticlesMutable().begin();
-
-            // On trouve la particule dans le blob et on la supprime
-            while( existingBlobParticleIterator != ( *existingBlobIterator )->getBlobParticles().end() )
-            {
-                if( (*existingBlobParticleIterator) == blobParticle )
-                {
-                    existingBlobParticleIterator = ( *existingBlobIterator )->getBlobParticlesMutable().erase( existingBlobParticleIterator );
-                    break;
-                }
-                else
-                {
-                    existingBlobParticleIterator++;
-                }
-            }
-
-            // Si le blob n'a plus de particule on le supprime
-            if( ( *existingBlobIterator )->getBlobParticlesMutable().empty() )
-            {
-                existingBlobIterator = m_blobs.erase( existingBlobIterator );
-            }
-            else
-            {
-                existingBlobIterator++;
-            }
-        }
-    }
-
-    m_blobs.push_back( blob );
-}*/
-
-
-/**
- * @brief Détruit le blob contenant corruptedParticle
- * @param corruptedParticle
-*/
-/*void Engine::destroyCorruptedBlobs(std::shared_ptr<Particle> corruptedParticle)
-{
-    Blobs tempGoodBlobs;
-
-    for (std::shared_ptr<Blob> blob : m_blobs) // On parcourt tous les blobs
-    {
-        bool isBlobCorrupted = false;
-
-        for ( std::shared_ptr<Particle> blobParticle : blob->getBlobParticles())
-        {
-            if (blobParticle == corruptedParticle)
-            {
-                isBlobCorrupted = true;
-                break;
-            }
-        }
-
-        if (isBlobCorrupted == false)
-        {
-            tempGoodBlobs.push_back(blob);
-        }
-    }
-
-    m_blobs = tempGoodBlobs;
-}*/
-
-
-/**
- * @brief Fusionne les particules d'un blob en une seule grosse particule
- * @param selectedParticle
-*/
-/*void Engine::mergeBlobParticles(std::shared_ptr<Particle> selectedParticle)
-{
-    std::shared_ptr<Blob> blobToMerge = nullptr;
-
-    // Recherche du blob affecté
-    Blobs::iterator blobIterator = m_blobs.begin();
-    bool blobFound = false;
-
-    while( blobIterator != m_blobs.end() && !blobFound ) // On parcourt tous les blobs
-    {
-        for( std::shared_ptr<Particle> blobParticle : (*blobIterator)->getBlobParticles() )
-        {
-            if( blobParticle == selectedParticle )
-            {
-                blobToMerge = *blobIterator;
-                blobFound = true;
-                break;
-            }
-        }
-
-        if( !blobFound )
-        {
-            blobIterator++;
-        }
-    }
-
-    // Fusion des particules du blob
-    if( blobToMerge )
-    {
-        // On prépare une nouvelle particule qui engloutit toutes les particules du blob
-        std::shared_ptr<Particle> motherParticle = nullptr;
-        float motherMass = 0.f;
-        float motherRadius = 0.f;
-        float surfaceSum = 0.0f;
-
-        Vector3 motherAveragePosition;
-        Vector3 motherAverageVelocity;
-        Vector3 motherAverageColor;
-
-        int nbChildrenParticles = blobToMerge->getBlobParticles().size();
-
-        // Les associations ne servent plus à rien
-        blobToMerge->clearParticleAssociations();
-
-        // On supprime toutes les particules du blob en prenant leurs caractéristiques
-        for( std::shared_ptr<Particle> childParticle : blobToMerge->getBlobParticles() )
-        {
-            motherMass += childParticle->getMass();
-            surfaceSum += PI * childParticle->getRadius() * childParticle->getRadius();
-            motherAveragePosition += childParticle->getPosition();
-            motherAverageVelocity += childParticle->getVelocity();
-            motherAverageColor += childParticle->getColor();
-
-            // On lui ordonne de mourir dès que possible
-            childParticle->m_destroyedLater = true;
-        }
-
-        // Calcul du rayon grâce à la surface totale des particules filles
-        motherRadius = sqrt( surfaceSum / PI );
-
-        motherAveragePosition /= nbChildrenParticles;
-        motherAverageVelocity /= nbChildrenParticles;
-        motherAverageColor /= nbChildrenParticles;
-
-        // Création de la particule mère
-        motherParticle = std::make_shared<Particle>( motherMass, motherRadius, motherAverageVelocity, motherAveragePosition, motherAverageColor );
-
-        // Suppression du blob qui n'a plus de raison d'exister
-        m_blobs.erase( blobIterator );
-
-        // Ajout de la particule dans Engine
-        m_particles.push_back( motherParticle );
-    }
-}*/
-
-/**
- * @brief Sépare une particule en un ensemble uniforme de blobs de particules
- * @param selectedParticle
- * @param childrenRadius
-*/
-/*void Engine::unmergeBlobParticles(std::shared_ptr<Particle> selectedParticle, float childrenRadius)
-{
-    if( selectedParticle )
-    {
-        Particles newParticles;
-
-        float surfaceToDistribute = PI * selectedParticle->getRadius() * selectedParticle->getRadius();
-        int nbParticles = 0;
-
-        float surfaceChild = PI * childrenRadius * childrenRadius;
-
-        // Création des particules filles selon le radius de la mère
-        while( surfaceToDistribute / surfaceChild >= 1.f )
-        {
-            surfaceToDistribute -= surfaceChild;
-
-            newParticles.push_back( std::make_shared<Particle>( 1.f, childrenRadius ) );
-            nbParticles++;
-        }
-
-        // Nouvelle position selon un angle différent de la sphère
-        int childIndex = 0;
-        float radianOffset = ( 2 * PI ) / nbParticles;
-
-        // Mise à jour d'autres valeurs intéressantes comme la masse
-        for( std::shared_ptr<Particle> childParticle : newParticles )
-        {
-            childParticle->setMassReverse( selectedParticle->getMass() / nbParticles );
-            childParticle->setColor( selectedParticle->getColor() );
-            childParticle->setPosition( Vector3( selectedParticle->getPosition().x + cos( childIndex * radianOffset ) * selectedParticle->getRadius() * 2,
-                                                 selectedParticle->getPosition().y + sin( childIndex * radianOffset ) * selectedParticle->getRadius() * 2,
-                                                 0 ) );
-            childParticle->setVelocity( selectedParticle->getVelocity() );
-            childIndex++;
-
-            // Ajout de la particule fille dans Engine
-            m_particles.push_back( childParticle );
-        }
-
-        // Suppression de la particule mère
-        Particles::iterator particleIterator = m_particles.begin();
-        while( particleIterator != m_particles.end() )
-        {
-            if( ( *particleIterator ) == selectedParticle )
-            {
-                m_particles.erase( particleIterator );
-                break;
-            }
-            particleIterator++;
-        }
-
-        // Création du blob reliant les filles
-        addBlob( std::make_shared<Blob>( newParticles ) );
-    }
-}*/

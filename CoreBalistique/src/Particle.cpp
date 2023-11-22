@@ -69,7 +69,7 @@ void Particle::integrate( const float& secondsElapsedSincePreviousUpdate)
     m_acceleration = m_accumForce * getInverseMass();
           
     // Vélocité
-    m_velocity = m_velocity * pow( Engine::getInstance()->getDamping(), secondsElapsedSincePreviousUpdate ) + m_acceleration * secondsElapsedSincePreviousUpdate;
+    m_velocity = m_velocity * pow( Engine::getInstance()->getLinearDamping(), secondsElapsedSincePreviousUpdate ) + m_acceleration * secondsElapsedSincePreviousUpdate;
             
     // Position
     m_position += m_velocity * secondsElapsedSincePreviousUpdate;

@@ -207,10 +207,10 @@ void Rigidbody::integrate( const float& secondsElapsedSincePreviousUpdate)
     Vector3 angularAcceleration = m_inverseInertiaTensorWorld.transform( m_accumTorque );
 
     // Vélocité linéaire
-    m_velocity = m_velocity * pow( m_linearDamping, secondsElapsedSincePreviousUpdate ) + m_acceleration * secondsElapsedSincePreviousUpdate;
+    m_velocity = m_velocity * pow( Engine::getInstance()->getLinearDamping(), secondsElapsedSincePreviousUpdate ) + m_acceleration * secondsElapsedSincePreviousUpdate;
             
     // Vélocité angulaire
-    m_angularVelocity += angularAcceleration * secondsElapsedSincePreviousUpdate * pow(m_angularDamping, secondsElapsedSincePreviousUpdate);
+    m_angularVelocity += angularAcceleration * secondsElapsedSincePreviousUpdate * pow(Engine::getInstance()->getAngularDamping(), secondsElapsedSincePreviousUpdate);
 
     // Position
     m_position += m_velocity * secondsElapsedSincePreviousUpdate;

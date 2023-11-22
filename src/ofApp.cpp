@@ -9,26 +9,44 @@ void ofApp::setup()
     // Setup GUI
     m_worldForces.setName("World Forces");
     m_worldForces.add(m_gravitySlider.set("Gravity", 9.81, 1, 20));
-    m_worldForces.add(m_realisticAirLossToggle.set("Realistic air interaction", false));
-    m_worldForces.add(m_windX_slider.set("Horizontal wind", 0, -20, 20));
-    m_worldForces.add(m_windY_slider.set("Vertical wind", 0, -20, 20));
-    m_worldForces.add(m_dampingSlider.set("Damping", 0.94, 0.5, 1));
+    m_worldForces.add(m_linearDampingSlider.set("Linear Damping", 0.94, 0.5, 1));
+    m_worldForces.add(m_angularDampingSlider.set("Angular Damping", 0.94, 0.5, 1));
 
-    m_particleConfig.setName("Particle Configuration");
-    m_particleConfig.add(m_isShootingTrigger.set("Is Shooting", true));
-    m_particleConfig.add(m_showParticleInfosToggle.set("Show particle infos", true));
-    m_particleConfig.add(m_impulseSlider.set("Impulse", 20, 1, 500));
-    m_particleConfig.add(m_massSlider.set("Mass", 5, 1, 100));
-    m_particleConfig.add(m_radiusSlider.set("Radius", 1, 0.01, 2));
-    m_particleConfig.add(m_angularVelocitySlider.set("Angular velocity", ofVec3f(0.0, 0.0, 0.0), ofVec3f(0, 0, 0), ofVec3f(100.0, 100.0, 100.0)));
-    m_particleConfig.add(m_isFireballToggle.set("Fireball", false));
-    m_particleConfig.add(m_colorSlider.set("Color", ofVec3f(200, 50, 50), ofVec3f(0, 0, 0), ofVec3f(255, 255, 255)));
-    m_particleConfig.add(m_colorShiftSlider.set("Color Shift", 20, 0, 100));
+    m_RigidbodyConfig.setName("Rigidbody Configuration");
+    m_RigidbodyConfig.add(m_impulseSlider.set("Impulse", 20, 1, 500));
+    m_RigidbodyConfig.add(m_massSlider.set("Mass", 5, 1, 100));
+    m_RigidbodyConfig.add(m_useSpring.set("Create Anchored Springs", false));
+    m_RigidbodyConfig.add(m_useInitAngularVelocity.set("Use Initial Angular Velocity", false));
+    m_RigidbodyConfig.add(m_angularVelocitySlider.set("Angular velocity", ofVec3f(0.0, 0.0, 0.0), ofVec3f(0, 0, 0), ofVec3f(100.0, 100.0, 100.0)));
+    m_RigidbodyConfig.add(m_colorSlider.set("Color", ofVec3f(200, 50, 50), ofVec3f(0, 0, 0), ofVec3f(255, 255, 255)));
+
+    m_CubeConfig.setName("Cube Configuration");
+    m_CubeConfig.add(m_sizeSlider.set("Size", 1, 0.1, 5));
+
+    m_CuboidConfig.setName("Cuboid Configuration");
+    m_CuboidConfig.add(m_widthSlider.set("Width", 1, 0.1, 5));
+    m_CuboidConfig.add(m_cuboidHeightSlider.set("Height", 1, 0.1, 5));
+    m_CuboidConfig.add(m_depthSlider.set("Depth", 1, 0.1, 5));
+
+    m_CylinderConfig.setName("Cylinder Configuration");
+    m_CylinderConfig.add(m_radiusSlider.set("Radius", 1, 0.1, 5));
+    m_CylinderConfig.add(m_cylinderHeightSlider.set("Height", 1, 0.1, 5));
+
+    m_SpringConfig.setName("Spring Configuration");
+    m_SpringConfig.add(m_springContactPoint.set("Contact Point", ofVec3f(0, 0, 0), ofVec3f(-2.5, -2.5, -2.5), ofVec3f(2.5, 2.5, 2.5)));
+    m_SpringConfig.add(m_springConstant.set("Spring Constant", 5, 1, 20));
+    m_SpringConfig.add(m_springRestLength.set("Rest Length", 1, 1, 10));
 
     m_mainGroup.add(m_worldForces);
-    m_mainGroup.add(m_particleConfig);
+    m_mainGroup.add(m_RigidbodyConfig);
+    m_mainGroup.add(m_CubeConfig);
+    m_mainGroup.add(m_CuboidConfig);
+    m_mainGroup.add(m_CylinderConfig);
+    m_mainGroup.add(m_SpringConfig);
 
     m_gui.setup(m_mainGroup);
+    m_gui.setPosition(glm::vec3(0, 0, 0));
+
 
     // Setup App
     int maxContacts = 100000;
@@ -59,20 +77,20 @@ void ofApp::setup()
     m_cameraInfoSaved = false;
     initArrays();
     Engine::getInstance()->moveCamera(Vector3(0, 50, 0));
-
-    ofEnableDepthTest();
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
+    Engine* instance = Engine::getInstance();
+
     // Nettoyage de la physique
-    Engine::getInstance()->clearRegisteries();
+    instance->clearRegisteries();
 
     // Mise à jour des forces configurées
-    Engine::getInstance()->setGravity( Vector3( { 0.0, -m_gravitySlider, 0.0 } ) );
-    Engine::getInstance()->setDamping( m_dampingSlider );
-    Engine::getInstance()->setColorShift( m_colorShiftSlider );
+    instance->setGravity( Vector3( { 0.0, -m_gravitySlider, 0.0 } ) );
+    instance->setLinearDamping( m_linearDampingSlider );
+    instance->setAngularDamping( m_angularDampingSlider );
 
     // Calcul du temps en secondes écoulé depuis la précédente mise à jour -> essentiel pour un moteur physique réaliste
     std::chrono::duration<float> elapsedSincePreviousUpdate = std::chrono::system_clock::now() - dateOfBeginPreviousUpdate;
@@ -80,13 +98,13 @@ void ofApp::update()
     dateOfBeginPreviousUpdate = std::chrono::system_clock::now();
 
     // Mise à jour physique
-    Engine::getInstance()->runPhysics(elapsedSincePreviousUpdate.count());
+    instance->runPhysics(elapsedSincePreviousUpdate.count());
 
     // Détection de la sélection graphique de particules
     if (draggerSelection.isDragging())
     {
         const Vector3 currentMousePosition = Vector3(ofGetMouseX(), ofGetMouseY());
-        draggerSelection.setSelectedParticles( Engine::getInstance()->selectedParticles(draggerSelection.getStartMousePosition(), currentMousePosition));
+        draggerSelection.setSelectedParticles(instance->selectedParticles(draggerSelection.getStartMousePosition(), currentMousePosition));
     }
 
     Vector3 cameraMovementDirection(0, 0, 0);
@@ -99,44 +117,18 @@ void ofApp::update()
         }
     }
 
-    Engine::getInstance()->moveCamera(cameraMovementDirection * m_moveSpeed * elapsedSincePreviousUpdate.count());
+    instance->moveCamera(cameraMovementDirection * m_moveSpeed * elapsedSincePreviousUpdate.count());
 }
 
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-    /*
-    // Dessiner l'aire de sélection de la souris si il y en a une 
-    if (draggerSelection.isDragging())
-    {
-        draggerSelection.drawSelectionDragger();
-    }
+    Engine* instance = Engine::getInstance();
 
-    // Dessiner le référentiel graphique
-    Engine::getInstance()->getReferential().drawReferential();
+    instance->beginCamera();
+    ofEnableDepthTest();    // Test de la profondeur
 
-    // Dessiner les différentes particules
-    Engine::getInstance()->drawParticles();
-
-    // Affichage score si maintien du clic molette
-    Engine::getInstance()->showScore(boolsMouseButtonPressed[1]);
-
-    // Affichage lanceur de particule si actif
-    if (draggerParticleLauncher.isDragging())
-    {
-        draggerParticleLauncher.drawDragger();
-    }
-
-    // Affichage de l'UI
-    m_gui.draw();
-    ofSetColor(255); // Définir la couleur du texte en blanc
-    string fpsStr = ofToString(fps) + " fps";
-    ofDrawBitmapString(fpsStr, ofGetWindowWidth()-60, 20); // Dessiner le texte à la position (20, 20)
-    */
-
-    Engine::getInstance()->beginCamera();
-
-    Engine::getInstance()->draw();
+    instance->draw();
 
     if (m_cameraInfoSaved)
     {
@@ -154,7 +146,13 @@ void ofApp::draw()
         shootIndicator.draw();
     }
 
-    Engine::getInstance()->endCamera();
+    ofDisableDepthTest();
+    instance->endCamera();
+
+    m_gui.draw();
+    ofSetColor(255); // Définir la couleur du texte en blanc
+    string fpsStr = ofToString(fps) + " fps";
+    ofDrawBitmapString(fpsStr, ofGetWindowWidth() - 60, 20); // Dessiner le texte à la position (20, 20)
 }
 
 //--------------------------------------------------------------
@@ -187,11 +185,11 @@ void ofApp::keyPressed( int key )
             break;
 
         case OF_KEY_F2:
-            m_rbType = Engine::RigidbodyType::CylinderType;
+            m_rbType = Engine::RigidbodyType::CuboidType;
             break;
 
         case OF_KEY_F3:
-            m_rbType = Engine::RigidbodyType::CuboidType;
+            m_rbType = Engine::RigidbodyType::CylinderType;
             break;
 
         case 'z':
@@ -217,14 +215,6 @@ void ofApp::keyPressed( int key )
         case 'e':
             m_mustMoveDirections[5] = true;
             break;
-
-        case 'r':
-            m_useSpring = !m_useSpring;
-
-        case 'w':
-            Engine::getInstance()->clickedRigidbody(0, 0);
-            break;
-
     }
 }
 
@@ -234,26 +224,6 @@ void ofApp::keyReleased( int key )
     
     switch( key )
     {
-        /*
-        // Fusion des particules du blob sélectionné
-        case OF_KEY_F1: 
-        {
-            std::shared_ptr<Particle> clickedParticle = Engine::getInstance()->clickedParticle( ofGetMouseX(), ofGetMouseY() );
-            if( clickedParticle )
-            {
-                Engine::getInstance()->mergeBlobParticles( clickedParticle );
-            }
-        } break;
-        case OF_KEY_F2: 
-        {
-            std::shared_ptr<Particle> clickedParticle = Engine::getInstance()->clickedParticle( ofGetMouseX(), ofGetMouseY() );
-            if( clickedParticle )
-            {
-                Engine::getInstance()->unmergeBlobParticles( clickedParticle );
-            }
-        } break;
-        */
-
         case 'z':
             m_mustMoveDirections[0] = false;
             break;
@@ -284,63 +254,12 @@ void ofApp::keyReleased( int key )
 //--------------------------------------------------------------
 void ofApp::mouseMoved( int x, int y )
 {
-    /*
-    if (boolsMouseButtonPressed[0] == false)
-    {
-        draggerParticleLauncher.draggingIsOver();
-    }
-    if (boolsMouseButtonPressed[2] == false)
-    {
-        draggerReferentialOrigin.draggingIsOver();
-    }
-    */
+
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged( int x, int y, int button )
 {
-    /*
-    if (button == 0) // si dragging du clic gauche 
-    {
-        if (m_isShootingTrigger)
-        {
-            if (draggerParticleLauncher.isDragging() == false) // si le draggerParticleLauncher n'est pas encore actif, alors on en créée un nouveau et on fait rien de plus
-            {
-                draggerParticleLauncher = MouseDragger(Vector3(x, y), m_radiusSlider);
-            }
-        }
-        else
-        {
-
-        }
-    }
-    else if (button == 1)
-    {
-        if (m_isShootingTrigger)
-        {
-
-        }
-        else
-        {
-            if (draggerSelection.isDragging() == false) // si le draggerSelection n'est pas encore actif, alors on en créée un nouveau et on fait rien de plus
-            {
-                draggerSelection = MouseDragger(Vector3(x, y));
-            }
-        }
-    }
-    else if (button == 2) // s'il s'agit d'un dragging du clic droit, alors on applique un dragging à l'origine du référentiel
-    {
-        if (draggerReferentialOrigin.isDragging())
-        {
-            Engine::getInstance()->getReferential().dragOrigin({ (float)x, (float)y, 0.0 }, draggerReferentialOrigin.getStartMousePosition(), draggerReferentialOrigin.getStartThingPosition());
-        }
-        else // si le dragOrigin n'est pas encore actif, alors on en créée un nouveau et on fait rien de plus
-        {
-            draggerReferentialOrigin = MouseDragger(Vector3(x, y), Engine::getInstance()->getReferential().getOriginPoint());
-        }
-    }
-    */
-
     if (button == 2)
     {
         std::pair<int, int> diffMousePos = { x - m_mousePos.first, y - m_mousePos.second };
@@ -354,161 +273,24 @@ void ofApp::mouseDragged( int x, int y, int button )
 void ofApp::mousePressed( int x, int y, int button )
 {
     // Clic sur un rigidbody permet de faire spawn un rigidbody lié à celui cliqué par un ressort
-    if (button == 2)
+    if (button == 1)    // Clic molette
     {
-        std::shared_ptr<Particle> clickedParticle = Engine::getInstance()->clickedParticle(x, y);
-    }
+        std::shared_ptr<Rigidbody> clickedRB = Engine::getInstance()->clickedRigidbody(x, y); 
 
-    /*
-    // Quand un clic est détecté, on modifie le tableau de bools en conséquence
-    boolsMouseButtonPressed[button] = true;
-
-    if (m_isShootingTrigger) // Si le mode shooting est activé
-    {
-        if (button == 0) // si clic gauche on essaie de cliquer sur une particule
+        if (clickedRB != nullptr)
         {
-
+            shootRigidbody(getShootInfo(), clickedRB);
         }
-        else if (button == 1) // si clic molette 
-        {
-            
-        }
-        else if (button == 2) // si clic droit, alors on essaie d'exploser des boules
-        {
-            std::shared_ptr<Particle> clickedParticle = Engine::getInstance()->clickedParticle(x, y);
-            if (clickedParticle != nullptr)
-            {
-                clickedParticle->clicked();
-                Engine::getInstance()->increaseScore();
-            }
-        }
-    }
-    else // sinon ( = mode blob)
-    {
-        if (button == 0) // si clic gauche on essaie de cliquer sur une particule
-        {
-            const Vector3 mecanicSponePosition = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(Vector3(x, y), false);
-            std::shared_ptr<Blob> newBlob = std::make_shared<Blob>(mecanicSponePosition);
-            Engine::Particles blobParticles = newBlob->getBlobParticles();
-
-            for (std::shared_ptr<Particle> blobParticle : blobParticles)
-            {
-                Engine::getInstance()->addParticle(blobParticle);
-            }
-
-            Engine::getInstance()->addBlob(newBlob);
-        }
-        else if (button == 1) // si clic molette 
-        {
-            std::shared_ptr<Particle> clickedParticle = Engine::getInstance()->clickedParticle(x, y);
-            if (clickedParticle != nullptr) // si on a cliqué sur une particule
-            {
-                Engine::getInstance()->destroyCorruptedBlobs(clickedParticle); // on détruit tous les blobs dont cette particule fait partie mais on ne détruit pas les particules
-            }
-            else // si on a cliqué sur rien, alors on prend toutes les particules de la map et on les réunit en seul gros blob
-            {
-                Blob* newBlob = new Blob(Engine::getInstance()->getParticles());
-                Engine::getInstance()->addBlob(newBlob);
-            }
-        }
-        else if (button == 2) // si clic droit, alors on essaie d'exploser des boules
-        {
-            std::shared_ptr<Particle> clickedParticle = Engine::getInstance()->clickedParticle(x, y);
-            if (clickedParticle != nullptr)
-            {
-                clickedParticle->m_destroyedLater = true;
-                Engine::getInstance()->increaseScore();
-            }
-        }
-    }
-    */
-    if (button == 1)
-    {
-        auto rbPtr = Engine::getInstance()->clickedRigidbody(x, y);
-
-        if (rbPtr != nullptr)
-        {
-            rbPtr->setColor({200, 200, 0});
-        }
-    }
-    else if (button == 2)
-    {
-        m_mousePos = { x, y };
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased( int x, int y, int button )
 {
-    /*
-    // Quand le relâchement d'un clic est détecté, on modifie le tableau de bools en conséquence
-    boolsMouseButtonPressed[button] = false;
-
-
-    if (button == 0) // si relâchement d'un clic gauche, alors on traite le draggerParticleLauncher
-    {
-        // si le shootingTrigger est bon, alors on lance des particules
-        if (m_isShootingTrigger == true)
-        {
-            if (draggerParticleLauncher.isDragging()) // si draggerParticleLauncher est actif, alors on lance une particule puis on désactive
-            {
-                // on lance la particule avec la position et la vélocité déterminée
-                Vector3 mecanicStartVelocity = Vector3({ 0.0, 0.0, 20.0 });
-                if (draggerParticleLauncher.isDraggingBig()) // si le dragging est assez grand, alors on met une vélocité initiale non nulle
-                {
-                    Vector3 graphicStartVelocity = Vector3(draggerParticleLauncher.getStartMousePosition() - Vector3({ (float)ofGetMouseX(), (float)ofGetMouseY(), 20.0 }));
-                    mecanicStartVelocity = Engine::getInstance()->getReferential().conversionVelocityMecaniqueGraphique(graphicStartVelocity, false);
-                }
-                Vector3 mecanicStartPosition = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(draggerParticleLauncher.getStartMousePosition(), false);
-                Engine::getInstance()->shootParticle(mecanicStartPosition, mecanicStartVelocity, draggerParticleLauncher.getParticleMass(), draggerParticleLauncher.getParticleRadius(), Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), m_isFireballToggle, m_showParticleInfosToggle);
-
-                //std::cout << draggerParticleLauncher.isDraggingBig() << "\n";
-                draggerParticleLauncher.draggingIsOver();
-            }
-            else // si on relâche un clic gauche sans que draggerParticleLauncher ne se soit activé, alors ça veut dire que c'était un clic simple (pas de drag)
-            {
-                // On retrouve le clic souris dans le repère mécanique
-                Vector3 clicSourisGraphique = Vector3({ (float)x, (float)y, 0.0 });
-                Vector3 clicSourisMecanique = Engine::getInstance()->getReferential().conversionPositionMecaniqueGraphique(clicSourisGraphique, false);
-
-                // on determine l'angle de lancer (cliquer en (1,0) mécanique = 0° et (0,1) = 90° car cercle trigo)
-                float shootingAngle = atan2(clicSourisMecanique.getY(), clicSourisMecanique.getX());
-                // on affiche dans la console l'angle et l'impulsion
-                //std::cout << "Shooting Angle : " << shootingAngle << " / Impulse : " << m_impulseSlider << std::endl;
-
-                // on lance la particule avec l'angle et l'impulsion détermines
-                const Vector3 initialVelocity = Vector3({ m_impulseSlider * cos(shootingAngle), m_impulseSlider * sin(shootingAngle), 0.0 });
-                Engine::getInstance()->shootParticle(Vector3({ 0.0, m_radiusSlider, 0.0 }), initialVelocity, m_massSlider, m_radiusSlider, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), m_isFireballToggle, m_showParticleInfosToggle);
-            }
-        }
-    }
-    else if (button == 1)
-    {
-        if(m_isShootingTrigger == false) // il faut être en mode blob
-        {
-            if (draggerSelection.isDragging()) // alors on réunit les particules sélectionnées en un blob
-            {
-                if (draggerSelection.getSelectedParticles().size() >= 2) // Il faut minimum deux particules pour créer un blob
-                {
-                    std::shared_ptr<Blob> newBlob = std::make_shared<Blob>(draggerSelection.getSelectedParticles());
-                    Engine::getInstance()->addBlob(newBlob);
-                }
-            }
-        }
-
-        draggerSelection.draggingIsOver();
-    }    
-    else if (button == 2) // si relâchement d'un clic droit, alors on annule le dragging d'origine courant (si il n'est même pas actif, c'est pas grave)
-    {
-        draggerReferentialOrigin.draggingIsOver();
-    }
-    */
-
     if (button == 0)
     {
         shootRigidbody(getShootInfo());
     }
-    
 }
 
 //--------------------------------------------------------------
@@ -544,21 +326,7 @@ void ofApp::dragEvent( ofDragInfo dragInfo )
 
 void ofApp::mouseScrolled(ofMouseEventArgs& mouse)
 {
-    /*
-    //std::cout << "button " << mouse.type << "\n";
-    if (boolsMouseButtonPressed[0] == false) // bouton du clic gauche de la souris pas appuyé
-    {
-        Engine::getInstance()->getReferential().resizeScale(mouse);
-    }
-    else
-    {
-        // augmenter masse pendant visée
-        if (draggerParticleLauncher.isDragging())
-        {
-            draggerParticleLauncher.changeParticleMass(mouse);
-        }
-    }
-    */
+
 }
 
 
@@ -585,9 +353,47 @@ std::pair<glm::vec3, glm::vec3> ofApp::getShootInfo() const
     return m_cameraInfoSaved ? savedShootInfo : Engine::getInstance()->getCameraInfo();
 }
 
-
-void ofApp::shootRigidbody(std::pair<glm::vec3, glm::vec3> shootInfo) 
+/**
+ * @brief Lancé de rigidbody
+ * @param shootInfo
+ * @param rbAimed le rigidbody cliqué
+*/
+void ofApp::shootRigidbody(const std::pair<glm::vec3, glm::vec3>& shootInfo, const std::shared_ptr<Rigidbody>& rbAimed) 
 {
     Engine* instance = Engine::getInstance();
-    instance->shootRigidbody(shootInfo.first, shootInfo.second * 1, Vector3({ m_angularVelocitySlider->x, m_angularVelocitySlider->y, m_angularVelocitySlider->z }), m_massSlider, m_radiusSlider, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), m_useSpring, m_rbType);
+
+    float impulse = m_impulseSlider;
+    Vector3 initAngularVelocity;
+    std::vector<float> rbParameters;
+    std::vector<float> springParameters;
+
+    if (m_useInitAngularVelocity)
+    {
+        initAngularVelocity = Vector3(m_angularVelocitySlider->x, m_angularVelocitySlider->y, m_angularVelocitySlider->z);
+    }
+
+    springParameters.push_back(m_springContactPoint->x);
+    springParameters.push_back(m_springContactPoint->y);
+    springParameters.push_back(m_springContactPoint->z);
+    springParameters.push_back(m_springConstant);
+    springParameters.push_back(m_springRestLength);
+
+    // Remplissage de la liste des paramètres en fonction du type de rigidbody
+    switch (m_rbType)
+    {
+        case Engine::RigidbodyType::CubeType:
+            rbParameters.push_back(m_sizeSlider);
+            break;
+        case Engine::RigidbodyType::CylinderType:
+            rbParameters.push_back(m_radiusSlider);
+            rbParameters.push_back(m_cylinderHeightSlider);
+            break;
+        case Engine::RigidbodyType::CuboidType:
+            rbParameters.push_back(m_widthSlider);
+            rbParameters.push_back(m_depthSlider);
+            rbParameters.push_back(m_cuboidHeightSlider);
+            break;
+    }
+
+    instance->shootRigidbody(m_massSlider, m_rbType, shootInfo.first, shootInfo.second * impulse, initAngularVelocity, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), rbParameters, m_useSpring, springParameters, rbAimed);
 }

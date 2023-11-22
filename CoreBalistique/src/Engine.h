@@ -24,6 +24,7 @@ class Engine
         typedef std::vector<std::shared_ptr<Particle>> Particles;
         typedef std::vector<std::shared_ptr<Rigidbody>> Rigidbodies;
         typedef std::vector<std::shared_ptr<AnchoredSpring>> AnchoredSprings;
+        typedef std::vector<std::shared_ptr<Spring>> Springs;
         //typedef std::vector<std::shared_ptr<Blob>> Blobs;
 
         enum RigidbodyType
@@ -70,7 +71,8 @@ class Engine
         Vector3 m_gravity;
 
         // Frottements pas réaliste
-        static float s_damping;
+        static float s_linearDamping;
+        static float s_angularDamping;
 
         // Variation des couleurs
         static int s_colorShift;
@@ -81,6 +83,7 @@ class Engine
         ofCamera m_camera;
 
         AnchoredSprings m_anchoredSprings;
+        Springs m_springs;
 
         //Blobs m_blobs;
 
@@ -99,7 +102,7 @@ class Engine
         static Referential& getReferential() { return s_referential; };
 
         // Tire un nouveau rigidbody
-        void shootRigidbody(const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const float& mass, const float& size, const Vector3& color, const bool& useSpring, const RigidbodyType& rbType);
+        void shootRigidbody(const float& mass, const RigidbodyType& rbType, const Vector3& initialPos, const Vector3& initialVelocity, const Vector3& initialAngularVelocity, const Vector3& color, const std::vector<float>& rbParams, const bool& useSpring = false, const std::vector<float>& springParams = std::vector<float>(), const std::shared_ptr<Rigidbody> otherRB = nullptr);
    
         // Appelle les générateurs de collision pour signaler les collisions. Retourne le nombre de collisions générées.
         int generateContacts();
@@ -140,14 +143,14 @@ class Engine
 
         ForceRegistry& getForceRegistry() { return m_forceRegistry; }
 
-        AnchoredSprings& getAnchoredSprings() { return m_anchoredSprings; }
-        void addTempAshFallParticles(std::shared_ptr<AnchoredSpring> spring) { m_anchoredSprings.push_back(spring); }
-
         const Vector3& getGravity() const { return m_gravity; }
         void setGravity( const Vector3& gravity ) { m_gravity = gravity; }
 
-        static const float& getDamping() { return s_damping; }
-        static void setDamping( const float& damping ) { s_damping = damping; }
+        static const float& getLinearDamping() { return s_linearDamping; }
+        static void setLinearDamping(const float& damping) { s_linearDamping = damping; }
+
+        static const float& getAngularDamping() { return s_angularDamping; }
+        static void setAngularDamping(const float& damping) { s_angularDamping = damping; }
 
         static const int& getColorShift() { return s_colorShift; }
         static void setColorShift( const int& colorShift ) { s_colorShift = colorShift; }
@@ -168,14 +171,6 @@ class Engine
 
         void draw();
         void drawGround() const;
-
-
-        //Blobs& getBlobs() { return m_blobs; }
-        //void addBlob( std::shared_ptr<Blob> blob );
-        //void destroyCorruptedBlobs(std::shared_ptr<Particle> corruptedParticle);
-
-        //void mergeBlobParticles( std::shared_ptr<Particle> selectedParticle );
-        //void unmergeBlobParticles( std::shared_ptr<Particle> selectedParticle, float childrenRadius = 2.5f );
 };
 
 #endif
