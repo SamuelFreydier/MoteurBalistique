@@ -5,6 +5,7 @@ Rigidbody::Rigidbody( const float& mass, const Vector3& velocity, const Vector3&
     : m_velocity( velocity ), m_position( position ), m_angularVelocity(angularVelocity), m_color(color)
 {
     setMassReverse(mass);
+    m_sphereCollider.m_position = m_position;
 }
 
 Rigidbody::Rigidbody( const Rigidbody& rigidbody )
@@ -214,6 +215,9 @@ void Rigidbody::integrate( const float& secondsElapsedSincePreviousUpdate)
 
     // Position
     m_position += m_velocity * secondsElapsedSincePreviousUpdate;
+
+    // Position du collider
+    m_sphereCollider.m_position = m_position;
 
     // Orientation
     m_orientation.applyAngularVelocity( m_angularVelocity, secondsElapsedSincePreviousUpdate );

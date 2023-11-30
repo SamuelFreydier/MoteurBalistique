@@ -1,7 +1,7 @@
 #include "Octree.h"
 #include <cassert>
 
-Octree::Octree( const Area& inBoundary ) : boundary( inBoundary ), rootNode( std::make_unique<Node>() ) {}
+Octree::Octree( const Area& inBoundary ) : m_boundary( inBoundary ), m_rootNode( std::make_unique<Node>() ) {}
 
 Area Octree::computeBox( const Area& parentArea, int childIndex ) const
 {
@@ -96,6 +96,9 @@ int Octree::getSubdivision( const Area& nodeArea, const BoundingSphere& collider
             else
                 return -1;
         }
+        else {
+            return -1;
+        }
     }
     // En bas
     else if( collider.m_position.y + collider.m_radius <= nodeArea.m_position.y ) {
@@ -123,13 +126,16 @@ int Octree::getSubdivision( const Area& nodeArea, const BoundingSphere& collider
             else
                 return -1;
         }
+        else {
+            return -1;
+        }
     }
     // Nul part
     else
         return -1;
 }
 
-void Octree::add( const BoundingSphere* collider ) { add( rootNode.get(), 0, boundary, collider ); }
+void Octree::add( const BoundingSphere* collider ) { add( m_rootNode.get(), 0, m_boundary, collider ); }
 
 void Octree::add( Node* node, std::size_t depth, const Area& area, const BoundingSphere* collider )
 {
@@ -201,7 +207,7 @@ void Octree::split( Node* node, const Area& area )
     node->colliders = std::move( newColliders );
 }
 
-void Octree::remove( const BoundingSphere* collider ) { remove( rootNode.get(), boundary, collider ); }
+void Octree::remove( const BoundingSphere* collider ) { remove( m_rootNode.get(), m_boundary, collider ); }
 
 bool Octree::remove( Node* node, const Area& area, const BoundingSphere* collider )
 {
@@ -290,19 +296,19 @@ bool Octree::tryMerge( Node* node )
 void Octree::removeAll()
 {
     // Suppression des noeuds enfants
-    for( auto& child : rootNode->children )
+    for( auto& child : m_rootNode->children )
     {
         child.reset();
     }
 
     // Nettoyage du tableau de colliders
-    rootNode->colliders.clear();
+    m_rootNode->colliders.clear();
 }
 
 std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>> Octree::findAllIntersections() const
 {
     std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>> intersections;
-    findAllIntersections( rootNode.get(), intersections );
+    findAllIntersections( m_rootNode.get(), intersections );
     return intersections;
 }
 
@@ -341,6 +347,27 @@ void Octree::findAllIntersections(
     }
 }
 
+void Octree::draw() const
+{
+    draw( m_rootNode.get(), m_boundary );
+}
+
+void Octree::draw( Node* parentNode, const Area& parentArea ) const
+{
+    parentArea.draw();
+
+    int childIndex;
+    for( childIndex = 0; childIndex < 8; childIndex++ )
+    {
+        const std::unique_ptr<Node>& child = parentNode->children[ childIndex ];
+
+        if( child )
+        {
+            draw( child.get(), computeBox( parentArea, childIndex ) );
+        }
+    }
+}
+
 void Octree::findIntersectionsInDescendants(
     Node* node, const BoundingSphere* collider,
     std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>>& intersections ) const
@@ -362,6 +389,7 @@ void Octree::findIntersectionsInDescendants(
         }
     }
 }
+
 
 Area::Area( const Vector3& position, const Vector3& lengths )
     : m_position( position ), m_lengths( lengths )
@@ -385,6 +413,18 @@ bool Area::intersects( const BoundingSphere& collider ) const
     else if( collider.m_position.z > areaOppositeCorner.z ) distSquared -= pow( collider.m_position.z - areaOppositeCorner.z, 2 );
 
     return distSquared > 0;
+}
+
+void Area::draw() const
+{
+    ofBoxPrimitive graphicCube;
+    graphicCube.setPosition( m_position.v3() );
+    graphicCube.setWidth( m_lengths.x );
+    graphicCube.setHeight( m_lengths.y );
+    graphicCube.setDepth( m_lengths.z );
+
+    ofSetColor( ofColor( 0, 0, 0 ) );
+    graphicCube.drawWireframe();
 }
 
 bool BoundingSphere::collides( const BoundingSphere& other ) const

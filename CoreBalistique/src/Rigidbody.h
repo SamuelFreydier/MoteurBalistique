@@ -5,6 +5,9 @@
 #include "Quaternion.h"
 #include "Matrix4x4.h"
 
+// Include à enlever quand la BoundingSphere sera faite ailleurs
+#include "Octree.h"
+
 class Rigidbody
 {
 protected:
@@ -49,6 +52,9 @@ protected:
 
     // Tenseur d'inertie inverse en coordonnées monde
     Matrix3x3 m_inverseInertiaTensorWorld;
+
+    // Collider du rigidbody représenté par une sphère
+    BoundingSphere m_sphereCollider;
 
 public:
     // Passe à true pour donner l'instruction à l'Engine de le détruire
@@ -96,6 +102,9 @@ public:
     const Matrix3x3& getInverseInertiaTensor() const { return m_inverseInertiaTensor; }
     const Matrix3x3& getInverseInertiaTensorWorld() const { return m_inverseInertiaTensorWorld; }
     void setInertiaTensor( const Matrix3x3& inertiaTensor );
+
+    const BoundingSphere& getSphereCollider() const { return m_sphereCollider; }
+    void setSphereCollider( const BoundingSphere& boundingSphere ) { m_sphereCollider = boundingSphere; }
 
     bool toBeDestroyed() const { return m_destroyedLater; }
 

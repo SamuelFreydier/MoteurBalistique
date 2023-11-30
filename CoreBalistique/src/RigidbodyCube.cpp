@@ -5,6 +5,7 @@ RigidbodyCube::RigidbodyCube(const float size, const float& mass, const Vector3&
 {
     float coeff = (6.0f * m_inverseMass / pow(m_size, 2));
     m_inverseInertiaTensor = Matrix3x3(coeff, 0, 0, 0, coeff, 0, 0, 0, coeff);
+    m_sphereCollider.m_radius = m_size;
 }
 
 void RigidbodyCube::draw() const

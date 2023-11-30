@@ -25,7 +25,11 @@ public:
     Vector3 m_position;
     Vector3 m_lengths;
 
+    // Est-ce que le collider est dans la zone ?
     bool intersects( const BoundingSphere& collider ) const;
+
+    // Dessin de la zone
+    void draw() const;
 };
 
 // Source d'une grande partie de l'implémentation d'un quadtree :
@@ -47,9 +51,15 @@ public:
     // Renvoie un tableau de tous les couples de colliders en intersection
     std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>> findAllIntersections() const;
 
+    // Dessine les subdivisions graphiquement
+    void draw() const;
+
 private:
-    static constexpr auto Threshold = std::size_t( 16 );
-    static constexpr auto MaxDepth = std::size_t( 8 );
+    // Nombre maximum de colliders par subdivision (ici 2 comme vu en cours)
+    static constexpr auto Threshold = std::size_t( 2 );
+
+    // Profondeur maximale de l'arbre
+    static constexpr auto MaxDepth = std::size_t( 16 );
 
     struct Node
     {
@@ -61,10 +71,10 @@ private:
     };
 
     // Position et taille de la zone couverte par le octree
-    Area boundary;
+    Area m_boundary;
 
     // Racine du octree
-    std::unique_ptr<Node> rootNode;
+    std::unique_ptr<Node> m_rootNode;
 
     // Plus aucun enfant
     bool isLeaf( const Node* node ) const { return !static_cast< bool >( node->children[ 0 ] ); }
@@ -99,6 +109,9 @@ private:
     void findIntersectionsInDescendants(
         Node* node, const BoundingSphere* collider,
         std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>>& intersections ) const;
+
+    // Méthode récursive de dessin des zones de l'arbre
+    void draw( Node* parentNode, const Area& parentArea ) const;
 };
 
 /*

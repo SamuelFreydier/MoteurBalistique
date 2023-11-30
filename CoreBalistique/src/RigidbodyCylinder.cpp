@@ -20,6 +20,8 @@ RigidbodyCylinder::RigidbodyCylinder(const float radius, const float height, con
     }
     else
         std::cout << "RigidBodyCylinder initialisation: m_inverseMass = 0" << std::endl;
+
+    m_sphereCollider.m_radius = std::max( m_radius, m_height );
 }
 
 void RigidbodyCylinder::draw() const
