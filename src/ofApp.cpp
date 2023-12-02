@@ -57,7 +57,7 @@ void ofApp::setup()
         Engine::getInstance()->addParticle( new Particle() );
     }*/
 
-    groundContactGenerator.init( &Engine::getInstance()->getParticles() );
+    groundContactGenerator.init( &Engine::getInstance()->getParticles(), &Engine::getInstance()->getRigidbodies() );
     //blobContactGenerator.init( &Engine::getInstance()->getBlobs());
 
     Engine::getInstance()->addContactGenerator( &groundContactGenerator );

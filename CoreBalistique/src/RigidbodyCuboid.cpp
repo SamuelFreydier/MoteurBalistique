@@ -11,9 +11,31 @@ RigidbodyCuboid::RigidbodyCuboid(const float width, const float depth, const flo
         float coefy = (pow(m_width, 2) + pow(m_height, 2)) *coef;
         float coefz = (pow(m_depth, 2) + pow(m_width, 2)) *coef;
         setInertiaTensor(Matrix3x3(coefx, 0, 0, 0, coefy, 0, 0, 0, coefz));
+
+
+        m_localVertices.push_back(Vector3(m_width, m_height, m_depth) / 2);
+        m_localVertices.push_back(Vector3(m_width, m_height, -m_depth) / 2);
+        m_localVertices.push_back(Vector3(m_width, -m_height, m_depth) / 2);
+        m_localVertices.push_back(Vector3(-m_width, m_height, m_depth) / 2);
+        m_localVertices.push_back(Vector3(m_width, -m_height, -m_depth) / 2);
+        m_localVertices.push_back(Vector3(-m_width, -m_height, m_depth) / 2);
+        m_localVertices.push_back(Vector3(-m_width, m_height, -m_depth) / 2);
+        m_localVertices.push_back(Vector3(-m_width, -m_height, -m_depth) / 2);
     }
     else
         std::cout << "RigidBodyCuboid initialisation: m_inverseMass = 0" << std::endl;
+}
+
+std::vector<Vector3> RigidbodyCuboid::getVerticesGlobalPosition() const
+{
+    std::vector<Vector3> vertices;
+
+    for (Vector3 vertex : m_localVertices)
+    {
+        vertices.push_back(getPointInWorldSpace(vertex));
+    }
+
+    return vertices;
 }
 
 void RigidbodyCuboid::draw() const

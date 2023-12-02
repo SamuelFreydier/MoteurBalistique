@@ -119,6 +119,8 @@ public:
 
     // Affichage du rigidbody
     virtual void draw() const {}
+
+    virtual std::vector<Vector3> getVerticesGlobalPosition() const { return std::vector<Vector3>(); }
 };
 
 #endif

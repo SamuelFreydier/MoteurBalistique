@@ -209,16 +209,17 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     int usedContacts = generateContacts();
 
     // Traitement des collisions
-    if( usedContacts > 0 )
-    {
-        if( m_calculateIterations )
-        {
-            // Généralement on prend nbIterations = 2 * nbCollisions par convention
-            m_contactResolver.setIterations( usedContacts * 2 );
-        }
+    // TODO : gérer les collisions des rigidbodies
+    //if( usedContacts > 0 )
+    //{
+    //    if( m_calculateIterations )
+    //    {
+    //        // Généralement on prend nbIterations = 2 * nbCollisions par convention
+    //        m_contactResolver.setIterations( usedContacts * 2 );
+    //    }
 
-        m_contactResolver.resolveContacts( m_contacts, usedContacts, secondsElapsedSincePreviousUpdate);
-    }
+    //    m_contactResolver.resolveContacts( m_contacts, usedContacts, secondsElapsedSincePreviousUpdate);
+    //}
 
     // Nettoyage des particules inutiles
     cleanup();

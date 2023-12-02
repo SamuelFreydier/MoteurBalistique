@@ -13,8 +13,11 @@ class GroundContacts : public ParticleContactGenerator
         // Ensemble de particules concernées par la collision au sol
         Engine::Particles* m_particles;
 
+        // Ensemble des rigidbodies concernés
+        Engine::Rigidbodies* m_rigidbodies;
+
     public:
-        void init( Engine::Particles* particles );
+        void init( Engine::Particles* particles, Engine::Rigidbodies* rigidbodies );
 
         virtual int addContact( ParticleContact* contact, const int& limit ) const override;
 };
