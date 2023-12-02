@@ -2,8 +2,18 @@
 #include <cassert>
 #include <iostream>
 
+/**
+ * @brief Constructeur avec la zone couverte par l'octree
+ * @param inBoundary 
+*/
 Octree::Octree( const Area& inBoundary ) : m_boundary( inBoundary ), m_rootNode( std::make_unique<Node>() ) {}
 
+/**
+ * @brief Calcule la zone d'un noeud enfant à partir du parent et de l'index de la nouvelle parcelle
+ * @param parentArea 
+ * @param childIndex 
+ * @return Zone fille de parentArea, choisie selon childIndex
+*/
 Area Octree::computeBox( const Area& parentArea, int childIndex ) const
 {
     // Décalage pour obtenir le centre d'un enfant à partir du centre du parent
@@ -69,6 +79,13 @@ Area Octree::computeBox( const Area& parentArea, int childIndex ) const
     }
 }
 
+
+/**
+ * @brief Retourne la subdivision dans laquelle un collider se trouve
+ * @param nodeArea 
+ * @param collider 
+ * @return Indice de la subdivision. -1 pour le noeud parent en cas d'overlap du collider sur plusieurs subdivisions
+*/
 int Octree::getSubdivision( const Area& nodeArea, const BoundingSphere& collider ) const
 {
     // En haut
@@ -151,8 +168,21 @@ int Octree::getSubdivision( const Area& nodeArea, const BoundingSphere& collider
     }
 }
 
+
+/**
+ * @brief Ajoute un collider au octree
+ * @param collider 
+*/
 void Octree::add( const BoundingSphere* collider ) { add( m_rootNode.get(), 0, m_boundary, collider ); }
 
+
+/**
+ * @brief Méthode auxiliaire récursive à la méthode publique add
+ * @param node 
+ * @param depth 
+ * @param area 
+ * @param collider 
+*/
 void Octree::add( Node* node, std::size_t depth, const Area& area, const BoundingSphere* collider )
 {
     assert( node != nullptr );
@@ -195,6 +225,12 @@ void Octree::add( Node* node, std::size_t depth, const Area& area, const Boundin
     }
 }
 
+
+/**
+ * @brief Séparation d'un noeud en 8 subdivisions (8 autres noeuds)
+ * @param node 
+ * @param area 
+*/
 void Octree::split( Node* node, const Area& area )
 {
     assert( node != nullptr );
@@ -223,8 +259,21 @@ void Octree::split( Node* node, const Area& area )
     node->colliders = std::move( newColliders );
 }
 
+
+/**
+ * @brief Supprime un collider du octree
+ * @param collider 
+*/
 void Octree::remove( const BoundingSphere* collider ) { remove( m_rootNode.get(), m_boundary, collider ); }
 
+
+/**
+ * @brief Méthode auxiliaire récursive à la méthode publique remove
+ * @param node 
+ * @param area 
+ * @param collider 
+ * @return true = suppression réussie
+*/
 bool Octree::remove( Node* node, const Area& area, const BoundingSphere* collider )
 {
     assert( node != nullptr );
@@ -257,6 +306,12 @@ bool Octree::remove( Node* node, const Area& area, const BoundingSphere* collide
     }
 }
 
+
+/**
+ * @brief Suppression d'un collider depuis un noeud
+ * @param node 
+ * @param collider 
+*/
 void Octree::removeValue( Node* node, const BoundingSphere* collider )
 {
     // On trouve le collider dans le tableau de colliders du noeud
@@ -269,6 +324,12 @@ void Octree::removeValue( Node* node, const BoundingSphere* collider )
     node->colliders.pop_back();
 }
 
+
+/**
+ * @brief Si la quantité de colliders cumulée des noeuds enfants est inférieure au seuil, on les fusionne et tous les colliders sont stockés dans le noeud mère
+ * @param node 
+ * @return true = fusion réussie
+*/
 bool Octree::tryMerge( Node* node )
 {
     assert( node != nullptr );
@@ -309,6 +370,10 @@ bool Octree::tryMerge( Node* node )
         return false;
 }
 
+
+/**
+ * @brief Supprime tous les colliders du octree
+*/
 void Octree::removeAll()
 {
     // Suppression des noeuds enfants
@@ -321,6 +386,11 @@ void Octree::removeAll()
     m_rootNode->colliders.clear();
 }
 
+
+/**
+ * @brief Trouve tous les couples de colliders en intersection
+ * @return Tableau de tous les couples de colliders en intersection
+*/
 std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>> Octree::findAllIntersections() const
 {
     std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>> intersections;
@@ -328,6 +398,12 @@ std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>> Octree::fin
     return intersections;
 }
 
+
+/**
+ * @brief Méthode auxiliaire récursive à la méthode publique findAllIntersections
+ * @param node 
+ * @param intersections 
+*/
 void Octree::findAllIntersections(
     Node* node, std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>>& intersections ) const
 {
@@ -363,11 +439,21 @@ void Octree::findAllIntersections(
     }
 }
 
+
+/**
+ * @brief Dessine les subdivisions graphiquement
+*/
 void Octree::draw() const
 {
     draw( m_rootNode.get(), m_boundary );
 }
 
+
+/**
+ * @brief Méthode auxiliaire récursive de dessin des zones de l'arbre
+ * @param parentNode 
+ * @param parentArea 
+*/
 void Octree::draw( Node* parentNode, const Area& parentArea ) const
 {
     parentArea.draw();
@@ -384,6 +470,13 @@ void Octree::draw( Node* parentNode, const Area& parentArea ) const
     }
 }
 
+
+/**
+ * @brief Trouve les intersections entre les colliders du node courant et les colliders de ses noeuds enfants
+ * @param node 
+ * @param collider 
+ * @param intersections 
+*/
 void Octree::findIntersectionsInDescendants(
     Node* node, const BoundingSphere* collider,
     std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>>& intersections ) const
@@ -406,12 +499,22 @@ void Octree::findIntersectionsInDescendants(
     }
 }
 
-
+/**
+ * @brief Constructeur d'une zone 3D (forme de parallélépipède)
+ * @param position : centre de la zone
+ * @param lengths : longueurs des côtés de la zone
+*/
 Area::Area( const Vector3& position, const Vector3& lengths )
     : m_position( position ), m_lengths( lengths )
 {
 }
 
+
+/**
+ * @brief Détecte si un collider de type sphère est en contact avec la zone courante
+ * @param collider 
+ * @return true = le collider se trouve au moins partiellement dans la zone
+*/
 bool Area::intersects( const BoundingSphere& collider ) const
 {
     float distSquared = collider.m_radius * collider.m_radius;
@@ -431,6 +534,10 @@ bool Area::intersects( const BoundingSphere& collider ) const
     return distSquared > 0;
 }
 
+
+/**
+ * @brief Dessine le wireframe d'une zone de l'octree
+*/
 void Area::draw() const
 {
     ofBoxPrimitive graphicCube;
@@ -443,6 +550,22 @@ void Area::draw() const
     graphicCube.drawWireframe();
 }
 
+/**
+ * @brief TEMPORAIRE : Constructeur d'une sphère englobante
+ * @param radius 
+ * @param position 
+*/
+BoundingSphere::BoundingSphere( float radius, const Vector3& position )
+    : m_radius( radius ), m_position( position )
+{
+
+}
+
+/**
+ * @brief TEMPORAIRE : Détecte s'il y a collision entre la sphère courante et une autre sphères
+ * @param other 
+ * @return true = collision détectée
+*/
 bool BoundingSphere::collides( const BoundingSphere& other ) const
 {
     // C'est le travail de Sébastien :eyes:

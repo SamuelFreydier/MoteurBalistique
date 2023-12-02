@@ -10,6 +10,8 @@
 class BoundingSphere
 {
 public:
+    BoundingSphere( float radius = 1.f, const Vector3& position = Vector3() );
+
     float m_radius;
     Vector3 m_position;
 
@@ -32,7 +34,8 @@ public:
     void draw() const;
 };
 
-// Source d'une grande partie de l'implémentation d'un quadtree :
+// Arbre de partitionnement de l'espace en parallélépipèdes
+// Inspiration (Quadtree en C++) :
 // https://pvigier.github.io/2019/08/04/quadtree-collision-detection.html
 class Octree
 {
@@ -76,22 +79,19 @@ private:
     // Racine du octree
     std::unique_ptr<Node> m_rootNode;
 
-    // Plus aucun enfant
-    bool isLeaf( const Node* node ) const { return !static_cast< bool >( node->children[ 0 ] ); }
-
     // Calcule la zone d'un noeud enfant à partir du parent et de l'index de la nouvelle parcelle
     Area computeBox( const Area& parentArea, int childIndex ) const;
 
     // Retourne la subdivision dans laquelle un collider se trouve
     int getSubdivision( const Area& nodeArea, const BoundingSphere& collider ) const;
 
-    // Méthode auxiliaire à la méthode publique add
+    // Méthode auxiliaire récursive à la méthode publique add
     void add( Node* node, std::size_t depth, const Area& area, const BoundingSphere* collider );
 
-    // Séparation d'un noeud en 4 subdivisions (4 autres noeuds)
+    // Séparation d'un noeud en 8 subdivisions (8 autres noeuds)
     void split( Node* node, const Area& area );
 
-    // Méthode auxiliaire à la méthode publique remove
+    // Méthode auxiliaire récursive à la méthode publique remove
     bool remove( Node* node, const Area& area, const BoundingSphere* collider );
 
     // Suppression d'un collider depuis un noeud
@@ -101,7 +101,7 @@ private:
     // et tous les colliders sont stockés dans le noeud mère
     bool tryMerge( Node* node );
 
-    // Méthode auxiliaire à la méthode publique findAllIntersections
+    // Méthode auxiliaire récursive à la méthode publique findAllIntersections
     void findAllIntersections(
         Node* node, std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>>& intersections ) const;
 
@@ -110,69 +110,16 @@ private:
         Node* node, const BoundingSphere* collider,
         std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>>& intersections ) const;
 
-    // Méthode récursive de dessin des zones de l'arbre
+    // Méthode auxiliaire récursive de dessin des zones de l'arbre
     void draw( Node* parentNode, const Area& parentArea ) const;
-};
 
-/*
-class PhysicSystem : public ISystem
-{
 public:
-  static PhysicSystem& Instance()
-  {
-    static PhysicSystem instance;
-    return instance;
-  }
+    // Plus aucun enfant
+    bool isLeaf( const Node* node ) const { return !static_cast< bool >( node->children[ 0 ] ); }
 
-  PhysicSystem(const PhysicSystem&) = delete;
-  PhysicSystem(PhysicSystem&&) = delete;
-  PhysicSystem& operator=(const PhysicSystem&) = delete;
-  PhysicSystem& operator=(PhysicSystem&&) = delete;
-
-  void Register(gsl::not_null<ColliderComponent*> comp) { colliders.insert(comp); }
-
-  void Unregister(gsl::not_null<ColliderComponent*> comp) { colliders.erase(comp); }
-
-  void Iterate(const Timing& timing) override
-  {
-    for (auto c : colliders)
-    {
-      if (c->Enabled() && c->Owner().Active())
-      {
-        // Ajout du collider au quadtree
-        quadtree.add(c);
-      }
-    }
-
-    // Utilisation du quadtree pour trouver les intersections pertinentes dans l'espace
-    auto collisionPairs = quadtree.findAllIntersections();
-
-    // Déclenchement des collisions
-    for (const auto& collisionPair : collisionPairs)
-    {
-      auto c1 = collisionPair.first;
-      auto c2 = collisionPair.second;
-
-      c1->OnCollision(*c2);
-      c2->OnCollision(*c1);
-    }
-
-    // Nettoyage du quadtree
-    quadtree.removeAll();
-  }
-
-private:
-  PhysicSystem()
-      : quadtree(Area(0, 0, DisplaySystem::Instance().GetWindow().GetSize().width,
-                      DisplaySystem::Instance().GetWindow().GetSize().height))
-  {
-  }
-
-  ~PhysicSystem() override { Expects(colliders.empty()); }
-
-  std::unordered_set<gsl::not_null<ColliderComponent*>> colliders;
-  Quadtree quadtree;
+    // Getters
+    const Area& getBoundary() const { return m_boundary; }
+    const std::unique_ptr<Node>& getRootNode() const { return m_rootNode; }
 };
-*/
 
 #endif
