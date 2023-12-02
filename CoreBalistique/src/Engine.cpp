@@ -507,7 +507,6 @@ std::pair<glm::vec3, glm::vec3> Engine::getCameraInfo() const
 void Engine::moveCamera(Vector3 moveDirection)
 {
     Vector3 cameraPos(m_camera.getGlobalPosition());
-
     Vector3 cameraMove = m_camera.getXAxis() * moveDirection.x + m_camera.getYAxis() * moveDirection.y - m_camera.getZAxis() * moveDirection.z;
 
     m_camera.move(cameraMove.v3());

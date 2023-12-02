@@ -1,5 +1,6 @@
 #include "Octree.h"
 #include <cassert>
+#include <iostream>
 
 Octree::Octree( const Area& inBoundary ) : m_boundary( inBoundary ), m_rootNode( std::make_unique<Node>() ) {}
 
@@ -15,52 +16,52 @@ Area Octree::computeBox( const Area& parentArea, int childIndex ) const
         // Nord Ouest
         case 0:
             return Area( Vector3( parentArea.m_position.x - parentToChildOffset.x,
-                                  parentArea.m_position.z + parentToChildOffset.z,
-                                  parentArea.m_position.y + parentToChildOffset.y ),
+                                  parentArea.m_position.y + parentToChildOffset.y,
+                                  parentArea.m_position.z - parentToChildOffset.z ),
                          childLengths );
             // Nord Est
         case 1:
             return Area( Vector3( parentArea.m_position.x + parentToChildOffset.x,
-                                  parentArea.m_position.z + parentToChildOffset.z,
-                                  parentArea.m_position.y + parentToChildOffset.y ),
+                                  parentArea.m_position.y + parentToChildOffset.y,
+                                  parentArea.m_position.z - parentToChildOffset.z ),
                          childLengths );
             // Sud Ouest
         case 2:
             return Area( Vector3( parentArea.m_position.x - parentToChildOffset.x,
-                                  parentArea.m_position.z - parentToChildOffset.z,
-                                  parentArea.m_position.y + parentToChildOffset.y ),
+                                  parentArea.m_position.y + parentToChildOffset.y,
+                                  parentArea.m_position.z + parentToChildOffset.z ),
                          childLengths );
             // Sud Est
         case 3:
             return Area( Vector3( parentArea.m_position.x + parentToChildOffset.x,
-                                  parentArea.m_position.z - parentToChildOffset.z,
-                                  parentArea.m_position.y + parentToChildOffset.y ),
+                                  parentArea.m_position.y + parentToChildOffset.y,
+                                  parentArea.m_position.z + parentToChildOffset.z ),
                          childLengths );
 
             // De 4 à 7 = en bas
             // Nord Ouest
         case 4:
             return Area( Vector3( parentArea.m_position.x - parentToChildOffset.x,
-                                  parentArea.m_position.z + parentToChildOffset.z,
-                                  parentArea.m_position.y - parentToChildOffset.y ),
+                                  parentArea.m_position.y - parentToChildOffset.y,
+                                  parentArea.m_position.z - parentToChildOffset.z ),
                          childLengths );
             // Nord Est
         case 5:
             return Area( Vector3( parentArea.m_position.x + parentToChildOffset.x,
-                                  parentArea.m_position.z + parentToChildOffset.z,
-                                  parentArea.m_position.y - parentToChildOffset.y ),
+                                  parentArea.m_position.y - parentToChildOffset.y,
+                                  parentArea.m_position.z - parentToChildOffset.z ),
                          childLengths );
             // Sud Ouest
         case 6:
             return Area( Vector3( parentArea.m_position.x - parentToChildOffset.x,
-                                  parentArea.m_position.z - parentToChildOffset.z,
-                                  parentArea.m_position.y - parentToChildOffset.y ),
+                                  parentArea.m_position.y - parentToChildOffset.y,
+                                  parentArea.m_position.z + parentToChildOffset.z ),
                          childLengths );
             // Sud Est
         case 7:
             return Area( Vector3( parentArea.m_position.x + parentToChildOffset.x,
-                                  parentArea.m_position.z - parentToChildOffset.z,
-                                  parentArea.m_position.y - parentToChildOffset.y ),
+                                  parentArea.m_position.y - parentToChildOffset.y,
+                                  parentArea.m_position.z + parentToChildOffset.z ),
                          childLengths );
         default:
             assert( false && "Invalid child index" );
@@ -74,27 +75,35 @@ int Octree::getSubdivision( const Area& nodeArea, const BoundingSphere& collider
     if( collider.m_position.y - collider.m_radius > nodeArea.m_position.y ) {
         // Haut Ouest
         if( collider.m_position.x + collider.m_radius < nodeArea.m_position.x ) {
-            // Haut Sud Ouest
-            if( collider.m_position.z + collider.m_radius < nodeArea.m_position.z )
-                return 2;
             // Haut Nord Ouest
-            else if( collider.m_position.z - collider.m_radius >= nodeArea.m_position.z )
+            if( collider.m_position.z + collider.m_radius < nodeArea.m_position.z ) {
                 return 0;
+            }
+                
+            // Haut Sud Ouest
+            else if( collider.m_position.z - collider.m_radius >= nodeArea.m_position.z ) {
+                return 2;
+
+            }
             // Nul part
-            else
+            else {
                 return -1;
+            }
         }
-        // Est
+        // Haut Est
         else if( collider.m_position.x - collider.m_radius >= nodeArea.m_position.x ) {
-            // Haut Sud Est
-            if( collider.m_position.z + collider.m_radius < nodeArea.m_position.z )
-                return 3;
             // Haut Nord Est
-            else if( collider.m_position.z - collider.m_radius >= nodeArea.m_position.z )
+            if( collider.m_position.z + collider.m_radius < nodeArea.m_position.z ) {
                 return 1;
+            }
+            // Haut Sud Est
+            else if( collider.m_position.z - collider.m_radius >= nodeArea.m_position.z ) {
+                return 3;
+            }
             // Nul part
-            else
+            else {
                 return -1;
+            }
         }
         else {
             return -1;
@@ -104,35 +113,42 @@ int Octree::getSubdivision( const Area& nodeArea, const BoundingSphere& collider
     else if( collider.m_position.y + collider.m_radius <= nodeArea.m_position.y ) {
         // Bas Ouest
         if( collider.m_position.x + collider.m_radius < nodeArea.m_position.x ) {
-            // Bas Sud Ouest
-            if( collider.m_position.z + collider.m_radius < nodeArea.m_position.z )
-                return 6;
             // Bas Nord Ouest
-            else if( collider.m_position.z - collider.m_radius >= nodeArea.m_position.z )
+            if( collider.m_position.z + collider.m_radius < nodeArea.m_position.z ) {
                 return 4;
+            }
+            // Bas Sud Ouest
+            else if( collider.m_position.z - collider.m_radius >= nodeArea.m_position.z ) {
+                return 6;
+            }
             // Nul part
-            else
+            else {
                 return -1;
+            }
         }
-        // Est
+        // Bas Est
         else if( collider.m_position.x - collider.m_radius >= nodeArea.m_position.x ) {
-            // Bas Sud Est
-            if( collider.m_position.z + collider.m_radius < nodeArea.m_position.z )
-                return 7;
             // Bas Nord Est
-            else if( collider.m_position.z - collider.m_radius >= nodeArea.m_position.z )
+            if( collider.m_position.z + collider.m_radius < nodeArea.m_position.z ) {
                 return 5;
+            }
+            // Bas Sud Est
+            else if( collider.m_position.z - collider.m_radius >= nodeArea.m_position.z ) {
+                return 7;
+            }
             // Nul part
-            else
+            else {
                 return -1;
+            }
         }
         else {
             return -1;
         }
     }
     // Nul part
-    else
+    else {
         return -1;
+    }
 }
 
 void Octree::add( const BoundingSphere* collider ) { add( m_rootNode.get(), 0, m_boundary, collider ); }
@@ -155,7 +171,7 @@ void Octree::add( Node* node, std::size_t depth, const Area& area, const Boundin
         {
             node->colliders.push_back( collider );
         }
-        // Sinon, on subdivise le quad en 4 sous-quads et on y met le collider au bon endroit
+        // Sinon, on subdivise la parcelle en 8 subdivisions et on y met le collider au bon endroit
         else
         {
             split( node, area );
