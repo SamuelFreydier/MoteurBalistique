@@ -121,6 +121,9 @@ public:
     virtual void draw() const {}
 
     virtual std::vector<Vector3> getVerticesGlobalPosition() const { return std::vector<Vector3>(); }
+    virtual float transformToAxis(const Vector3& axis) const { return -1.0; }
+    virtual Vector3 getAxis(int axis) const { return Vector3(); }
+    virtual Vector3 halfsize() const { return Vector3(); }
 };
 
 #endif

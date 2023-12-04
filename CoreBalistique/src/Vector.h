@@ -50,10 +50,14 @@ public:
     bool operator==( const Vector3& vector ) const;
     bool operator!=( const Vector3& vector ) const;
 
+    const float getCoordinate(const int& i) const;
+    void setCoordinate(const int& i, const float& val);
+
     // Nettoyage
     void clear();
 
     float norm() const;
+    float squareMagnitude() const;
     Vector3 normalized() const;
     void normalize();
     float distance( const Vector3& vector ) const;

@@ -175,6 +175,22 @@ bool Vector3::operator!=(const Vector3& vector) const
     return !(*this == vector);
 }
 
+const float Vector3::getCoordinate(const int& i) const
+{
+    if (i == 0) return x;
+    if (i == 1) return y;
+    if (i == 2) return z;
+
+    return 0;
+}
+
+void Vector3::setCoordinate(const int& i, const float& val)
+{
+    if (i == 0) x = val;
+    if (i == 1) y = val;
+    if (i == 2) z = val;
+}
+
 void Vector3::clear()
 {
     x = y = z = 0;
@@ -189,6 +205,13 @@ float Vector3::norm() const
     return sqrt( x * x +
                  y * y +
                  z * z );
+}
+
+float Vector3::squareMagnitude() const
+{
+    return x * x +
+           y * y +
+           z * z;
 }
 
 

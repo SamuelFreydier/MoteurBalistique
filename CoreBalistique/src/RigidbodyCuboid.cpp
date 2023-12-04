@@ -55,3 +55,42 @@ void RigidbodyCuboid::draw() const
 
     graphicCube.draw();
 }
+
+float RigidbodyCuboid::transformToAxis(const Vector3& axis) const
+{
+    float value = m_width * fabs(axis.dotProduct(getAxis(0)));
+    value += m_height * fabs(axis.dotProduct(getAxis(1)));
+    value += m_depth * fabs(axis.dotProduct(getAxis(2)));
+
+    return value;
+}
+
+Vector3 RigidbodyCuboid::getAxis(int axis) const
+{
+    Vector3 computedAxis;
+
+    if (axis > 0 && axis < 3)
+    {
+        std::vector<Vector3> vertices = getVerticesGlobalPosition();
+
+        switch (axis)
+        {
+            case 0:
+                computedAxis = vertices[1].distance(vertices[0]) * vertices[2].distance(vertices[0]);
+                break;
+            case 1:
+                computedAxis = vertices[1].distance(vertices[0]) * vertices[3].distance(vertices[0]);
+                break;
+            case 2:
+                computedAxis = vertices[2].distance(vertices[0]) * vertices[3].distance(vertices[0]);
+                break;
+        }
+    }
+
+    return computedAxis;
+}
+
+Vector3 RigidbodyCuboid::halfsize() const
+{
+    return Vector3(m_width / 2, m_height / 2, m_depth / 2);
+}

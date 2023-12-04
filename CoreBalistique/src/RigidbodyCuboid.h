@@ -16,5 +16,8 @@ public:
 	std::vector<Vector3> getVerticesGlobalPosition() const override;
 	
 	void draw() const override;
+	virtual float transformToAxis(const Vector3& axis) const override;
+	virtual Vector3 getAxis(int axis) const override;
+	virtual Vector3 halfsize() const;
 };
 
