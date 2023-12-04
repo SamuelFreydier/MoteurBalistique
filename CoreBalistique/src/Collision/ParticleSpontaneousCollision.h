@@ -6,7 +6,7 @@
 /**
  * @brief Détecte les collisions spontanées entre des particules (= pas de comportement particulier comme un générateur)
 */
-class ParticleSpontaneousCollision : public ParticleContactGenerator
+class SpontaneousCollision : public ParticleContactGenerator
 {
 public:
     // Paire de particules entrechoquées
@@ -22,7 +22,7 @@ public:
     inline float penetrationOnAxis(const Vector3& axis) const;
     bool testInterpenetration(int& bestCase, float& bestOverlap) const;
     std::vector<Vector3> computeAxis() const;
-    Vector3 contactPoint(const Vector3& pOne, const Vector3& dOne, float oneSize, const Vector3& pTwo, const Vector3& dTwo, float twoSize, bool useOne) const;
+    Vector3 contactPoint(const Vector3& pOne, const Vector3& dOne, float oneSize, const Vector3& pTwo, const Vector3& dTwo, float twoSize) const;
     void faceAxisContact(ParticleContact* contact, const Vector3& toCenter, const int& best, const float& penetration) const;
     void edgeToEdgeContact(ParticleContact* contact, const Vector3& toCenter, int best, const float& penetration) const;
 };

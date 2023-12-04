@@ -6,7 +6,7 @@
  * @param limit 
  * @return 0 si pas de collision. 1 sinon.
 */
-int ParticleSpontaneousCollision::addContact( ParticleContact* contact, const int& limit ) const
+int SpontaneousCollision::addContact( ParticleContact* contact, const int& limit ) const
 {
     // Particules
     //contact->m_particles[ 0 ] = m_particles[ 0 ];
@@ -36,8 +36,8 @@ int ParticleSpontaneousCollision::addContact( ParticleContact* contact, const in
     float penetration = FLT_MAX;
     if (testInterpenetration(bestAxis, penetration)) return 0;
 
-    // Find the vector between the two centres
-    Vector3 toCenter = m_rigidbodies[0]->getAxis(3) - m_rigidbodies[0]->getAxis(3);
+    // Vecteur entre les deux centres
+    Vector3 toCenter = m_rigidbodies[0]->getAxis(3) - m_rigidbodies[1]->getAxis(3);
 
     if (bestAxis < 3)
     {
@@ -61,7 +61,7 @@ int ParticleSpontaneousCollision::addContact( ParticleContact* contact, const in
  * @param axis
  * @return Valeur positive si interpénétration, négative sinon
 */
-inline float ParticleSpontaneousCollision::penetrationOnAxis(const Vector3& axis) const
+inline float SpontaneousCollision::penetrationOnAxis(const Vector3& axis) const
 {
     Vector3 toCenter = m_rigidbodies[0]->getPosition().distance(m_rigidbodies[1]->getPosition());
 
@@ -78,7 +78,7 @@ inline float ParticleSpontaneousCollision::penetrationOnAxis(const Vector3& axis
  * @param bestCase output (positif si interpénétration, négatif sinon)
  * @param bestOverlap output
 */
-bool ParticleSpontaneousCollision::testInterpenetration(int& bestCase, float& bestOverlap) const
+bool SpontaneousCollision::testInterpenetration(int& bestCase, float& bestOverlap) const
 {
     float overlap;
 
@@ -112,7 +112,7 @@ bool ParticleSpontaneousCollision::testInterpenetration(int& bestCase, float& be
 /**
  * @brief Calcule les 15 axes nécessaires au separating axis test
 */
-std::vector<Vector3> ParticleSpontaneousCollision::computeAxis() const
+std::vector<Vector3> SpontaneousCollision::computeAxis() const
 {
     std::vector<Vector3> axis;
 
@@ -140,7 +140,16 @@ std::vector<Vector3> ParticleSpontaneousCollision::computeAxis() const
     return axis;
 }
 
-Vector3 ParticleSpontaneousCollision::contactPoint(const Vector3& pOne, const Vector3& dOne, float oneSize, const Vector3& pTwo, const Vector3& dTwo, float twoSize, bool useOne) const
+/**
+ * @brief Point de contact en cas de collision arête - arête
+ * @param pOne : point de contact sur premier body
+ * @param dOne : axe considéré pour le premier body
+ * @param oneSize : taille de l'arête considérée pour le premier body
+ * @param pTwo : point de contact sur deuxième body
+ * @param dTwo : axe considéré pour le deuxième body
+ * @param twoSize : taille de l'arête considérée pour le premier body
+*/
+Vector3 SpontaneousCollision::contactPoint(const Vector3& pOne, const Vector3& dOne, float oneSize, const Vector3& pTwo, const Vector3& dTwo, float twoSize) const
 {
     Vector3 toSt, cOne, cTwo;
     float dpStaOne, dpStaTwo, dpOneTwo, smOne, smTwo;
@@ -156,35 +165,23 @@ Vector3 ParticleSpontaneousCollision::contactPoint(const Vector3& pOne, const Ve
 
     denom = smOne * smTwo - dpOneTwo * dpOneTwo;
 
-    // Lignes parallèles
-    if (fabs(denom) < 0.0001f) {
-        return useOne ? pOne : pTwo;
-    }
-
     mua = (dpOneTwo * dpStaTwo - smTwo * dpStaOne) / denom;
     mub = (smOne * dpStaTwo - dpOneTwo * dpStaOne) / denom;
 
-    if (mua > oneSize || mua < -oneSize || mub > twoSize || mub < -twoSize)
-    {
-        return useOne ? pOne : pTwo;
-    }
-    else
-    {
-        cOne = pOne + dOne * mua;
-        cTwo = pTwo + dTwo * mub;
+    cOne = pOne + dOne * mua;
+    cTwo = pTwo + dTwo * mub;
 
-        return cOne * 0.5 + cTwo * 0.5;
-    }
+    return cOne * 0.5 + cTwo * 0.5;
 }
 
 /**
  * @brief Calcule les données de collision pour une collision Sommet - Face
  * @param Contact
  * @param toCenter : le vecteur entre les centres des deux boites
- * @param best : l'axe le plus optimisé pour le contact
+ * @param best : l'axe le plus important pour le contact
  * @param penetration
 */
-void ParticleSpontaneousCollision::faceAxisContact(ParticleContact* contact, const Vector3& toCenter, const int& best, const float& penetration) const
+void SpontaneousCollision::faceAxisContact(ParticleContact* contact, const Vector3& toCenter, const int& best, const float& penetration) const
 {
     // Face impliquée dans la collision
     Vector3 normal = m_rigidbodies[0]->getAxis(best);
@@ -205,8 +202,14 @@ void ParticleSpontaneousCollision::faceAxisContact(ParticleContact* contact, con
     contact->m_restitution = m_restitution;
 }
 
-
-void ParticleSpontaneousCollision::edgeToEdgeContact(ParticleContact* contact, const Vector3& toCenter, int best, const float& penetration) const
+/**
+ * @brief Calcule les données de collision pour une collision Arête - arête
+ * @param Contact
+ * @param toCenter : le vecteur entre les centres des deux boites
+ * @param best : l'axe le plus important pour le contact
+ * @param penetration
+*/
+void SpontaneousCollision::edgeToEdgeContact(ParticleContact* contact, const Vector3& toCenter, int best, const float& penetration) const
 {
     float bestSingleAxis = best;
 
@@ -250,8 +253,7 @@ void ParticleSpontaneousCollision::edgeToEdgeContact(ParticleContact* contact, c
 
     Vector3 vertex = contactPoint(
         ptOnOneEdge, oneAxis, m_rigidbodies[0]->halfsize().getCoordinate(oneAxisIndex),
-        ptOnTwoEdge, twoAxis, m_rigidbodies[1]->halfsize().getCoordinate(twoAxisIndex),
-        bestSingleAxis > 2
+        ptOnTwoEdge, twoAxis, m_rigidbodies[1]->halfsize().getCoordinate(twoAxisIndex)
     );
 
     contact->m_contactNormal = axis;
