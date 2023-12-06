@@ -17,6 +17,6 @@ BoundingSphere::BoundingSphere(float radius, const Vector3& position)
 */
 bool BoundingSphere::collides(const BoundingSphere& other) const
 {
-    // C'est le travail de Sébastien :eyes:
+    // C'est le travail de Sébastien :lul:
     return (m_radius + other.getRadius() >= m_position.distance(other.getPosition()));
 }
