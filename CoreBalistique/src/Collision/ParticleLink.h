@@ -13,6 +13,9 @@ public:
     // Paire de particules connectées
     std::shared_ptr<Particle> m_particles[ 2 ];
 
+    // Paire de rigidbodies connectés
+    std::shared_ptr<Rigidbody> m_rigidbodies[2];
+
 public:
     float currentLength() const;
 
