@@ -16,6 +16,9 @@
 #include "Collision/ParticleSpontaneousCollision.h"
 #include "Collision/ParticleCable.h"
 #include "Referential.h"
+#include "Octree.h"
+
+#define OCTREE_BOUNDARY_SIZE 200
 
 class Engine
 {
@@ -40,6 +43,9 @@ class Engine
 
         // Referentiel cartésien
         static Referential s_referential;
+
+        // Arbre permettant de subdiviser l'espace et limiter le nombre de collisions à détecter
+        Octree m_octree;
 
         // Objets principaux manipulés par le moteur
         Rigidbodies m_rigidbodies;
@@ -119,10 +125,10 @@ class Engine
         // Suppression de toutes les forces dans les registres
         void clearRegisteries();
 
-        //Fonction globale de dessin qui regroupe toutes les autres fonctions de dessin de Engine
+        // Fonction globale de dessin qui regroupe toutes les autres fonctions de dessin de Engine
         void draw();
 
-        //Dessine le plan représentant le sol en Y = 0
+        // Dessine le plan représentant le sol en Y = 0
         void drawGround() const;
 
         // Mise à jour GRAPHIQUE des particules / rigidbodies / et forces

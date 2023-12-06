@@ -115,6 +115,7 @@
     <ClCompile Include="TestAirFriction.cpp" />
     <ClCompile Include="TestGravity.cpp" />
     <ClCompile Include="TestGroundContacts.cpp" />
+    <ClCompile Include="TestOctree.cpp" />
     <ClCompile Include="TestParticleCable.cpp" />
     <ClCompile Include="TestParticleContact.cpp" />
     <ClCompile Include="TestParticleRod.cpp" />

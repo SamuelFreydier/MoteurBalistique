@@ -24,6 +24,8 @@ RigidbodyCuboid::RigidbodyCuboid(const float width, const float depth, const flo
     }
     else
         std::cout << "RigidBodyCuboid initialisation: m_inverseMass = 0" << std::endl;
+
+    m_sphereCollider.m_radius = std::max( { m_width, m_height, m_depth } );
 }
 
 std::vector<Vector3> RigidbodyCuboid::getVerticesGlobalPosition() const

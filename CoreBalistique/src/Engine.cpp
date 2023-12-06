@@ -16,7 +16,7 @@ float Engine::s_rigidbodySelectRadius = 10;
  * @param iterations 
 */
 Engine::Engine( const int& maxContacts, const int& iterations )
-    : m_contactResolver( iterations ), m_maxContacts( maxContacts )
+    : m_contactResolver( iterations ), m_maxContacts( maxContacts ), m_octree(Area(Vector3(), Vector3( OCTREE_BOUNDARY_SIZE, OCTREE_BOUNDARY_SIZE, OCTREE_BOUNDARY_SIZE )))
 {
     m_contacts = std::vector<Contact>( maxContacts, Contact() );
 
@@ -155,6 +155,9 @@ int Engine::generateContacts()
 */
 void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
 {
+    // Reset du octree
+    m_octree.removeAll();
+
     // Ajout des forces au registre des particules
     for( std::shared_ptr<Particle>& particle : m_particles )
     {
@@ -166,10 +169,14 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
         m_forceRegistry.add( particle, std::make_shared<Gravity>( m_gravity ) );
     }
 
-    //Ajout des forces au registre des rigidbody
+    // Ajout des forces au registre des rigidbody
+    // + Ajout des colliders dans le octree en même temps pour éviter de faire un autre parcours
     int i = 0;
     for (std::shared_ptr<Rigidbody>& rigidbody : m_rigidbodies)
     {
+        // Ajout du collider dans le octree
+        m_octree.add( &rigidbody->getSphereCollider() );
+
         // Gravité
         m_forceRegistry.add(rigidbody, std::make_shared <Gravity>(m_gravity));
 
@@ -204,6 +211,8 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
         m_particles.push_back(ashFallParticle);
     }
     m_tempAshFallParticles.clear(); // Après avoir copié tous les éléments de cette liste temporaire, on la vide
+
+    // TODO DETECTION COLLISION REGARDEZ ICI YOUHOU : Pour détecter les collisions on pourra utiliser le octree ici avec la méthode "findAllIntersections" qui retournera toutes les paires de colliders qui sont en contact
 
     // Génération des collisions
     int usedContacts = generateContacts();
@@ -499,7 +508,6 @@ std::pair<glm::vec3, glm::vec3> Engine::getCameraInfo() const
 void Engine::moveCamera(Vector3 moveDirection)
 {
     Vector3 cameraPos(m_camera.getGlobalPosition());
-
     Vector3 cameraMove = m_camera.getXAxis() * moveDirection.x + m_camera.getYAxis() * moveDirection.y - m_camera.getZAxis() * moveDirection.z;
 
     m_camera.move(cameraMove.v3());
@@ -531,6 +539,9 @@ void Engine::draw()
     drawParticles();
     drawRigidbodies();
     drawForces();
+    
+    // Dessine une représentation visuelle des subdivisions de l'espace
+    m_octree.draw();
 }
 
 /**
