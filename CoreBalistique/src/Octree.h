@@ -5,19 +5,7 @@
 #include <array>
 #include <memory>
 #include "Vector.h"
-
-// CLASSE TEMPORAIRE POUR REPRESENTER SIMPLEMENT UNE SPHERE ENGLOBANTE EN ATTENDANT SA VRAIE IMPLEMENTATION
-class BoundingSphere
-{
-public:
-    BoundingSphere( float radius = 1.f, const Vector3& position = Vector3() );
-
-    float m_radius;
-    Vector3 m_position;
-
-    // TODO
-    bool collides( const BoundingSphere& other ) const;
-};
+#include "BoundingSphere.h"
 
 class Area
 {

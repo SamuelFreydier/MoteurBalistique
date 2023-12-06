@@ -108,6 +108,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TestBoundingSphere.cpp" />
     <ClCompile Include="TestMatrix3x3.cpp" />
     <ClCompile Include="TestMatrix4x4.cpp" />
     <ClCompile Include="TestAnchoredSpring.cpp" />
