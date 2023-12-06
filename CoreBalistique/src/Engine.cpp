@@ -118,6 +118,7 @@ int Engine::generateContacts()
     for( ContactGenerators::iterator gen = m_contactGenerators.begin(); gen != m_contactGenerators.end(); gen++ )
     {
         int used = ( *gen )->addContact( &nextContact[contactIndex], limit);
+
         limit -= used;
         contactIndex += used;
 
@@ -129,22 +130,23 @@ int Engine::generateContacts()
     }
 
     // On itère pour vérifier les collisions entre toutes les particules
-    for( int firstParticleIdx = 0 ; firstParticleIdx < m_particles.size() && limit > 0; firstParticleIdx++  )
+    for( int firstParticleIdx = 0 ; firstParticleIdx < m_collidingSpheres.size() && limit > 0; firstParticleIdx++  )
     {
-        std::shared_ptr<Particle> firstParticle = m_particles[ firstParticleIdx ];
-        for( int secondParticleIdx = firstParticleIdx + 1; secondParticleIdx < m_particles.size() && limit > 0; secondParticleIdx++ )
-        {
-            std::shared_ptr<Particle> secondParticle = m_particles[ secondParticleIdx ];
-            m_spontaneousCollisionGenerator->m_particles[ 0 ] = firstParticle;
-            m_spontaneousCollisionGenerator->m_particles[ 1 ] = secondParticle;
+        std::pair<std::shared_ptr<Rigidbody>, std::shared_ptr<Rigidbody>> collidingCouple = m_collidingSpheres[ firstParticleIdx ];
+        std::shared_ptr<Rigidbody> firstRigidbody = collidingCouple.first;
+        std::shared_ptr<Rigidbody> secondRigidbody = collidingCouple.second;
+        m_spontaneousCollisionGenerator->m_rigidbodies[ 0 ] = firstRigidbody;
+        m_spontaneousCollisionGenerator->m_rigidbodies[ 1 ] = secondRigidbody;
 
-            int used = m_spontaneousCollisionGenerator->addContact( &nextContact[contactIndex], limit);
-            limit -= used;
-            contactIndex += used;
+        int used = m_spontaneousCollisionGenerator->addContact( &nextContact[ contactIndex ], limit );
+        limit -= used;
+        contactIndex += used;
+
+        if( limit <= 0 )
+        {
+            break;
         }
     }
-
-
 
     return m_maxContacts - limit;
 }
@@ -157,6 +159,7 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
 {
     // Reset du octree
     m_octree.removeAll();
+    m_collidingSpheres.clear();
 
     // Ajout des forces au registre des particules
     for( std::shared_ptr<Particle>& particle : m_particles )
@@ -174,8 +177,13 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     int i = 0;
     for (std::shared_ptr<Rigidbody>& rigidbody : m_rigidbodies)
     {
+        if( rigidbody->getVelocity().norm() < 0.2 ) //on garde une marge en cas de microrebonds
+            rigidbody->setStationary( true );
+        else
+            rigidbody->setStationary( false );
+
         // Ajout du collider dans le octree
-        m_octree.add( &rigidbody->getSphereCollider() );
+        m_octree.add( rigidbody );
 
         // Gravité
         m_forceRegistry.add(rigidbody, std::make_shared <Gravity>(m_gravity));
@@ -212,23 +220,29 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     }
     m_tempAshFallParticles.clear(); // Après avoir copié tous les éléments de cette liste temporaire, on la vide
 
-    // TODO DETECTION COLLISION REGARDEZ ICI YOUHOU : Pour détecter les collisions on pourra utiliser le octree ici avec la méthode "findAllIntersections" qui retournera toutes les paires de colliders qui sont en contact
+    // Pour détecter les collisions on pourra utiliser le octree ici avec la méthode "findAllIntersections" qui retournera toutes les paires de colliders qui sont en contact
+    CollidingSpheres collidingCouples = m_octree.findAllIntersections();
+
+    for( auto collidingCouple : collidingCouples ) 
+    {
+        m_collidingSpheres.push_back( collidingCouple );
+    }
 
     // Génération des collisions
     int usedContacts = generateContacts();
 
     // Traitement des collisions
     // TODO : gérer les collisions des rigidbodies
-    //if( usedContacts > 0 )
-    //{
-    //    if( m_calculateIterations )
-    //    {
-    //        // Généralement on prend nbIterations = 2 * nbCollisions par convention
-    //        m_contactResolver.setIterations( usedContacts * 2 );
-    //    }
+    if( usedContacts > 0 )
+    {
+        if( m_calculateIterations )
+        {
+            // Généralement on prend nbIterations = 2 * nbCollisions par convention
+            m_contactResolver.setIterations( usedContacts * 2 );
+        }
 
-    //    m_contactResolver.resolveContacts( m_contacts, usedContacts, secondsElapsedSincePreviousUpdate);
-    //}
+        m_contactResolver.resolveContacts( m_contacts, usedContacts, secondsElapsedSincePreviousUpdate);
+    }
 
     // Nettoyage des particules inutiles
     cleanup();

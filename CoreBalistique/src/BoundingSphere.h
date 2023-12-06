@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector.h"
+
 // Classe de sphere englobante
 class BoundingSphere
 {
@@ -9,7 +10,6 @@ public:
     float m_radius;
     Vector3 m_position;
 
-    // TODO
     bool collides(const BoundingSphere& other) const;
     const Vector3& getPosition() const { return m_position; }
     const float& getRadius() const { return m_radius; }

@@ -211,7 +211,7 @@ void Rigidbody::integrate( const float& secondsElapsedSincePreviousUpdate)
     m_velocity = m_velocity * pow( Engine::getInstance()->getLinearDamping(), secondsElapsedSincePreviousUpdate ) + m_acceleration * secondsElapsedSincePreviousUpdate;
             
     // Vélocité angulaire
-    m_angularVelocity += angularAcceleration * secondsElapsedSincePreviousUpdate * pow(Engine::getInstance()->getAngularDamping(), secondsElapsedSincePreviousUpdate);
+    m_angularVelocity = m_angularVelocity * pow( Engine::getInstance()->getAngularDamping(), secondsElapsedSincePreviousUpdate ) + angularAcceleration * secondsElapsedSincePreviousUpdate;
 
     // Position
     m_position += m_velocity * secondsElapsedSincePreviousUpdate;

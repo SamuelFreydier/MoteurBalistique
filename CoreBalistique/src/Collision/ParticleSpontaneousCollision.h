@@ -9,9 +9,6 @@
 class SpontaneousCollision : public ParticleContactGenerator
 {
 public:
-    // Paire de particules entrechoquées
-    std::shared_ptr<Particle> m_particles[ 2 ];
-
     std::shared_ptr<Rigidbody> m_rigidbodies[2];
 
     // Coefficient de restitution du choc (rebond)

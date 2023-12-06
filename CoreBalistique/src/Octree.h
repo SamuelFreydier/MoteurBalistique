@@ -31,16 +31,16 @@ public:
     Octree( const Area& inBoundary );
 
     // Ajoute un collider au octree
-    void add( const BoundingSphere* collider );
+    void add( std::shared_ptr<class Rigidbody> collider );
 
     // Supprime un collider du octree
-    void remove( const BoundingSphere* collider );
+    void remove( std::shared_ptr<Rigidbody> collider );
 
     // Supprime tous les colliders du octree
     void removeAll();
 
     // Renvoie un tableau de tous les couples de colliders en intersection
-    std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>> findAllIntersections() const;
+    std::vector<std::pair<std::shared_ptr<Rigidbody>, std::shared_ptr<Rigidbody>>> findAllIntersections() const;
 
     // Dessine les subdivisions graphiquement
     void draw() const;
@@ -58,7 +58,7 @@ private:
         std::array<std::unique_ptr<Node>, 8> children;
 
         // Colliders contenus dans le noeud
-        std::vector<const BoundingSphere*> colliders;
+        std::vector<std::shared_ptr<Rigidbody>> colliders;
     };
 
     // Position et taille de la zone couverte par le octree
@@ -71,19 +71,19 @@ private:
     Area computeBox( const Area& parentArea, int childIndex ) const;
 
     // Retourne la subdivision dans laquelle un collider se trouve
-    int getSubdivision( const Area& nodeArea, const BoundingSphere& collider ) const;
+    int getSubdivision( const Area& nodeArea, const Rigidbody& collider ) const;
 
     // Méthode auxiliaire récursive à la méthode publique add
-    void add( Node* node, std::size_t depth, const Area& area, const BoundingSphere* collider );
+    void add( Node* node, std::size_t depth, const Area& area, std::shared_ptr<Rigidbody> collider );
 
     // Séparation d'un noeud en 8 subdivisions (8 autres noeuds)
     void split( Node* node, const Area& area );
 
     // Méthode auxiliaire récursive à la méthode publique remove
-    bool remove( Node* node, const Area& area, const BoundingSphere* collider );
+    bool remove( Node* node, const Area& area, std::shared_ptr<Rigidbody> collider );
 
     // Suppression d'un collider depuis un noeud
-    void removeValue( Node* node, const BoundingSphere* collider );
+    void removeValue( Node* node, std::shared_ptr<Rigidbody> collider );
 
     // Si la quantité de colliders cumulée des noeuds enfants est inférieure au seuil, on les fusionne
     // et tous les colliders sont stockés dans le noeud mère
@@ -91,12 +91,12 @@ private:
 
     // Méthode auxiliaire récursive à la méthode publique findAllIntersections
     void findAllIntersections(
-        Node* node, std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>>& intersections ) const;
+        Node* node, std::vector<std::pair<std::shared_ptr<Rigidbody>, std::shared_ptr<Rigidbody>>>& intersections ) const;
 
     // Trouve les intersections entre les colliders du node courant et les colliders de ses noeuds enfants
     void findIntersectionsInDescendants(
-        Node* node, const BoundingSphere* collider,
-        std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>>& intersections ) const;
+        Node* node, std::shared_ptr<Rigidbody> collider,
+        std::vector<std::pair<std::shared_ptr<Rigidbody>, std::shared_ptr<Rigidbody>>>& intersections ) const;
 
     // Méthode auxiliaire récursive de dessin des zones de l'arbre
     void draw( Node* parentNode, const Area& parentArea ) const;

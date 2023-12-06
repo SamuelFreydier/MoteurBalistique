@@ -1,6 +1,7 @@
 #include "Octree.h"
 #include <cassert>
 #include <iostream>
+#include "Rigidbody.h"
 
 /**
  * @brief Constructeur avec la zone couverte par l'octree
@@ -86,8 +87,9 @@ Area Octree::computeBox( const Area& parentArea, int childIndex ) const
  * @param collider 
  * @return Indice de la subdivision. -1 pour le noeud parent en cas d'overlap du collider sur plusieurs subdivisions
 */
-int Octree::getSubdivision( const Area& nodeArea, const BoundingSphere& collider ) const
+int Octree::getSubdivision( const Area& nodeArea, const Rigidbody& rb ) const
 {
+    const BoundingSphere& collider = rb.getSphereCollider();
     // En haut
     if( collider.m_position.y - collider.m_radius > nodeArea.m_position.y ) {
         // Haut Ouest
@@ -173,7 +175,7 @@ int Octree::getSubdivision( const Area& nodeArea, const BoundingSphere& collider
  * @brief Ajoute un collider au octree
  * @param collider 
 */
-void Octree::add( const BoundingSphere* collider ) { add( m_rootNode.get(), 0, m_boundary, collider ); }
+void Octree::add( std::shared_ptr<Rigidbody> collider ) { add( m_rootNode.get(), 0, m_boundary, collider ); }
 
 
 /**
@@ -183,12 +185,12 @@ void Octree::add( const BoundingSphere* collider ) { add( m_rootNode.get(), 0, m
  * @param area 
  * @param collider 
 */
-void Octree::add( Node* node, std::size_t depth, const Area& area, const BoundingSphere* collider )
+void Octree::add( Node* node, std::size_t depth, const Area& area, std::shared_ptr<Rigidbody> collider )
 {
     assert( node != nullptr );
 
     // Si le collider est hors de la zone couverte par le quadtree, on ne le considere pas
-    if( !area.intersects( *collider ) )
+    if( !area.intersects( collider->getSphereCollider() ) )
     {
         return;
     }
@@ -243,8 +245,8 @@ void Octree::split( Node* node, const Area& area )
     }
 
     // Assignation des colliders aux noeuds enfants
-    std::vector<const BoundingSphere*> newColliders;
-    for( const BoundingSphere* collider : node->colliders )
+    std::vector<std::shared_ptr<Rigidbody>> newColliders;
+    for( std::shared_ptr<Rigidbody> collider : node->colliders )
     {
         auto quadIndex = getSubdivision( area, *collider );
         if( quadIndex != -1 )
@@ -264,7 +266,7 @@ void Octree::split( Node* node, const Area& area )
  * @brief Supprime un collider du octree
  * @param collider 
 */
-void Octree::remove( const BoundingSphere* collider ) { remove( m_rootNode.get(), m_boundary, collider ); }
+void Octree::remove( std::shared_ptr<Rigidbody> collider ) { remove( m_rootNode.get(), m_boundary, collider ); }
 
 
 /**
@@ -274,10 +276,10 @@ void Octree::remove( const BoundingSphere* collider ) { remove( m_rootNode.get()
  * @param collider 
  * @return true = suppression réussie
 */
-bool Octree::remove( Node* node, const Area& area, const BoundingSphere* collider )
+bool Octree::remove( Node* node, const Area& area, std::shared_ptr<Rigidbody> collider )
 {
     assert( node != nullptr );
-    assert( area.intersects( *collider ) );
+    assert( area.intersects( collider->getSphereCollider() ) );
 
     // Si le noeud est une feuille
     if( isLeaf( node ) )
@@ -312,7 +314,7 @@ bool Octree::remove( Node* node, const Area& area, const BoundingSphere* collide
  * @param node 
  * @param collider 
 */
-void Octree::removeValue( Node* node, const BoundingSphere* collider )
+void Octree::removeValue( Node* node, std::shared_ptr<Rigidbody> collider )
 {
     // On trouve le collider dans le tableau de colliders du noeud
     auto it = std::find_if( std::begin( node->colliders ), std::end( node->colliders ),
@@ -391,9 +393,9 @@ void Octree::removeAll()
  * @brief Trouve tous les couples de colliders en intersection
  * @return Tableau de tous les couples de colliders en intersection
 */
-std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>> Octree::findAllIntersections() const
+std::vector<std::pair<std::shared_ptr<Rigidbody>, std::shared_ptr<Rigidbody>>> Octree::findAllIntersections() const
 {
-    std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>> intersections;
+    std::vector<std::pair<std::shared_ptr<Rigidbody>, std::shared_ptr<Rigidbody>>> intersections;
     findAllIntersections( m_rootNode.get(), intersections );
     return intersections;
 }
@@ -405,7 +407,7 @@ std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>> Octree::fin
  * @param intersections 
 */
 void Octree::findAllIntersections(
-    Node* node, std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>>& intersections ) const
+    Node* node, std::vector<std::pair<std::shared_ptr<Rigidbody>, std::shared_ptr<Rigidbody>>>& intersections ) const
 {
     // Trouve les intersections entre les colliders stockes dans le noeud courant
     // Une meme intersection ne doit pas etre reperee deux fois
@@ -413,7 +415,7 @@ void Octree::findAllIntersections(
     {
         for( auto secondChildIndex = std::size_t( 0 ); secondChildIndex < childIndex; ++secondChildIndex )
         {
-            if( node->colliders[ childIndex ]->collides( *node->colliders[ secondChildIndex ] ) )
+            if( node->colliders[ childIndex ]->getSphereCollider().collides(node->colliders[secondChildIndex]->getSphereCollider()) )
             {
                 intersections.emplace_back( node->colliders[ childIndex ], node->colliders[ secondChildIndex ] );
             }
@@ -478,13 +480,13 @@ void Octree::draw( Node* parentNode, const Area& parentArea ) const
  * @param intersections 
 */
 void Octree::findIntersectionsInDescendants(
-    Node* node, const BoundingSphere* collider,
-    std::vector<std::pair<const BoundingSphere*, const BoundingSphere*>>& intersections ) const
+    Node* node, std::shared_ptr<Rigidbody> collider,
+    std::vector<std::pair<std::shared_ptr<Rigidbody>, std::shared_ptr<Rigidbody>>>& intersections ) const
 {
     // Test d'intersection entre le collider courant et les colliders du noeud enfant
     for( const auto& other : node->colliders )
     {
-        if( collider->collides( *other ) )
+        if( collider->getSphereCollider().collides(other->getSphereCollider()) )
         {
             intersections.emplace_back( collider, other );
         }

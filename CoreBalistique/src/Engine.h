@@ -28,6 +28,7 @@ class Engine
         typedef std::vector<std::shared_ptr<Rigidbody>> Rigidbodies;
         typedef std::vector<std::shared_ptr<AnchoredSpring>> AnchoredSprings;
         typedef std::vector<std::shared_ptr<Spring>> Springs;
+        typedef std::vector<std::pair<std::shared_ptr<Rigidbody>, std::shared_ptr<Rigidbody>>> CollidingSpheres;
         //typedef std::vector<std::shared_ptr<Blob>> Blobs;
 
         enum RigidbodyType
@@ -51,6 +52,9 @@ class Engine
         Rigidbodies m_rigidbodies;
         Particles m_particles;
         Particles m_tempAshFallParticles; // Pour éviter que le Integrate() d'une fireball ne modifie m_particles en droppant des ashfall ce qui fait planter le programme (bug d'itérateur)
+
+        // Couples de sphères en collision lors d'une frame
+        CollidingSpheres m_collidingSpheres;
 
         // Registre (associations particule / générateur de force) => Gère gravité/frottements/ressorts
         ForceRegistry m_forceRegistry;
@@ -145,6 +149,8 @@ class Engine
 
         Rigidbodies& getRigidbodies() { return m_rigidbodies; }
         void addRigidbody( std::shared_ptr<Rigidbody> rigidbody ) { m_rigidbodies.push_back( rigidbody ); }
+
+        CollidingSpheres& getCollidingSpheres() { return m_collidingSpheres; }
 
         Particles& getParticles() { return m_particles; }
         void addParticle( std::shared_ptr<Particle> particle ) { m_particles.push_back( particle ); }

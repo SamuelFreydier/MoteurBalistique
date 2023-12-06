@@ -56,6 +56,9 @@ protected:
     // Collider du rigidbody représenté par une sphère
     BoundingSphere m_sphereCollider;
 
+    // Booléen pour la friction statique
+    bool m_isStationary;
+
 public:
     // Passe à true pour donner l'instruction à l'Engine de le détruire
     bool m_destroyedLater = false;
@@ -89,6 +92,9 @@ public:
 
     const Quaternion& getOrientation() const { return m_orientation; }
     void setOrientation( const Quaternion& orientation ) { m_orientation = orientation; }
+
+    bool isStationary() const { return m_isStationary; }
+    void setStationary( bool isStationary ) { m_isStationary = isStationary; }
 
     const Vector3& getColor() const { return m_color; }
     void setColor( const Vector3& color ) { m_color = color; }
