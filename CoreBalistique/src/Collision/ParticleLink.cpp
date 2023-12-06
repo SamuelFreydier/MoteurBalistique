@@ -11,5 +11,5 @@ ParticleLink::ParticleLink(Particle* particle1, Particle* particle2)
 float ParticleLink::currentLength() const
 {
     //Vector3 relativePos = m_particles[ 0 ]->getPosition() - m_particles[ 1 ]->getPosition();
-    return m_particles[0]->getPosition().distance(m_particles[1]->getPosition());
+    return m_rigidbodies[0]->getPosition().distance(m_rigidbodies[1]->getPosition());
 }

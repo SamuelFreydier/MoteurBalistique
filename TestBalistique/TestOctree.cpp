@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Octree.h"
+#include "RigidbodyCube.h"
 
 namespace OctreeTest
 {
@@ -66,16 +67,18 @@ namespace OctreeTest
         Area area( Vector3( 0, 0, 0 ), Vector3( 10.f, 10.f, 10.f ) );
         Octree octree( area );
 
+        std::shared_ptr<RigidbodyCube> cube = std::make_shared<RigidbodyCube>( 5.f );
         BoundingSphere collider( 5, Vector3( 5, 5, 5 ) );
+        cube->setSphereCollider( collider );
 
-        octree.add( &collider );
+        octree.add( cube );
 
         // Collider bien ajouté à l'arbre ?
         const auto& rootNode = octree.getRootNode();
         ASSERT_NE( rootNode, nullptr );
         ASSERT_TRUE( octree.isLeaf( rootNode.get() ) );
         ASSERT_EQ( rootNode->colliders.size(), 1 );
-        EXPECT_EQ( rootNode->colliders[ 0 ], &collider );
+        EXPECT_EQ( rootNode->colliders[ 0 ], cube );
     }
 
     TEST( OctreeAddCollider, MultipleColliders )
@@ -83,19 +86,25 @@ namespace OctreeTest
         Area area( Vector3( 0, 0, 0 ), Vector3( 10.f, 10.f, 10.f ) );
         Octree octree( area );
 
+        std::shared_ptr<RigidbodyCube> cube = std::make_shared<RigidbodyCube>( 5.f );
+        std::shared_ptr<RigidbodyCube> cube2 = std::make_shared<RigidbodyCube>( 5.f );
+
         BoundingSphere collider1( 5, Vector3( 5, 5, 5 ) );
         BoundingSphere collider2( 2, Vector3( 2, 2, 2 ) );
 
-        octree.add( &collider1 );
-        octree.add( &collider2 );
+        cube->setSphereCollider( collider1 );
+        cube2->setSphereCollider( collider2 );
+
+        octree.add( cube );
+        octree.add( cube2 );
 
         // Colliders bien ajoutés à l'arbre
         const auto& rootNode = octree.getRootNode();
         ASSERT_NE( rootNode, nullptr );
         ASSERT_TRUE( octree.isLeaf( rootNode.get() ) );
         ASSERT_EQ( rootNode->colliders.size(), 2 );
-        EXPECT_EQ( rootNode->colliders[ 0 ], &collider1 );
-        EXPECT_EQ( rootNode->colliders[ 1 ], &collider2 );
+        EXPECT_EQ( rootNode->colliders[ 0 ], cube );
+        EXPECT_EQ( rootNode->colliders[ 1 ], cube2 );
     }
 
     TEST( OctreeAddMultipleColliders, MultipleCollidersInDifferentSubdivisions )
@@ -103,11 +112,17 @@ namespace OctreeTest
         Area area( Vector3( 0, 0, 0 ), Vector3( 10.f, 10.f, 10.f ) );
         Octree octree( area );
 
+        std::shared_ptr<RigidbodyCube> cube = std::make_shared<RigidbodyCube>( 5.f );
+        std::shared_ptr<RigidbodyCube> cube2 = std::make_shared<RigidbodyCube>( 5.f );
+
         BoundingSphere collider1( 5, Vector3( 2, 2, 2 ) );
         BoundingSphere collider2( 2, Vector3( 7, 7, 7 ) );
 
-        octree.add( &collider1 );
-        octree.add( &collider2 );
+        cube->setSphereCollider( collider1 );
+        cube2->setSphereCollider( collider2 );
+
+        octree.add( cube );
+        octree.add( cube2 );
 
         const auto& rootNode = octree.getRootNode();
         ASSERT_NE( rootNode, nullptr );
@@ -119,7 +134,7 @@ namespace OctreeTest
             if( child )
             {
                 ASSERT_EQ( child->colliders.size(), 1 );
-                EXPECT_EQ( child->colliders[ 0 ], ( &collider1 == child->colliders[ 0 ] ) ? &collider1 : &collider2 );
+                EXPECT_EQ( child->colliders[ 0 ], ( cube == child->colliders[ 0 ] ) ? cube : cube2 );
             }
         }
     }
@@ -129,11 +144,17 @@ namespace OctreeTest
         Area area( Vector3( 0, 0, 0 ), Vector3( 10.f, 10.f, 10.f ) );
         Octree octree( area );
 
+        std::shared_ptr<RigidbodyCube> cube = std::make_shared<RigidbodyCube>( 5.f );
+        std::shared_ptr<RigidbodyCube> cube2 = std::make_shared<RigidbodyCube>( 5.f );
+
         BoundingSphere collider1( 5, Vector3( 2, 2, 2 ) );
         BoundingSphere collider2( 2, Vector3( 3, 3, 3 ) );
 
-        octree.add( &collider1 );
-        octree.add( &collider2 );
+        cube->setSphereCollider( collider1 );
+        cube2->setSphereCollider( collider2 );
+
+        octree.add( cube );
+        octree.add( cube2 );
 
         const auto& rootNode = octree.getRootNode();
         ASSERT_NE( rootNode, nullptr );
@@ -141,8 +162,8 @@ namespace OctreeTest
 
         // La subdivision doit contenir les deux colliders
         ASSERT_EQ( rootNode->colliders.size(), 2 );
-        EXPECT_EQ( rootNode->colliders[ 0 ], &collider1 );
-        EXPECT_EQ( rootNode->colliders[ 1 ], &collider2 );
+        EXPECT_EQ( rootNode->colliders[ 0 ], cube );
+        EXPECT_EQ( rootNode->colliders[ 1 ], cube2 );
     }
 
     TEST( OctreeRemoveCollider, SingleCollider )
@@ -150,10 +171,14 @@ namespace OctreeTest
         Area area( Vector3( 0, 0, 0 ), Vector3( 10.f, 10.f, 10.f ) );
         Octree octree( area );
 
+        std::shared_ptr<RigidbodyCube> cube = std::make_shared<RigidbodyCube>( 5.f );
+
         BoundingSphere collider( 5, Vector3( 5, 5, 5 ) );
 
-        octree.add( &collider );
-        octree.remove( &collider );
+        cube->setSphereCollider( collider );
+
+        octree.add( cube );
+        octree.remove( cube );
 
         // Collider bien supprimé de l'arbre ?
         const auto& rootNode = octree.getRootNode();
@@ -168,14 +193,22 @@ namespace OctreeTest
         Area area( Vector3( 0, 0, 0 ), Vector3( 5.f, 5.f, 5.f ) );
         Octree octree( area );
 
+        std::shared_ptr<RigidbodyCube> cube = std::make_shared<RigidbodyCube>( 5.f );
+        std::shared_ptr<RigidbodyCube> cube2 = std::make_shared<RigidbodyCube>( 5.f );
+        std::shared_ptr<RigidbodyCube> cube3 = std::make_shared<RigidbodyCube>( 5.f );
+
         // Colliders positionnés dans différentes subdivisions
         BoundingSphere collider1( 2, Vector3( 2, 2, 2 ) );
         BoundingSphere collider2( 2, Vector3( 7, 7, 7 ) );
         BoundingSphere collider3( 2, Vector3( 2, 8, 2 ) );
 
-        octree.add( &collider1 );
-        octree.add( &collider2 );
-        octree.add( &collider3 );
+        cube->setSphereCollider( collider1 );
+        cube2->setSphereCollider( collider2 );
+        cube3->setSphereCollider( collider3 );
+
+        octree.add( cube );
+        octree.add( cube2 );
+        octree.add( cube3 );
 
         // Colliders dans différentes subdivisions ?
         const auto& rootNode = octree.getRootNode();
@@ -196,16 +229,20 @@ namespace OctreeTest
         Area area( Vector3( 0, 0, 0 ), Vector3( 5.f, 5.f, 5.f ) );
         Octree octree( area );
 
+        std::shared_ptr<RigidbodyCube> cube = std::make_shared<RigidbodyCube>( 5.f );
+
         // Collider partiellement dans une subdivision
         BoundingSphere collider1( 5, Vector3( 2, 2, 7 ) );
 
-        octree.add( &collider1 );
+        cube->setSphereCollider( collider1 );
+
+        octree.add( cube );
 
         // Est-ce que le collider est inséré correctement
         const auto& rootNode = octree.getRootNode();
         ASSERT_NE( rootNode, nullptr );
         ASSERT_TRUE( rootNode->colliders.size() == 1 || !rootNode->colliders.empty() );
-        EXPECT_EQ( rootNode->colliders[ 0 ], &collider1 );
+        EXPECT_EQ( rootNode->colliders[ 0 ], cube );
     }
 
     TEST( OctreeMultipleCollidersPartialInsertion, MultipleCollidersPartiallyInSubdivision )
@@ -214,12 +251,18 @@ namespace OctreeTest
         Area area( Vector3( 0, 0, 0 ), Vector3( 10.f, 10.f, 10.f ) );
         Octree octree( area );
 
+        std::shared_ptr<RigidbodyCube> cube = std::make_shared<RigidbodyCube>( 5.f );
+        std::shared_ptr<RigidbodyCube> cube2 = std::make_shared<RigidbodyCube>( 5.f );
+
         // Collider1 entièrement dans la subdivision, Collider2 partiellement dans la subdivision
         BoundingSphere collider1( 5, Vector3( 2, 2, 2 ) );
         BoundingSphere collider2( 2, Vector3( 3, 3, 3 ) );
 
-        octree.add( &collider1 );
-        octree.add( &collider2 );
+        cube->setSphereCollider( collider1 );
+        cube2->setSphereCollider( collider2 );
+
+        octree.add( cube );
+        octree.add( cube2 );
 
         // Vérifiez si les colliders sont insérés correctement
         const auto& rootNode = octree.getRootNode();
@@ -231,7 +274,7 @@ namespace OctreeTest
             if( child )
             {
                 ASSERT_EQ( child->colliders.size(), 1 );
-                EXPECT_TRUE( child->colliders[ 0 ] == &collider1 || child->colliders[ 0 ] == &collider2 );
+                EXPECT_TRUE( child->colliders[ 0 ] == cube || child->colliders[ 0 ] == cube2 );
             }
         }
     }
