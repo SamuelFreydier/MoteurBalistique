@@ -6,7 +6,7 @@ namespace TestParticleContact
 {
     class TestParticleContact : public testing::Test {
     protected:
-        ParticleContact contact;
+        Contact contact;
         std::shared_ptr<Particle> particle1;
         std::shared_ptr<Particle> particle2;
 

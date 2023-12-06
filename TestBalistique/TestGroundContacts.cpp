@@ -8,16 +8,17 @@ namespace GroundContactsTest
     protected:
         GroundContacts groundContacts;
         Engine::Particles particles;
+        Engine::Rigidbodies rigidbodies;
 
         void SetUp() override {
-            groundContacts.init(&particles);
+            groundContacts.init(&particles, &rigidbodies);
         }
     };
 
     TEST_F(TestGroundContacts, NoContacts)
     {
         // Aucun contact avec le sol, la fonction ne doit rien ajouter à la liste de contacts
-        ParticleContact contactArray[5];  // Choisissez la taille en fonction de vos besoins
+        Contact contactArray[5];  // Choisissez la taille en fonction de vos besoins
         int result = groundContacts.addContact(contactArray, 5);
 
         // Ajoutez des assertions pour vérifier que le nombre de contacts est correct et que les contacts sont nuls
@@ -34,7 +35,7 @@ namespace GroundContactsTest
         particle->setPosition(Vector3(0.0f, -1.0f, 0.0f));
         particles.push_back(particle);
 
-        ParticleContact contact;
+        Contact contact;
         int result = groundContacts.addContact(&contact, 1);
 
         EXPECT_EQ(result, 1);
@@ -58,7 +59,7 @@ namespace GroundContactsTest
         particles.push_back(particle2);
         particles.push_back(particle3);
         
-        ParticleContact contacts[3];
+        Contact contacts[3];
         
         int contactCount = groundContacts.addContact(contacts, 3);
         

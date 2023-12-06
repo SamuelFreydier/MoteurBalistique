@@ -14,7 +14,7 @@ public:
 
 public:
     // Crée une collision si nécessaire pour éviter que la tige soit rompue
-    virtual int addContact( ParticleContact* contact, const int& limit ) const override;
+    virtual int addContact( Contact* contact, const int& limit ) const override;
 };
 
 #endif

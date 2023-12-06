@@ -14,7 +14,7 @@ void BlobContact::init(std::vector<std::shared_ptr<Blob>>* blobs)
 * @param limit (>= 1)
 * @return Le nombre de câbles ayant détecté un écart trop grand pour un couple de particules.
 */
-int BlobContact::addContact( ParticleContact* contact, const int& limit ) const
+int BlobContact::addContact( Contact* contact, const int& limit ) const
 {
     // Les particules des blobs sont reliées entre elles en utilisant des ressorts classiques.Par contre, ces liens ont une limite d’élasticité au-delà 
     // de laquelle ils se comportent comme des câbles

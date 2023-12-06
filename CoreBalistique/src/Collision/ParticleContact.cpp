@@ -4,7 +4,7 @@
  * @brief Résolution d'une collision en fonction da la durée de la dernière frame
  * @param duration 
 */
-void ParticleContact::resolve( const float& duration )
+void Contact::resolve( const float& duration )
 {
     resolveVelocity( duration );
     resolveInterpenetration( duration );
@@ -14,7 +14,7 @@ void ParticleContact::resolve( const float& duration )
  * @brief Calcul de la vélocité relative dans le sens de la normale. La normale doit être dans le sens du contact du point de vue de la première particule.
  * @return 
 */
-float ParticleContact::calculateClosingVelocity() const
+float Contact::calculateClosingVelocity() const
 {
     Vector3 relativeVelocity = m_particles[ 0 ]->getVelocity();
     if( m_particles[ 1 ] )
@@ -30,7 +30,7 @@ float ParticleContact::calculateClosingVelocity() const
  * @brief Calcul de la nouvelle vélocité des deux acteurs de la collision (en prenant en compte les problèmes de rebond à l'état stationnaire et la friction)
  * @return
 */
-void ParticleContact::resolveVelocity( const float& duration )
+void Contact::resolveVelocity( const float& duration )
 {
     // Trouve la vélocité dans la direction du contact
     float closingVelocity = calculateClosingVelocity();
@@ -139,7 +139,7 @@ void ParticleContact::resolveVelocity( const float& duration )
  * @brief Calcul de la nouvelle position des particules de façon inversement proportionnelle à leur masse, de manière à ce qu'il n'y ait plus d'interpénétration
  * @param duration 
 */
-void ParticleContact::resolveInterpenetration( const float& duration )
+void Contact::resolveInterpenetration( const float& duration )
 {
     // S'il n'y a pas de pénétration, tout ceci est inutile
     if( m_penetration <= 0 )

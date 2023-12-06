@@ -9,7 +9,7 @@
 class ParticleContactGenerator
 {
 public:
-    virtual int addContact( ParticleContact* contact, const int& limit ) const = 0;
+    virtual int addContact( Contact* contact, const int& limit ) const = 0;
 };
 
 #endif

@@ -13,14 +13,14 @@ RigidbodyCuboid::RigidbodyCuboid(const float width, const float depth, const flo
         setInertiaTensor(Matrix3x3(coefx, 0, 0, 0, coefy, 0, 0, 0, coefz));
 
 
-        m_localVertices.push_back(Vector3(m_width, m_height, m_depth) / 2);
-        m_localVertices.push_back(Vector3(m_width, m_height, -m_depth) / 2);
-        m_localVertices.push_back(Vector3(m_width, -m_height, m_depth) / 2);
-        m_localVertices.push_back(Vector3(-m_width, m_height, m_depth) / 2);
-        m_localVertices.push_back(Vector3(m_width, -m_height, -m_depth) / 2);
-        m_localVertices.push_back(Vector3(-m_width, -m_height, m_depth) / 2);
-        m_localVertices.push_back(Vector3(-m_width, m_height, -m_depth) / 2);
-        m_localVertices.push_back(Vector3(-m_width, -m_height, -m_depth) / 2);
+        m_localVertices.push_back(Vector3(m_width, m_height, m_depth) / 2.0);
+        m_localVertices.push_back(Vector3(m_width, m_height, -m_depth) / 2.0);
+        m_localVertices.push_back(Vector3(m_width, -m_height, m_depth) / 2.0);
+        m_localVertices.push_back(Vector3(-m_width, m_height, m_depth) / 2.0);
+        m_localVertices.push_back(Vector3(m_width, -m_height, -m_depth) / 2.0);
+        m_localVertices.push_back(Vector3(-m_width, -m_height, m_depth) / 2.0);
+        m_localVertices.push_back(Vector3(-m_width, m_height, -m_depth) / 2.0);
+        m_localVertices.push_back(Vector3(-m_width, -m_height, -m_depth) / 2.0);
     }
     else
         std::cout << "RigidBodyCuboid initialisation: m_inverseMass = 0" << std::endl;
@@ -58,9 +58,9 @@ void RigidbodyCuboid::draw() const
 
 float RigidbodyCuboid::transformToAxis(const Vector3& axis) const
 {
-    float value = m_width * fabs(axis.dotProduct(getAxis(0)));
-    value += m_height * fabs(axis.dotProduct(getAxis(1)));
-    value += m_depth * fabs(axis.dotProduct(getAxis(2)));
+    float value = halfsize().x * fabs(axis.dotProduct(getAxis(0)));
+          value += halfsize().y * fabs(axis.dotProduct(getAxis(1)));
+          value += halfsize().z * fabs(axis.dotProduct(getAxis(2)));
 
     return value;
 }
@@ -69,20 +69,20 @@ Vector3 RigidbodyCuboid::getAxis(int axis) const
 {
     Vector3 computedAxis;
 
-    if (axis > 0 && axis < 3)
+    if (axis >= 0 && axis < 3)
     {
         std::vector<Vector3> vertices = getVerticesGlobalPosition();
 
         switch (axis)
         {
             case 0:
-                computedAxis = vertices[1].distance(vertices[0]) * vertices[2].distance(vertices[0]);
+                computedAxis = (vertices[2] - vertices[0]) * (vertices[1] - vertices[0]);
                 break;
             case 1:
-                computedAxis = vertices[1].distance(vertices[0]) * vertices[3].distance(vertices[0]);
+                computedAxis = (vertices[1] - vertices[0]) * (vertices[3] - vertices[0]);
                 break;
             case 2:
-                computedAxis = vertices[2].distance(vertices[0]) * vertices[3].distance(vertices[0]);
+                computedAxis = (vertices[3] - vertices[0]) * (vertices[2] - vertices[0]);
                 break;
         }
     }

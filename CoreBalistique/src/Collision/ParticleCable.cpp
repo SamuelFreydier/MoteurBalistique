@@ -6,7 +6,7 @@
 * @param limit (>= 1)
 * @return 0 si le câble n'est pas sur-étendu. 1 si une collision est nécessaire.
 */
-int ParticleCable::addContact( ParticleContact* contact, const int& limit ) const
+int ParticleCable::addContact( Contact* contact, const int& limit ) const
 {
     // Longueur du câble
     float length = currentLength();

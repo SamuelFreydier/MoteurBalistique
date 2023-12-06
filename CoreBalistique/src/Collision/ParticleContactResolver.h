@@ -6,7 +6,7 @@
 /**
  * @brief Gère la résolution de toutes les collisions de particule
 */
-class ParticleContactResolver
+class ContactResolver
 {
 protected:
     // Nombre d'itérations maximum
@@ -16,10 +16,10 @@ protected:
     int m_iterationsUsed;
 
 public:
-    ParticleContactResolver( const int& iterations );
+    ContactResolver( const int& iterations );
 
     void setIterations( const int& iterations ) { m_iterations = iterations; }
-    void resolveContacts( std::vector<ParticleContact>& contactArray, const int& numContacts, const float& duration );
+    void resolveContacts( std::vector<Contact>& contactArray, const int& numContacts, const float& duration );
 };
 
 #endif

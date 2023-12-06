@@ -6,7 +6,7 @@
  * @param limit 
  * @return 0 si pas de collision. 1 sinon.
 */
-int SpontaneousCollision::addContact( ParticleContact* contact, const int& limit ) const
+int SpontaneousCollision::addContact( Contact* contact, const int& limit ) const
 {
     // Particules
     //contact->m_particles[ 0 ] = m_particles[ 0 ];
@@ -34,21 +34,26 @@ int SpontaneousCollision::addContact( ParticleContact* contact, const int& limit
     // Rigidbodies
     int bestAxis = -1;
     float penetration = FLT_MAX;
-    if (testInterpenetration(bestAxis, penetration)) return 0;
 
     // Vecteur entre les deux centres
-    Vector3 toCenter = m_rigidbodies[0]->getAxis(3) - m_rigidbodies[1]->getAxis(3);
+    Vector3 toCenter = m_rigidbodies[1]->getPosition() - m_rigidbodies[0]->getPosition();
 
+    if (!testInterpenetration(bestAxis, penetration, toCenter)) return 0;
+
+
+    // Sommet du body 1 sur une face du body 2
     if (bestAxis < 3)
     {
-        faceAxisContact(contact, toCenter, bestAxis, penetration);
+        faceAxisContact(contact, m_rigidbodies[0], m_rigidbodies[1], toCenter, bestAxis, penetration);
         return 1;
     }
+    // Sommet du body 2 sur une face du body 1
     else if (bestAxis < 6)
     {
-        faceAxisContact(contact, toCenter * -1.0f, bestAxis - 3, penetration);
+        faceAxisContact(contact, m_rigidbodies[1], m_rigidbodies[0], toCenter * -1.0f, bestAxis - 3, penetration);
         return 1;
     }
+    // Contact d'arêtes
     else
     {
         edgeToEdgeContact(contact, toCenter, bestAxis, penetration);
@@ -61,10 +66,8 @@ int SpontaneousCollision::addContact( ParticleContact* contact, const int& limit
  * @param axis
  * @return Valeur positive si interpénétration, négative sinon
 */
-inline float SpontaneousCollision::penetrationOnAxis(const Vector3& axis) const
+inline float SpontaneousCollision::penetrationOnAxis(const Vector3& axis, const Vector3& toCenter) const
 {
-    Vector3 toCenter = m_rigidbodies[0]->getPosition().distance(m_rigidbodies[1]->getPosition());
-
     float oneProject = m_rigidbodies[0]->transformToAxis(axis);
     float twoProject = m_rigidbodies[1]->transformToAxis(axis);
 
@@ -78,11 +81,12 @@ inline float SpontaneousCollision::penetrationOnAxis(const Vector3& axis) const
  * @param bestCase output (positif si interpénétration, négatif sinon)
  * @param bestOverlap output
 */
-bool SpontaneousCollision::testInterpenetration(int& bestCase, float& bestOverlap) const
+bool SpontaneousCollision::testInterpenetration(int& bestCase, float& bestOverlap, const Vector3& toCenter) const
 {
     float overlap;
 
     Vector3 currentAxis;
+    
     std::vector<Vector3> axis = computeAxis();
 
     for (int i = 0; i < 15; ++i)
@@ -92,7 +96,7 @@ bool SpontaneousCollision::testInterpenetration(int& bestCase, float& bestOverla
         if (currentAxis.squareMagnitude() < 0.001) continue;
 
         currentAxis.normalize();
-        overlap = penetrationOnAxis(currentAxis);
+        overlap = penetrationOnAxis(currentAxis, toCenter);
 
         if (overlap < 0)
         {
@@ -181,24 +185,24 @@ Vector3 SpontaneousCollision::contactPoint(const Vector3& pOne, const Vector3& d
  * @param best : l'axe le plus important pour le contact
  * @param penetration
 */
-void SpontaneousCollision::faceAxisContact(ParticleContact* contact, const Vector3& toCenter, const int& best, const float& penetration) const
+void SpontaneousCollision::faceAxisContact(Contact* contact, std::shared_ptr<Rigidbody> one, std::shared_ptr<Rigidbody> two, const Vector3& toCenter, const int& best, const float& penetration) const
 {
     // Face impliquée dans la collision
-    Vector3 normal = m_rigidbodies[0]->getAxis(best);
-    if (m_rigidbodies[0]->getAxis(best).dotProduct(toCenter) > 0)
+    Vector3 normal = one->getAxis(best);
+    if (one->getAxis(best).dotProduct(toCenter) < 0)
     {
         normal = normal * -1.0f;
     }
 
     // Sommet impliqué dans la collision
-    Vector3 vertex = m_rigidbodies[1]->halfsize();
-    if (m_rigidbodies[1]->getAxis(0).dotProduct(normal) < 0) vertex.x = -vertex.x;
-    if (m_rigidbodies[1]->getAxis(1).dotProduct(normal) < 0) vertex.y = -vertex.y;
-    if (m_rigidbodies[1]->getAxis(2).dotProduct(normal) < 0) vertex.z = -vertex.z;
+    Vector3 vertex = two->halfsize();
+    if (two->getAxis(0).dotProduct(normal) > 0) vertex.x = -vertex.x;
+    if (two->getAxis(1).dotProduct(normal) > 0) vertex.y = -vertex.y;
+    if (two->getAxis(2).dotProduct(normal) > 0) vertex.z = -vertex.z;
 
     contact->m_contactNormal = normal;
     contact->m_penetration = penetration;
-    contact->m_contactPoint = m_rigidbodies[1]->getPointInLocalSpace(vertex);
+    contact->m_contactPoint = two->getPointInWorldSpace(vertex);
     contact->m_restitution = m_restitution;
 }
 
@@ -209,7 +213,7 @@ void SpontaneousCollision::faceAxisContact(ParticleContact* contact, const Vecto
  * @param best : l'axe le plus important pour le contact
  * @param penetration
 */
-void SpontaneousCollision::edgeToEdgeContact(ParticleContact* contact, const Vector3& toCenter, int best, const float& penetration) const
+void SpontaneousCollision::edgeToEdgeContact(Contact* contact, const Vector3& toCenter, int best, const float& penetration) const
 {
     float bestSingleAxis = best;
 
@@ -221,7 +225,7 @@ void SpontaneousCollision::edgeToEdgeContact(ParticleContact* contact, const Vec
     Vector3 axis = oneAxis * twoAxis;
     axis.normalize();
 
-    if (axis.dotProduct(toCenter) > 0) axis = axis * -1.0f;
+    if (axis.dotProduct(toCenter) < 0) axis = axis * -1.0f;
 
     // Points de contact sur les arêtes
     Vector3 ptOnOneEdge = m_rigidbodies[0]->halfsize();

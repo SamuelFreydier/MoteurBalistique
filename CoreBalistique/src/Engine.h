@@ -50,7 +50,7 @@ class Engine
         ForceRegistry m_forceRegistry;
 
         // Résolveur de collisions
-        ParticleContactResolver m_contactResolver;
+        ContactResolver m_contactResolver;
 
         // Vrai s'il faut calculer le nombre d'itérations à donner au résolveur de collisions à chaque frame
         bool m_calculateIterations;
@@ -59,10 +59,10 @@ class Engine
         ContactGenerators m_contactGenerators;
 
         // Générateur de collision spécial (pour les collisions spontanées entre particules)
-        std::shared_ptr<ParticleSpontaneousCollision> m_spontaneousCollisionGenerator;
+        std::shared_ptr<SpontaneousCollision> m_spontaneousCollisionGenerator;
 
         // Liste des collisions
-        std::vector<ParticleContact> m_contacts;
+        std::vector<Contact> m_contacts;
 
         // Nombre maximal de collisions autorisées
         int m_maxContacts;

@@ -23,7 +23,7 @@ namespace ParticleCableTest
     };
 
     TEST_F(TestParticleCable, AddContactNotOverstretched) {
-        ParticleContact contact;
+        Contact contact;
 
         // La longueur actuelle est inférieure à la longueur maximale
         int result = particleCable.addContact(&contact, 1);
@@ -33,7 +33,7 @@ namespace ParticleCableTest
     }
 
     TEST_F(TestParticleCable, AddContactOverstretched) {
-        ParticleContact contact;
+        Contact contact;
 
         particle2->setPosition(Vector3(0, 0, 3.0));
 

@@ -23,7 +23,7 @@ namespace ParticleRodTest
     };
 
     TEST_F(TestParticleRod, AddContact_NoCollision) {
-        ParticleContact contact;
+        Contact contact;
         int limit = 1;
 
         int result = rod.addContact(&contact, limit);
@@ -34,7 +34,7 @@ namespace ParticleRodTest
     TEST_F(TestParticleRod, AddContact_ExtensionCollision) {
         particle1->setPosition(Vector3(0, 0, 0));
         particle2->setPosition(Vector3(0, 0, 1.5)); 
-        ParticleContact contact;
+        Contact contact;
         int limit = 1;
 
         int result = rod.addContact(&contact, limit);
@@ -52,7 +52,7 @@ namespace ParticleRodTest
     TEST_F(TestParticleRod, AddContact_CompressionCollision) {
         particle1->setPosition(Vector3(0, 0, 0));
         particle2->setPosition(Vector3(0, 0, 0.5));
-        ParticleContact contact;
+        Contact contact;
         int limit = 1;
 
         int result = rod.addContact(&contact, limit);

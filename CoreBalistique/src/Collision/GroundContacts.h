@@ -19,7 +19,7 @@ class GroundContacts : public ParticleContactGenerator
     public:
         void init( Engine::Particles* particles, Engine::Rigidbodies* rigidbodies );
 
-        virtual int addContact( ParticleContact* contact, const int& limit ) const override;
+        virtual int addContact( Contact* contact, const int& limit ) const override;
 };
 
 #endif

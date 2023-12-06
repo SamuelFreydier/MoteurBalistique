@@ -18,7 +18,7 @@ public:
 
 public:
     // Crée une collision si nécessaire pour éviter que le câble soit rompu
-    virtual int addContact( ParticleContact* contact, const int& limit ) const override;
+    virtual int addContact( Contact* contact, const int& limit ) const override;
 };
 
 #endif

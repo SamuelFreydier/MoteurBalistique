@@ -7,9 +7,9 @@
 /**
  * @brief Représente deux particules en contact
 */
-class ParticleContact
+class Contact
 {
-    friend class ParticleContactResolver;
+    friend class ContactResolver;
 
 public:
     // Particules impliquées dans le contact. La seconde particule est à nullptr si la collision est entre l'objet et la scène

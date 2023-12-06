@@ -19,7 +19,7 @@ public:
     void init(std::vector<std::shared_ptr<Blob>>* blobs);
     
     // Crée une collision si nécessaire pour éviter que le câble soit rompu
-    virtual int addContact( ParticleContact* contact, const int& limit ) const override;
+    virtual int addContact( Contact* contact, const int& limit ) const override;
 };
 
 #endif

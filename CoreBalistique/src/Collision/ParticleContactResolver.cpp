@@ -1,6 +1,6 @@
 #include "ParticleContactResolver.h"
 
-ParticleContactResolver::ParticleContactResolver( const int& iterations )
+ContactResolver::ContactResolver( const int& iterations )
     : m_iterations( iterations ), m_iterationsUsed( 0 )
 {
 }
@@ -11,7 +11,7 @@ ParticleContactResolver::ParticleContactResolver( const int& iterations )
  * @param numContacts 
  * @param duration 
 */
-void ParticleContactResolver::resolveContacts( std::vector<ParticleContact>& contactArray, const int& numContacts, const float& duration )
+void ContactResolver::resolveContacts( std::vector<Contact>& contactArray, const int& numContacts, const float& duration )
 {
     int index;
 

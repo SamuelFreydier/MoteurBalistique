@@ -6,7 +6,7 @@ void GroundContacts::init( Engine::Particles* particles, Engine::Rigidbodies* ri
     m_rigidbodies = rigidbodies;
 }
 
-int GroundContacts::addContact( ParticleContact* contact, const int& limit ) const
+int GroundContacts::addContact( Contact* contact, const int& limit ) const
 {
     int count = 0;
     float floorHeight = 0;

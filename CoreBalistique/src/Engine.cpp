@@ -18,9 +18,9 @@ float Engine::s_rigidbodySelectRadius = 10;
 Engine::Engine( const int& maxContacts, const int& iterations )
     : m_contactResolver( iterations ), m_maxContacts( maxContacts )
 {
-    m_contacts = std::vector<ParticleContact>( maxContacts, ParticleContact() );
+    m_contacts = std::vector<Contact>( maxContacts, Contact() );
 
-    m_spontaneousCollisionGenerator = std::make_shared<ParticleSpontaneousCollision>();
+    m_spontaneousCollisionGenerator = std::make_shared<SpontaneousCollision>();
     m_spontaneousCollisionGenerator->m_restitution = 1.f;
 
     m_calculateIterations = ( iterations == 0 );
@@ -111,7 +111,7 @@ int Engine::generateContacts()
     }
 
     int limit = m_maxContacts;
-    std::vector<ParticleContact>& nextContact = m_contacts;
+    std::vector<Contact>& nextContact = m_contacts;
     int contactIndex = 0;
 
     // On itère dans tous les générateurs de collisions
