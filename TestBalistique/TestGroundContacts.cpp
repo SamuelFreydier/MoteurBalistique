@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Particle.h"
+#include "RigidbodyCuboid.h"
 #include "Collision/GroundContacts.h"
 
 namespace GroundContactsTest
@@ -17,69 +18,118 @@ namespace GroundContactsTest
 
     TEST_F(TestGroundContacts, NoContacts)
     {
-        // Aucun contact avec le sol, la fonction ne doit rien ajouter à la liste de contacts
-        Contact contactArray[5];  // Choisissez la taille en fonction de vos besoins
+        std::shared_ptr<RigidbodyCuboid> rb = std::make_shared<RigidbodyCuboid>();
+        rb->setPosition(Vector3(0, 2, 0));
+        rigidbodies.push_back(rb);
+
+        Contact contactArray[5];  
         int result = groundContacts.addContact(contactArray, 5);
 
-        // Ajoutez des assertions pour vérifier que le nombre de contacts est correct et que les contacts sont nuls
         EXPECT_EQ(result, 0);
         for (int i = 0; i < 5; ++i)
         {
-            EXPECT_EQ(contactArray[i].m_particles[0], nullptr);
+            EXPECT_EQ(contactArray[i].m_rigidbodies[0], nullptr);
         }
     }
 
     TEST_F(TestGroundContacts, SingleContact)
     {
-        std::shared_ptr<Particle> particle = std::make_shared<Particle>();
-        particle->setPosition(Vector3(0.0f, -1.0f, 0.0f));
-        particles.push_back(particle);
+        std::shared_ptr<RigidbodyCuboid> rb = std::make_shared<RigidbodyCuboid>();
+        rb->setPosition(Vector3(0, 0.5, 0));
+        rb->setOrientation(Quaternion((sqrt(2) + 1) / 2, (sqrt(2) + 1) / 2, (sqrt(2) + 1) / 2, 0));
+        rb->calculateDerivedData();
+        rigidbodies.push_back(rb);
 
         Contact contact;
         int result = groundContacts.addContact(&contact, 1);
 
         EXPECT_EQ(result, 1);
-        EXPECT_EQ(contact.m_particles[0], particle);
-        EXPECT_EQ(contact.m_particles[1], nullptr);
+        EXPECT_EQ(contact.m_rigidbodies[0], rb);
+        EXPECT_EQ(contact.m_rigidbodies[1], nullptr);
         EXPECT_EQ(contact.m_contactNormal, Vector3(0, -1, 0));
-        EXPECT_EQ(contact.m_penetration, 2.0f);
+        EXPECT_FLOAT_EQ(contact.m_penetration, 0.33333331f);
         EXPECT_FLOAT_EQ(contact.m_restitution, 0.7f);
     }
 
-    TEST_F(TestGroundContacts, AddContact) {
-        std::shared_ptr<Particle> particle1 = std::make_shared<Particle>();
-        std::shared_ptr<Particle> particle2 = std::make_shared<Particle>();
-        std::shared_ptr<Particle> particle3 = std::make_shared<Particle>();
-
-        particle1->setPosition(Vector3(0.0, 0.5, 0.0));
-        particle2->setPosition(Vector3(0.0, 0.9, 0.0));
-        particle3->setPosition(Vector3(0.0, 5.0, 0.0));
-
-        particles.push_back(particle1);
-        particles.push_back(particle2);
-        particles.push_back(particle3);
+    TEST_F(TestGroundContacts, FourVertices) 
+    {
+        std::shared_ptr<RigidbodyCuboid> rb = std::make_shared<RigidbodyCuboid>();
+        rb->setPosition(Vector3(0, 0, 0));
+        rb->calculateDerivedData();
+        rigidbodies.push_back(rb);
         
-        Contact contacts[3];
+        Contact contacts[4];
         
-        int contactCount = groundContacts.addContact(contacts, 3);
+        int contactCount = groundContacts.addContact(contacts, 4);
         
-        ASSERT_EQ(contactCount, 2);
+        ASSERT_EQ(contactCount, 4);
         
         //premier contact
         EXPECT_EQ(contacts[0].m_contactNormal, Vector3(0, -1, 0));
-        EXPECT_EQ(contacts[0].m_particles[0], particle1);
-        EXPECT_EQ(contacts[0].m_particles[1], nullptr);
+        EXPECT_EQ(contacts[0].m_rigidbodies[0], rb);
+        EXPECT_EQ(contacts[0].m_rigidbodies[1], nullptr);
         EXPECT_FLOAT_EQ(contacts[0].m_penetration, 0.5f);
         EXPECT_FLOAT_EQ(contacts[0].m_restitution, 0.7f);
 
         //deuxieme contact
         EXPECT_EQ(contacts[1].m_contactNormal, Vector3(0, -1, 0));
-        EXPECT_EQ(contacts[1].m_particles[0], particle2);
-        EXPECT_EQ(contacts[1].m_particles[1], nullptr);
-        EXPECT_FLOAT_EQ(contacts[1].m_penetration, 0.1f);
+        EXPECT_EQ(contacts[1].m_rigidbodies[0], rb);
+        EXPECT_EQ(contacts[1].m_rigidbodies[1], nullptr);
+        EXPECT_FLOAT_EQ(contacts[1].m_penetration, 0.5f);
         EXPECT_FLOAT_EQ(contacts[1].m_restitution, 0.7f);
 
         //troisieme contact
-        EXPECT_EQ(contacts[2].m_particles[0], nullptr);
+        EXPECT_EQ(contacts[2].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[2].m_rigidbodies[0], rb);
+        EXPECT_EQ(contacts[2].m_rigidbodies[1], nullptr);
+        EXPECT_FLOAT_EQ(contacts[2].m_penetration, 0.5f);
+        EXPECT_FLOAT_EQ(contacts[2].m_restitution, 0.7f);
+
+        //quatrieme contact
+        EXPECT_EQ(contacts[3].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[3].m_rigidbodies[0], rb);
+        EXPECT_EQ(contacts[3].m_rigidbodies[1], nullptr);
+        EXPECT_FLOAT_EQ(contacts[3].m_penetration, 0.5f);
+        EXPECT_FLOAT_EQ(contacts[3].m_restitution, 0.7f);
+    }
+
+    TEST_F(TestGroundContacts, FourContactsDiffDepths)
+    {
+        std::shared_ptr<RigidbodyCuboid> rb = std::make_shared<RigidbodyCuboid>();
+        rb->setPosition(Vector3(0, 0, 0));
+        rb->setOrientation(Quaternion((sqrt(2) + 1) / 2, (sqrt(2) + 1) / 2, (sqrt(2) + 1) / 2, 0));
+        rb->calculateDerivedData();
+        rigidbodies.push_back(rb);
+
+        Contact contacts[4];
+        int result = groundContacts.addContact(contacts, 4);
+
+        //premier contact
+        EXPECT_EQ(contacts[0].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[0].m_rigidbodies[0], rb);
+        EXPECT_EQ(contacts[0].m_rigidbodies[1], nullptr);
+        EXPECT_FLOAT_EQ(contacts[0].m_penetration, 0.16666669);
+        EXPECT_FLOAT_EQ(contacts[0].m_restitution, 0.7f);
+
+        //deuxieme contact
+        EXPECT_EQ(contacts[1].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[1].m_rigidbodies[0], rb);
+        EXPECT_EQ(contacts[1].m_rigidbodies[1], nullptr);
+        EXPECT_FLOAT_EQ(contacts[1].m_penetration, 0.49999994);
+        EXPECT_FLOAT_EQ(contacts[1].m_restitution, 0.7f);
+
+        //troisieme contact
+        EXPECT_EQ(contacts[2].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[2].m_rigidbodies[0], rb);
+        EXPECT_EQ(contacts[2].m_rigidbodies[1], nullptr);
+        EXPECT_FLOAT_EQ(contacts[2].m_penetration, 0.83333331);
+        EXPECT_FLOAT_EQ(contacts[2].m_restitution, 0.7f);
+
+        //quatrieme contact
+        EXPECT_EQ(contacts[3].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[3].m_rigidbodies[0], rb);
+        EXPECT_EQ(contacts[3].m_rigidbodies[1], nullptr);
+        EXPECT_FLOAT_EQ(contacts[3].m_penetration, 0.16666669);
+        EXPECT_FLOAT_EQ(contacts[3].m_restitution, 0.7f);
     }
 }

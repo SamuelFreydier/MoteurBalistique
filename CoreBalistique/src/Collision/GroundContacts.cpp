@@ -47,9 +47,11 @@ int GroundContacts::addContact( Contact* contact, const int& limit ) const
                 // Données de contact
                 contact->m_rigidbodies[0] = *rbIterator;
                 contact->m_rigidbodies[1] = nullptr;
+
+                // Point de contact à mi chemin entre le sommet et le sol
                 contact->m_contactPoint = (planeDirection * (vertexDistance - floorHeight)) + vertexPos;
                 contact->m_contactNormal = planeDirection;
-                contact->m_penetration = vertexDistance - floorHeight;
+                contact->m_penetration = floorHeight - vertexDistance;
                 contact->m_restitution = 0.7f;
                 contact++;
                 count++;
