@@ -132,6 +132,7 @@ int Engine::generateContacts()
     // On itère pour vérifier les collisions entre toutes les particules
     for( int firstParticleIdx = 0 ; firstParticleIdx < m_collidingSpheres.size() && limit > 0; firstParticleIdx++  )
     {
+        std::cout << "Detected collisions : " << m_collidingSpheres.size() << std::endl;
         std::pair<std::shared_ptr<Rigidbody>, std::shared_ptr<Rigidbody>> collidingCouple = m_collidingSpheres[ firstParticleIdx ];
         std::shared_ptr<Rigidbody> firstRigidbody = collidingCouple.first;
         std::shared_ptr<Rigidbody> secondRigidbody = collidingCouple.second;
@@ -139,6 +140,8 @@ int Engine::generateContacts()
         m_spontaneousCollisionGenerator->m_rigidbodies[ 1 ] = secondRigidbody;
 
         int used = m_spontaneousCollisionGenerator->addContact( &nextContact[ contactIndex ], limit );
+        std::cout << "Used after spontaneous add contact : " << used << std::endl;
+
         limit -= used;
         contactIndex += used;
 
