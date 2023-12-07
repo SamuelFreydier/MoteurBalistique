@@ -200,6 +200,9 @@ void SpontaneousCollision::faceAxisContact(Contact* contact, std::shared_ptr<Rig
     if (two->getAxis(1).dotProduct(normal) > 0) vertex.y = -vertex.y;
     if (two->getAxis(2).dotProduct(normal) > 0) vertex.z = -vertex.z;
 
+    contact->m_rigidbodies[0] = m_rigidbodies[0];
+    contact->m_rigidbodies[1] = m_rigidbodies[1];
+
     contact->m_contactNormal = normal;
     contact->m_penetration = penetration;
     contact->m_contactPoint = two->getPointInWorldSpace(vertex);
@@ -259,6 +262,9 @@ void SpontaneousCollision::edgeToEdgeContact(Contact* contact, const Vector3& to
         ptOnOneEdge, oneAxis, m_rigidbodies[0]->halfsize().getCoordinate(oneAxisIndex),
         ptOnTwoEdge, twoAxis, m_rigidbodies[1]->halfsize().getCoordinate(twoAxisIndex)
     );
+
+    contact->m_rigidbodies[0] = m_rigidbodies[0];
+    contact->m_rigidbodies[1] = m_rigidbodies[1];
 
     contact->m_contactNormal = axis;
     contact->m_penetration = penetration;
