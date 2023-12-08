@@ -132,7 +132,7 @@ int Engine::generateContacts()
     // On itère pour vérifier les collisions entre toutes les particules
     for( int firstRBIdx = 0 ; firstRBIdx < m_collidingSpheres.size() && limit > 0; firstRBIdx++  )
     {
-        std::cout << "Detected collisions : " << m_collidingSpheres.size() << std::endl;
+        //std::cout << "Detected collisions : " << m_collidingSpheres.size() << std::endl;
         std::pair<std::shared_ptr<Rigidbody>, std::shared_ptr<Rigidbody>> collidingCouple = m_collidingSpheres[ firstRBIdx ];
         std::shared_ptr<Rigidbody> firstRigidbody = collidingCouple.first;
         std::shared_ptr<Rigidbody> secondRigidbody = collidingCouple.second;
@@ -140,7 +140,7 @@ int Engine::generateContacts()
         m_spontaneousCollisionGenerator->m_rigidbodies[ 1 ] = secondRigidbody;
 
         int used = m_spontaneousCollisionGenerator->addContact( &nextContact[ contactIndex ], limit );
-        std::cout << "Used after spontaneous add contact : " << used << std::endl;
+        //std::cout << "Used after spontaneous add contact : " << used << std::endl;
 
         limit -= used;
         contactIndex += used;
@@ -176,7 +176,6 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     }
 
     // Ajout des forces au registre des rigidbody
-    // + Ajout des colliders dans le octree en même temps pour éviter de faire un autre parcours
     int i = 0;
     for (std::shared_ptr<Rigidbody>& rigidbody : m_rigidbodies)
     {
@@ -184,9 +183,7 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
             rigidbody->setStationary( true );
         else
             rigidbody->setStationary( false );
-
-        // Ajout du collider dans le octree
-        m_octree.add( rigidbody );
+            
 
         // Gravité
         m_forceRegistry.add(rigidbody, std::make_shared <Gravity>(m_gravity));
@@ -204,10 +201,12 @@ void Engine::runPhysics( const float& secondsElapsedSincePreviousUpdate)
     m_forceRegistry.updateForces(secondsElapsedSincePreviousUpdate);
 
     // Mise à jour physique de chaque rigidbody
+    // + Ajout des rigidbodies dans l'octree
     for( std::shared_ptr<Rigidbody> rigidbody : m_rigidbodies )
     {
         rigidbody->calculateDerivedData();
         rigidbody->integrate( secondsElapsedSincePreviousUpdate );
+        m_octree.add(rigidbody);
     }
 
     // Mise à jour physique de chaque particule
@@ -544,6 +543,20 @@ void Engine::rotateCamera(float aroundXAxis, float aroundYAxis)
     m_cameraRotation.first = (xAngle > 90) ? 90 : (xAngle < -90) ? -90 : xAngle;
 
     m_camera.setOrientation(glm::vec3(m_cameraRotation.first, m_cameraRotation.second, 0));
+}
+
+/**
+ * @brief Zoom la caméra
+ * @param deltaZoom
+ */
+void Engine::changeFovCamera(float deltaZoom)
+{
+    float newFov = m_camera.getFov() * (1 - deltaZoom);
+
+    if (newFov < 180)
+    {
+        m_camera.setFov(newFov);
+    }
 }
 
 /**

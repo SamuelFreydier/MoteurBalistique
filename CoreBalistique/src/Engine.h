@@ -188,6 +188,11 @@ class Engine
         //Tourne la caméra selon ses axes X et Y
         void rotateCamera(float aroundXAxis, float aroundYAxis);
 
+        //Zoom la caméra
+        float getFov() const { return m_camera.getFov(); }
+        void setFov(float fov) { m_camera.setFov(fov); }
+        void changeFovCamera(float deltaZoom);
+
         //Sauvegarde de l'orientation de la caméra
         std::pair<float, float> m_cameraRotation;
 

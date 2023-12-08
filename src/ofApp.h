@@ -84,6 +84,8 @@ class ofApp : public ofBaseApp
         //Fonction pour tirer un rigidbody depuis une position et dans une direction données
         void shootRigidbody(std::pair<glm::vec3, glm::vec3>);
 
+        void resetCameraZoom();
+
     private:
         MouseDragger draggerReferentialOrigin;
         MouseDragger draggerParticleLauncher;
@@ -103,6 +105,10 @@ class ofApp : public ofBaseApp
         float m_moveSpeed;
         bool m_mustMoveDirections[6];
         Vector3 m_moveDirections[6];
+
+        //Variables de zoom de la caméra
+        float m_cameraZoom;
+        float m_cameraDefaultFov;
 
         //Sauvegarde des positions de la souris pour changer l'orientation de la caméra
         std::pair<int, int> m_mousePos;

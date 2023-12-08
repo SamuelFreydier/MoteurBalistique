@@ -65,7 +65,7 @@ void ofApp::setup()
 
     m_useSpring = false;
 
-    m_rbType = Engine::RigidbodyType::CubeType;
+    m_rbType = Engine::RigidbodyType::CuboidType;
 
     // Initialisation des coordonnées du point d'origine du référentiel cartésien
     Engine::getInstance()->getReferential().setPointOrigine(200, ofGetScreenHeight() - 50);
@@ -75,6 +75,8 @@ void ofApp::setup()
 
     m_moveSpeed = 50;
     m_cameraInfoSaved = false;
+    m_cameraZoom = 1;
+    m_cameraDefaultFov = Engine::getInstance()->getFov();
     initArrays();
     Engine::getInstance()->moveCamera(Vector3(0, 50, 0));
 }
@@ -225,6 +227,10 @@ void ofApp::keyPressed( int key )
         case 'e':
             m_mustMoveDirections[5] = true;
             break;
+
+        case 'x':
+            resetCameraZoom();
+            break;
     }
 }
 
@@ -273,10 +279,10 @@ void ofApp::mouseDragged( int x, int y, int button )
     //Rotation de la caméra si le clic droit est enfoncé
     if (button == 2)
     {
-        std::pair<int, int> diffMousePos = { x - m_mousePos.first, y - m_mousePos.second };
+        std::pair<float, float> diffMousePos = { x - m_mousePos.first, y - m_mousePos.second };
         m_mousePos = { x, y };
 
-        Engine::getInstance()->rotateCamera(-diffMousePos.second, -diffMousePos.first);
+        Engine::getInstance()->rotateCamera(-diffMousePos.second / m_cameraZoom, -diffMousePos.first / m_cameraZoom);
     }
 }
 
@@ -343,7 +349,13 @@ void ofApp::dragEvent( ofDragInfo dragInfo )
 
 void ofApp::mouseScrolled(ofMouseEventArgs& mouse)
 {
+    float deltaZoom = mouse.scrollY * 0.1;
 
+    if (deltaZoom != 0)
+    {
+        Engine::getInstance()->changeFovCamera(deltaZoom);
+        m_cameraZoom += deltaZoom;
+    }
 }
 
 /**
@@ -420,4 +432,11 @@ void ofApp::shootRigidbody(std::pair<glm::vec3, glm::vec3> shootInfo)
     }
 
     instance->shootRigidbody(m_massSlider, m_rbType, shootInfo.first, shootInfo.second * impulse, initAngularVelocity, Vector3({ m_colorSlider->x, m_colorSlider->y, m_colorSlider->z }), rbParameters, m_useSpring, springParameters);
+}
+
+
+void ofApp::resetCameraZoom()
+{
+    m_cameraZoom = 1;
+    Engine::getInstance()->setFov(m_cameraDefaultFov);
 }
