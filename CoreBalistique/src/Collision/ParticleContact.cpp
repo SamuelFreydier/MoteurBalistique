@@ -165,7 +165,7 @@ void Contact::resolveVelocity( const float& duration )
         // Résolution de la vitesse angulaire
         Vector3 rbAngularV = rb->getAngularVelocity();
         // leftTransform permet de faire vecteur * matrice au lieu de matrice * vecteur
-        rbAngularV += rb->getInverseInertiaTensorWorld().leftTransform( (rb->getGlobalRadius(m_contactPoint) * m_contactNormal * impulse) ) * rbFactor;
+        rbAngularV += rb->getInverseInertiaTensorWorld().transform( (rb->getGlobalRadius(m_contactPoint) * m_contactNormal * impulse) ) * rbFactor;
         rb->setAngularVelocity(rbAngularV);
     }
 }
@@ -261,14 +261,13 @@ void Contact::resolveInterpenetration( const float& duration )
         float linearMove = rbFactor * m_penetration * linearInertia[i] * inverseInertia;
         float angularMove = rbFactor * m_penetration * angularInertia[i] * inverseInertia;
 
-
         // Limite de mouvement angulaire
         float angularLimitConstant = 0.2;
         float limitMove = angularLimitConstant * rb->getGlobalRadius(m_contactPoint).norm();
 
 
         // Evite des trop grosses rotations qui peuvent empirer les collisions en agravant l'interpénétration
-        if (angularMove > limitMove)
+        if (abs(angularMove) > limitMove)
         {
             float totalMove = linearMove + angularMove;
 
