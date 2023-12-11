@@ -136,7 +136,7 @@ void Contact::resolveVelocity( const float& duration )
     */
 
     // Si pas de vélocité de rapprochement, on arrête
-    if (getDiffVelocity().squareMagnitude() <= 0)
+    if (getDiffVelocity().dotProduct(m_contactNormal) <= 0)
         return;
 
 
