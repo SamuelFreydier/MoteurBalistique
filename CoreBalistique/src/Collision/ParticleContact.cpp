@@ -135,11 +135,16 @@ void Contact::resolveVelocity( const float& duration )
     }
     */
 
+    // Si pas de vélocité de rapprochement, on arrête
     if (getDiffVelocity().squareMagnitude() <= 0)
         return;
 
+
+    // Calcul de l'impulsion à appliquer (k)
     float impulse = getContactImpulse(duration);
 
+
+    // Résolution de la vitesse pour chaque rb
     for (int i = 0; i <= 1; i++)
     {
         auto& rb = m_rigidbodies[i];
@@ -150,11 +155,16 @@ void Contact::resolveVelocity( const float& duration )
         // Détermine s'il faut ajouter une impulsion ou son opposée
         int rbFactor = i == 0 ? -1 : 1;
 
+
+        // Résolution de la vitesse linéaire
         Vector3 rbLinearV = rb->getVelocity();
         rbLinearV += m_contactNormal * rbFactor * impulse * rb->getInverseMass();
         rb->setVelocity(rbLinearV);
 
+
+        // Résolution de la vitesse angulaire
         Vector3 rbAngularV = rb->getAngularVelocity();
+        // leftTransform permet de faire vecteur * matrice au lieu de matrice * vecteur
         rbAngularV += rb->getInverseInertiaTensorWorld().leftTransform( (rb->getGlobalRadius(m_contactPoint) * m_contactNormal * impulse) ) * rbFactor;
         rb->setAngularVelocity(rbAngularV);
     }
@@ -201,11 +211,18 @@ void Contact::resolveInterpenetration( const float& duration )
     }
     */
 
+    //Si pas d'interpénétration, on arrête
     if (m_penetration <= 0)
         return;
 
+
+    // Inertie totale des deux rbs
     float totalInertia = 0;
+
+    // Inerties linéaires des rbs
     float linearInertia[2] = { 0, 0 };
+
+    // Inerties angulaires des rbs
     float angularInertia[2] = { 0, 0 };
 
     // Calcul des inerties
@@ -216,9 +233,11 @@ void Contact::resolveInterpenetration( const float& duration )
         if (!rb)
             continue;
 
+        // Calcul de l'inertie linéaire et ajout à l'inertie totale
         linearInertia[i] = getLinearInertia(rb);
         totalInertia += linearInertia[i];
 
+        // Calcul de l'inertie angulaire et ajout à l'inertie totale
         angularInertia[i] = getAngularInertia(rb);
         totalInertia += angularInertia[i];
     }
@@ -238,7 +257,7 @@ void Contact::resolveInterpenetration( const float& duration )
 
         int rbFactor = i == 0 ? -1 : 1;
 
-        // Calcul des mouvements dus à l'interpénétration
+        // Calcul des mouvements linéaires et angulaires dus à l'interpénétration
         float linearMove = rbFactor * m_penetration * linearInertia[i] * inverseInertia;
         float angularMove = rbFactor * m_penetration * angularInertia[i] * inverseInertia;
 
@@ -248,10 +267,10 @@ void Contact::resolveInterpenetration( const float& duration )
         float limitMove = angularLimitConstant * rb->getGlobalRadius(m_contactPoint).norm();
 
 
-        // Evite des trop grosses rotations qui peuvent empirer les collisions
+        // Evite des trop grosses rotations qui peuvent empirer les collisions en agravant l'interpénétration
         if (angularMove > limitMove)
         {
-            float totalMove = linearMove * angularMove;
+            float totalMove = linearMove + angularMove;
 
             if (angularMove > 0)
                 angularMove = limitMove;
@@ -285,12 +304,13 @@ float Contact::getContactImpulse(const float& duration) const
     Vector3 restitutionImpulseDividerVector;
     float restitutionImpulseDivider;
 
+    //Partie linéaire
     float totalInverseMass = m_rigidbodies[0]->getInverseMass();
     if (m_rigidbodies[1])
         totalInverseMass += m_rigidbodies[1]->getInverseMass();
     restitutionImpulseDividerVector += m_contactNormal * totalInverseMass;
 
-    
+    //Partie angulaire
     restitutionImpulseDividerVector += getAngularImpulseDivider(m_rigidbodies[0]);
     if (m_rigidbodies[1])
         restitutionImpulseDividerVector += getAngularImpulseDivider(m_rigidbodies[1]);
@@ -333,7 +353,7 @@ Vector3 Contact::getAngularImpulseDivider(std::shared_ptr<Rigidbody> rb) const
     Vector3 globalRadiusRb = rb->getGlobalRadius(m_contactPoint);
 
     // result = ((r * n) * J^-1) * r
-    return (rb->getInverseInertiaTensorWorld().leftTransform(globalRadiusRb * m_contactNormal)) * globalRadiusRb;
+    return (rb->getInverseInertiaTensorWorld().transform(globalRadiusRb * m_contactNormal)) * globalRadiusRb;
 }
 
 
