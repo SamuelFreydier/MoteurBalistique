@@ -7,6 +7,9 @@ void ofApp::setup()
     srand( time( NULL ) );
 
     // Setup GUI
+    m_EngineConfig.setName("Engine Configuration");
+    m_EngineConfig.add(m_minUpdateDelay.set("Minimum Update Delay", 0, 0, 1));
+
     m_worldForces.setName("World Forces");
     m_worldForces.add(m_gravitySlider.set("Gravity", 9.81, 1, 20));
     m_worldForces.add(m_linearDampingSlider.set("Linear Damping", 0.94, 0.5, 1));
@@ -37,6 +40,7 @@ void ofApp::setup()
     m_SpringConfig.add(m_springConstant.set("Spring Constant", 5, 1, 50));
     m_SpringConfig.add(m_springRestLength.set("Rest Length", 1, 1, 100));
 
+    m_mainGroup.add(m_EngineConfig);
     m_mainGroup.add(m_worldForces);
     m_mainGroup.add(m_RigidbodyConfig);
     m_mainGroup.add(m_CubeConfig);
@@ -72,6 +76,7 @@ void ofApp::setup()
 
     // Variable qui sert à compter le temps écoulé entre chaques "frames"
     dateOfBeginPreviousUpdate = std::chrono::system_clock::now(); 
+    updateTimer = 0;
 
     m_moveSpeed = 50;
     m_cameraInfoSaved = false;
@@ -100,7 +105,16 @@ void ofApp::update()
     dateOfBeginPreviousUpdate = std::chrono::system_clock::now();
 
     // Mise à jour physique
-    instance->runPhysics(elapsedSincePreviousUpdate.count());
+    if (updateTimer >= m_minUpdateDelay)
+    {
+        instance->runPhysics(elapsedSincePreviousUpdate.count());
+        updateTimer = 0;
+    }
+    else
+    {
+        updateTimer += elapsedSincePreviousUpdate.count();
+    }
+    
 
     // Détection de la sélection graphique de particules
     if (draggerSelection.isDragging())

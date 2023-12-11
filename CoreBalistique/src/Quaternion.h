@@ -52,6 +52,9 @@ public:
     Quaternion operator/( const float& scalar ) const;
     Quaternion& operator/=( const float& scalar );
 
+    // Rotation par un vecteur
+    void rotateByVector(const Vector3& vector);
+
     // Met à jour la rotation en fonction d'une vélocité angulaire et du temps. g'(t) = g0 + 1/2 * w * g(t) * deltaTime
     void applyAngularVelocity( const Vector3& angularVelocity, float deltaTime );
 

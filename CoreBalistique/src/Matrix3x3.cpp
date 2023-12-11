@@ -83,6 +83,15 @@ Vector3 Matrix3x3::transform( const Vector3& vector ) const
 	return ( *this ) * vector;
 }
 
+Vector3 Matrix3x3::leftTransform(const Vector3& vector) const
+{
+	return Vector3(
+		vector.x * matrix[0] + vector.y * matrix[3] + vector.z * matrix[6],
+		vector.x * matrix[1] + vector.y * matrix[4] + vector.z * matrix[7],
+		vector.x * matrix[2] + vector.y * matrix[5] + vector.z * matrix[8]
+	);
+}
+
 float Matrix3x3::determinant() const
 {
 	return (get(0) * get(4) * get(8) + get(1) * get(5) * get(6) + get(2) * get(3) * get(7) - get(0) * get(5) * get(7) - get(1) * get(3) * get(8) - get(2) * get(4) * get(6));

@@ -42,6 +42,23 @@ public:
     // Gère la résolution d'interpénétration (overlap) pour la collision
     void resolveInterpenetration( const float& duration );
 
+    // Calcule l'impulsion k à appliquer à chaque rigidbody
+    float getContactImpulse(const float& duration) const;
+
+    // Calcule la restitution à appliquer à cette collision en fonction de la situation
+    float getRestitution() const;
+
+    // Retourne la différence de vélocité entre les rb aux points de contact
+    Vector3 getDiffVelocity() const;
+
+    // Calcule la vélocité causée par l'accélération à la frame actuelle
+    float getAccVelocity(const float& duration) const;
+
+    // Retourne la partie du dénominateur de l'impulsion concernant un rb
+    Vector3 getAngularImpulseDivider(std::shared_ptr<Rigidbody>) const;
+
+    float getLinearInertia(std::shared_ptr<Rigidbody>) const;
+    float getAngularInertia(std::shared_ptr<Rigidbody>) const;
 };
 
 #endif

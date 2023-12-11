@@ -81,6 +81,7 @@ public:
 	// Multiplication par un vecteur
 	Vector3 operator*( const Vector3& vector ) const;
 	Vector3 transform( const Vector3& vector ) const;
+	Vector3 leftTransform(const Vector3& vector) const;
 	// division
 	Matrix3x3 operator/(const float& value) const;
 	Matrix3x3& operator/=(const float& value);

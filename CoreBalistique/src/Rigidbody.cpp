@@ -32,6 +32,22 @@ void Rigidbody::setMassReverse( const float& mass )
     }
 }
 
+
+Vector3 Rigidbody::getTotalVelocity(const Vector3& point, const bool local) const
+{
+    Vector3 globalPoint = local ? getPointInWorldSpace(point) : point;
+
+    return getVelocity() + getAngularVelocity() * (globalPoint - getPosition());
+}
+
+
+Vector3 Rigidbody::getGlobalRadius(const Vector3& point, const bool local) const
+{
+    Vector3 globalPoint = local ? getPointInWorldSpace(point) : point;
+
+    return globalPoint - m_position;
+}
+
 /**
  * @brief Met à jour le tenseur d'inertie inverse du corps rigide
  * @param inertiaTensor 

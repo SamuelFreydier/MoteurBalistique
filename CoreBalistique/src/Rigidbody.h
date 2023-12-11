@@ -84,11 +84,16 @@ public:
     const Vector3& getAngularVelocity() const { return m_angularVelocity; }
     void setAngularVelocity( const Vector3& angularVelocity ) { m_angularVelocity = angularVelocity; }
 
+    Vector3 getTotalVelocity(const Vector3& point, const bool local = false) const;
+
     const Vector3& getAcceleration() const { return m_acceleration; }
     void setAcceleration( const Vector3& acceleration ) { m_acceleration = acceleration; }
 
     const Vector3& getPosition() const { return m_position; }
     void setPosition( const Vector3& position ) { m_position = position; }
+
+    //Renvoie la différence entre un point et le centre du rb en coordonnées globales
+    Vector3 getGlobalRadius(const Vector3& point, const bool local = false) const;
 
     const Quaternion& getOrientation() const { return m_orientation; }
     void setOrientation( const Quaternion& orientation ) { m_orientation = orientation; }

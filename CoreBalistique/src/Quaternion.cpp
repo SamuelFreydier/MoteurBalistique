@@ -208,6 +208,13 @@ Quaternion& Quaternion::operator/=( const float& scalar )
     return *this;
 }
 
+
+void Quaternion::rotateByVector(const Vector3& vector)
+{
+    Quaternion q(0, vector.x, vector.y, vector.z);
+    (*this) *= q;
+}
+
 /**
  * @brief Met à jour la rotation en fonction d'une vélocité angulaire et du temps. g'(t) = g0 + 1/2 * w * g(t) * deltaTime
  * @param angularVelocity : vélocité angulaire <=> vecteur w calculé au préalable à partir de la fréquence angulaire (vitesse / rayon)

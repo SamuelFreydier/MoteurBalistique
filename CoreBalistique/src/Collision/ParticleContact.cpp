@@ -32,6 +32,7 @@ float Contact::calculateClosingVelocity() const
 */
 void Contact::resolveVelocity( const float& duration )
 {
+    /*
     // Trouve la vélocité dans la direction du contact
     float closingVelocity = calculateClosingVelocity();
     // Est-ce que le contact se sépare déjà, ou est-ce qu'il est stationnaire ?
@@ -132,6 +133,31 @@ void Contact::resolveVelocity( const float& duration )
         // Direction opposée donc on lui applique l'opposé de l'impulsion
         m_rigidbodies[ 1 ]->setVelocity( m_rigidbodies[1]->getVelocity() - impulsePerInverseMass * m_rigidbodies[1]->getInverseMass());
     }
+    */
+
+    if (getDiffVelocity().squareMagnitude() <= 0)
+        return;
+
+    float impulse = getContactImpulse(duration);
+
+    for (int i = 0; i <= 1; i++)
+    {
+        auto& rb = m_rigidbodies[i];
+
+        if (!rb)
+            continue;
+
+        // Détermine s'il faut ajouter une impulsion ou son opposée
+        int rbFactor = i == 0 ? -1 : 1;
+
+        Vector3 rbLinearV = rb->getVelocity();
+        rbLinearV += m_contactNormal * rbFactor * impulse * rb->getInverseMass();
+        rb->setVelocity(rbLinearV);
+
+        Vector3 rbAngularV = rb->getAngularVelocity();
+        rbAngularV += rb->getInverseInertiaTensorWorld().leftTransform( (rb->getGlobalRadius(m_contactPoint) * m_contactNormal * impulse) ) * rbFactor;
+        rb->setAngularVelocity(rbAngularV);
+    }
 }
 
 
@@ -141,6 +167,7 @@ void Contact::resolveVelocity( const float& duration )
 */
 void Contact::resolveInterpenetration( const float& duration )
 {
+    /*
     // S'il n'y a pas de pénétration, tout ceci est inutile
     if( m_penetration <= 0 )
     {
@@ -172,6 +199,155 @@ void Contact::resolveInterpenetration( const float& duration )
         // Direction opposée donc on fait attention à mettre -
         m_rigidbodies[ 1 ]->setPosition( m_rigidbodies[ 1 ]->getPosition() - movementPerInverseMass * m_rigidbodies[ 1 ]->getInverseMass() );
     }
+    */
+
+    if (m_penetration <= 0)
+        return;
+
+    float totalInertia = 0;
+    float linearInertia[2] = { 0, 0 };
+    float angularInertia[2] = { 0, 0 };
+
+    // Calcul des inerties
+    for (int i = 0; i <= 1; i++)
+    {
+        auto& rb = m_rigidbodies[i];
+
+        if (!rb)
+            continue;
+
+        linearInertia[i] = getLinearInertia(rb);
+        totalInertia += linearInertia[i];
+
+        angularInertia[i] = getAngularInertia(rb);
+        totalInertia += angularInertia[i];
+    }
+
+    if (totalInertia <= 0)
+        return;
+
+    float inverseInertia = 1 / totalInertia;
+
+    // Résolution de l'interpénétration
+    for (int i = 0; i <= 1; i++)
+    {
+        auto& rb = m_rigidbodies[i];
+
+        if (!rb)
+            continue;
+
+        int rbFactor = i == 0 ? -1 : 1;
+
+        // Calcul des mouvements dus à l'interpénétration
+        float linearMove = rbFactor * m_penetration * linearInertia[i] * inverseInertia;
+        float angularMove = rbFactor * m_penetration * angularInertia[i] * inverseInertia;
+
+
+        // Limite de mouvement angulaire
+        float angularLimitConstant = 0.2;
+        float limitMove = angularLimitConstant * rb->getGlobalRadius(m_contactPoint).norm();
+
+
+        // Evite des trop grosses rotations qui peuvent empirer les collisions
+        if (angularMove > limitMove)
+        {
+            float totalMove = linearMove * angularMove;
+
+            if (angularMove > 0)
+                angularMove = limitMove;
+            else
+                angularMove = -limitMove;
+
+            linearMove = totalMove - angularMove;
+        }
+
+        // Résolution linéaire
+        rb->setPosition(rb->getPosition() + (m_contactNormal * linearMove));
+
+        // Résolution angulaire
+        Quaternion q = rb->getOrientation();
+        Vector3 impulsePerMove = rb->getInverseInertiaTensorWorld() * (rb->getGlobalRadius(m_contactPoint) * m_contactNormal);
+        Vector3 rotationPerMove = impulsePerMove / angularInertia[i];
+        q.rotateByVector(rotationPerMove * angularMove);
+        rb->setOrientation(q);
+    }
 }
 
 
+float Contact::getContactImpulse(const float& duration) const
+{
+    // Calcul du numérateur de l'impulsion
+    float contactVelocity = getDiffVelocity().dotProduct(m_contactNormal);
+    float restitutionImpulse = contactVelocity + getRestitution() * (contactVelocity - getAccVelocity(duration));
+
+
+    //Calcul du dénominateur de l'impulsion
+    Vector3 restitutionImpulseDividerVector;
+    float restitutionImpulseDivider;
+
+    float totalInverseMass = m_rigidbodies[0]->getInverseMass();
+    if (m_rigidbodies[1])
+        totalInverseMass += m_rigidbodies[1]->getInverseMass();
+    restitutionImpulseDividerVector += m_contactNormal * totalInverseMass;
+
+    
+    restitutionImpulseDividerVector += getAngularImpulseDivider(m_rigidbodies[0]);
+    if (m_rigidbodies[1])
+        restitutionImpulseDividerVector += getAngularImpulseDivider(m_rigidbodies[1]);
+
+    restitutionImpulseDivider = restitutionImpulseDividerVector.dotProduct(m_contactNormal);
+
+
+    return restitutionImpulse / restitutionImpulseDivider;
+}
+
+
+
+float Contact::getRestitution() const
+{
+    return m_restitution;
+}
+
+
+Vector3 Contact::getDiffVelocity() const
+{
+    Vector3 diffVelocity = m_rigidbodies[0]->getTotalVelocity(m_contactPoint);
+    if (m_rigidbodies[1])
+        diffVelocity -= m_rigidbodies[1]->getTotalVelocity(m_contactPoint);
+
+    return diffVelocity;
+}
+
+
+float Contact::getAccVelocity(const float& duration) const
+{
+    Vector3 acc = m_rigidbodies[0]->getAcceleration();
+    if (m_rigidbodies[1])
+        acc -= m_rigidbodies[1]->getAcceleration();
+
+    return acc.dotProduct(m_contactNormal) * duration;
+}
+
+Vector3 Contact::getAngularImpulseDivider(std::shared_ptr<Rigidbody> rb) const
+{
+    Vector3 globalRadiusRb = rb->getGlobalRadius(m_contactPoint);
+
+    // result = ((r * n) * J^-1) * r
+    return (rb->getInverseInertiaTensorWorld().leftTransform(globalRadiusRb * m_contactNormal)) * globalRadiusRb;
+}
+
+
+float Contact::getLinearInertia(std::shared_ptr<Rigidbody> rb) const
+{
+    return rb->getInverseMass();
+}
+
+float Contact::getAngularInertia(std::shared_ptr<Rigidbody> rb) const
+{
+    Vector3 globalRadius = rb->getGlobalRadius(m_contactPoint);
+
+    Vector3 angularInertiaVector = globalRadius * m_contactNormal;
+    angularInertiaVector = (rb->getInverseInertiaTensorWorld() * angularInertiaVector) * globalRadius;
+    
+    return angularInertiaVector.dotProduct(m_contactNormal);
+}

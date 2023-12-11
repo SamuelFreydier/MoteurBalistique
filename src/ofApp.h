@@ -35,6 +35,9 @@ class ofApp : public ofBaseApp
 
         // Pour avoir un champ au lieu d'un slider => utiliser ofxFloatField
         ofParameterGroup m_mainGroup;
+
+        ofParameterGroup m_EngineConfig;
+        ofParameter<float> m_minUpdateDelay;
     
         ofParameterGroup m_worldForces;
         ofParameter<float> m_gravitySlider;
@@ -68,6 +71,7 @@ class ofApp : public ofBaseApp
 
         // Variable qui sert à compter le temps écoulé entre chaques "frames"
         std::chrono::time_point<std::chrono::system_clock> dateOfBeginPreviousUpdate;
+        float updateTimer;
 
         // Générateur de sol
         GroundContacts groundContactGenerator;
