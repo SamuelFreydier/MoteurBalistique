@@ -23,17 +23,10 @@ void ofApp::setup()
     m_RigidbodyConfig.add(m_angularVelocitySlider.set("Angular velocity", ofVec3f(0.0, 0.0, 0.0), ofVec3f(-100.0, -100.0, -100.0), ofVec3f(100.0, 100.0, 100.0)));
     m_RigidbodyConfig.add(m_colorSlider.set("Color", ofVec3f(200, 50, 50), ofVec3f(0, 0, 0), ofVec3f(255, 255, 255)));
 
-    m_CubeConfig.setName("Cube Configuration");
-    m_CubeConfig.add(m_sizeSlider.set("Size", 1, 0.1, 5));
-
     m_CuboidConfig.setName("Cuboid Configuration");
     m_CuboidConfig.add(m_widthSlider.set("Width", 1, 0.1, 5));
     m_CuboidConfig.add(m_cuboidHeightSlider.set("Height", 1, 0.1, 5));
     m_CuboidConfig.add(m_depthSlider.set("Depth", 1, 0.1, 5));
-
-    m_CylinderConfig.setName("Cylinder Configuration");
-    m_CylinderConfig.add(m_radiusSlider.set("Radius", 1, 0.1, 5));
-    m_CylinderConfig.add(m_cylinderHeightSlider.set("Height", 1, 0.1, 5));
 
     m_SpringConfig.setName("Spring Configuration");
     m_SpringConfig.add(m_springContactPoint.set("Contact Point", ofVec3f(0, 0, 0), ofVec3f(-2.5, -2.5, -2.5), ofVec3f(2.5, 2.5, 2.5)));
@@ -43,9 +36,7 @@ void ofApp::setup()
     m_mainGroup.add(m_EngineConfig);
     m_mainGroup.add(m_worldForces);
     m_mainGroup.add(m_RigidbodyConfig);
-    m_mainGroup.add(m_CubeConfig);
     m_mainGroup.add(m_CuboidConfig);
-    m_mainGroup.add(m_CylinderConfig);
     m_mainGroup.add(m_SpringConfig);
 
     m_gui.setup(m_mainGroup);
@@ -203,18 +194,6 @@ void ofApp::keyPressed( int key )
         //Suppression de cette sauvegarde
         case OF_KEY_F8:
             m_cameraInfoSaved = false;
-            break;
-
-        case OF_KEY_F1:
-            m_rbType = Engine::RigidbodyType::CubeType;
-            break;
-
-        case OF_KEY_F2:
-            m_rbType = Engine::RigidbodyType::CuboidType;
-            break;
-
-        case OF_KEY_F3:
-            m_rbType = Engine::RigidbodyType::CylinderType;
             break;
 
         //Gestion de déplacement de la caméra
@@ -432,12 +411,12 @@ void ofApp::shootRigidbody(std::pair<glm::vec3, glm::vec3> shootInfo)
     switch (m_rbType)
     {
         case Engine::RigidbodyType::CubeType:
-            rbParameters.push_back(m_sizeSlider);
-            break;
+            //rbParameters.push_back(m_sizeSlider);
+            //break;
         case Engine::RigidbodyType::CylinderType:
-            rbParameters.push_back(m_radiusSlider);
-            rbParameters.push_back(m_cylinderHeightSlider);
-            break;
+            //rbParameters.push_back(m_radiusSlider);
+            //rbParameters.push_back(m_cylinderHeightSlider);
+            //break;
         case Engine::RigidbodyType::CuboidType:
             rbParameters.push_back(m_widthSlider);
             rbParameters.push_back(m_depthSlider);

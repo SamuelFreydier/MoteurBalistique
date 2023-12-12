@@ -52,17 +52,10 @@ class ofApp : public ofBaseApp
         ofParameter<bool> m_useSpring;
         ofParameter<bool> m_useInitAngularVelocity;
 
-        ofParameterGroup m_CubeConfig;
-        ofParameter<float> m_sizeSlider;
-
         ofParameterGroup m_CuboidConfig;
         ofParameter<float> m_widthSlider;
         ofParameter<float> m_cuboidHeightSlider;
         ofParameter<float> m_depthSlider;
-
-        ofParameterGroup m_CylinderConfig;
-        ofParameter<float> m_radiusSlider;
-        ofParameter<float> m_cylinderHeightSlider;
 
         ofParameterGroup m_SpringConfig;
         ofParameter<ofVec3f> m_springContactPoint;
