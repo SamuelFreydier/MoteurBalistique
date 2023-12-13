@@ -46,7 +46,7 @@ namespace GroundContactsTest
         EXPECT_EQ(result, 1);
         EXPECT_EQ(contact.m_rigidbodies[0], rb);
         EXPECT_EQ(contact.m_rigidbodies[1], nullptr);
-        EXPECT_EQ(contact.m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contact.m_contactNormal, Vector3(0, 1, 0));
         EXPECT_FLOAT_EQ(contact.m_penetration, 0.33333331f);
         EXPECT_FLOAT_EQ(contact.m_restitution, 0.7f);
     }
@@ -65,28 +65,28 @@ namespace GroundContactsTest
         ASSERT_EQ(contactCount, 4);
         
         //premier contact
-        EXPECT_EQ(contacts[0].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[0].m_contactNormal, Vector3(0, 1, 0));
         EXPECT_EQ(contacts[0].m_rigidbodies[0], rb);
         EXPECT_EQ(contacts[0].m_rigidbodies[1], nullptr);
         EXPECT_FLOAT_EQ(contacts[0].m_penetration, 0.5f);
         EXPECT_FLOAT_EQ(contacts[0].m_restitution, 0.7f);
 
         //deuxieme contact
-        EXPECT_EQ(contacts[1].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[1].m_contactNormal, Vector3(0, 1, 0));
         EXPECT_EQ(contacts[1].m_rigidbodies[0], rb);
         EXPECT_EQ(contacts[1].m_rigidbodies[1], nullptr);
         EXPECT_FLOAT_EQ(contacts[1].m_penetration, 0.5f);
         EXPECT_FLOAT_EQ(contacts[1].m_restitution, 0.7f);
 
         //troisieme contact
-        EXPECT_EQ(contacts[2].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[2].m_contactNormal, Vector3(0, 1, 0));
         EXPECT_EQ(contacts[2].m_rigidbodies[0], rb);
         EXPECT_EQ(contacts[2].m_rigidbodies[1], nullptr);
         EXPECT_FLOAT_EQ(contacts[2].m_penetration, 0.5f);
         EXPECT_FLOAT_EQ(contacts[2].m_restitution, 0.7f);
 
         //quatrieme contact
-        EXPECT_EQ(contacts[3].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[3].m_contactNormal, Vector3(0, 1, 0));
         EXPECT_EQ(contacts[3].m_rigidbodies[0], rb);
         EXPECT_EQ(contacts[3].m_rigidbodies[1], nullptr);
         EXPECT_FLOAT_EQ(contacts[3].m_penetration, 0.5f);
@@ -105,28 +105,28 @@ namespace GroundContactsTest
         int result = groundContacts.addContact(contacts, 4);
 
         //premier contact
-        EXPECT_EQ(contacts[0].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[0].m_contactNormal, Vector3(0, 1, 0));
         EXPECT_EQ(contacts[0].m_rigidbodies[0], rb);
         EXPECT_EQ(contacts[0].m_rigidbodies[1], nullptr);
         EXPECT_FLOAT_EQ(contacts[0].m_penetration, 0.16666669);
         EXPECT_FLOAT_EQ(contacts[0].m_restitution, 0.7f);
 
         //deuxieme contact
-        EXPECT_EQ(contacts[1].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[1].m_contactNormal, Vector3(0, 1, 0));
         EXPECT_EQ(contacts[1].m_rigidbodies[0], rb);
         EXPECT_EQ(contacts[1].m_rigidbodies[1], nullptr);
         EXPECT_FLOAT_EQ(contacts[1].m_penetration, 0.49999994);
         EXPECT_FLOAT_EQ(contacts[1].m_restitution, 0.7f);
 
         //troisieme contact
-        EXPECT_EQ(contacts[2].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[2].m_contactNormal, Vector3(0, 1, 0));
         EXPECT_EQ(contacts[2].m_rigidbodies[0], rb);
         EXPECT_EQ(contacts[2].m_rigidbodies[1], nullptr);
         EXPECT_FLOAT_EQ(contacts[2].m_penetration, 0.83333331);
         EXPECT_FLOAT_EQ(contacts[2].m_restitution, 0.7f);
 
         //quatrieme contact
-        EXPECT_EQ(contacts[3].m_contactNormal, Vector3(0, -1, 0));
+        EXPECT_EQ(contacts[3].m_contactNormal, Vector3(0, 1, 0));
         EXPECT_EQ(contacts[3].m_rigidbodies[0], rb);
         EXPECT_EQ(contacts[3].m_rigidbodies[1], nullptr);
         EXPECT_FLOAT_EQ(contacts[3].m_penetration, 0.16666669);

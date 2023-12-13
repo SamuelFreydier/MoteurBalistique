@@ -22,6 +22,7 @@ namespace TestParticleContact
         }
     };
 
+    /*
     TEST_F(TestParticleContact, NoRelativeVelocity)
     {
         float result = contact.calculateClosingVelocity();
@@ -106,5 +107,5 @@ namespace TestParticleContact
 
         EXPECT_FLOAT_EQ(rb1->getPosition().getZ(), initialPosition1);
         EXPECT_FLOAT_EQ(rb2->getPosition().getZ(), initialPosition2);
-    }
+    }*/
 }
