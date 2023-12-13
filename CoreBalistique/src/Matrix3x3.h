@@ -81,7 +81,12 @@ public:
 	// Multiplication par un vecteur
 	Vector3 operator*( const Vector3& vector ) const;
 	Vector3 transform( const Vector3& vector ) const;
+	Vector3 transformTranspose( const Vector3& vector ) const;
 	Vector3 leftTransform(const Vector3& vector) const;
+	void setInverse( const Matrix3x3& m );
+	void setSkewSymmetric( const Vector3& vector );
+	void setComponents( const Vector3& compOne, const Vector3& compTwo,
+						const Vector3& compThree );
 	// division
 	Matrix3x3 operator/(const float& value) const;
 	Matrix3x3& operator/=(const float& value);
@@ -89,6 +94,8 @@ public:
 	// operateurs []
 	float& operator[](const int& vectorIndex) { return matrix.at(vectorIndex); }
 	const float& operator[]( const int& vectorIndex ) const { return matrix.at( vectorIndex ); }
+
+	void operator+=( const Matrix3x3& o );
 
 	/*
 	* Calcul de le déterminant de la sous matrice

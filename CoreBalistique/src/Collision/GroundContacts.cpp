@@ -10,7 +10,7 @@ int GroundContacts::addContact( Contact* contact, const int& limit ) const
 {
     int count = 0;
     float floorHeight = 0;
-    Vector3 planeDirection = Vector3(0, -1, 0);
+    Vector3 planeDirection = Vector3(0, 1, 0);
 
     // Rigidbodies
     float vertexDistance;

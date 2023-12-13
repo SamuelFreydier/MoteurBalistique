@@ -48,6 +48,12 @@ Vector3 Rigidbody::getGlobalRadius(const Vector3& point, const bool local) const
     return globalPoint - m_position;
 }
 
+
+void Rigidbody::getInverseInertiaTensorWorld( Matrix3x3* inverseInertiaTensor ) const
+{
+    *inverseInertiaTensor = m_inverseInertiaTensorWorld;
+}
+
 /**
  * @brief Met à jour le tenseur d'inertie inverse du corps rigide
  * @param inertiaTensor 
@@ -55,6 +61,26 @@ Vector3 Rigidbody::getGlobalRadius(const Vector3& point, const bool local) const
 void Rigidbody::setInertiaTensor( const Matrix3x3& inertiaTensor )
 {
     m_inverseInertiaTensor = inertiaTensor.inverted();
+}
+
+void Rigidbody::addVelocity( const Vector3& deltaVelocity )
+{
+    m_velocity += deltaVelocity;
+}
+
+void Rigidbody::addRotation( const Vector3& deltaRotation )
+{
+    m_angularVelocity += deltaRotation;
+}
+
+void Rigidbody::getOrientation( Quaternion* orientation ) const
+{
+    *orientation = m_orientation;
+}
+
+void Rigidbody::getPosition( Vector3* position ) const
+{
+    *position = m_position;
 }
 
 /**

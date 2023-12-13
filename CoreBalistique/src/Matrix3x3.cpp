@@ -83,6 +83,15 @@ Vector3 Matrix3x3::transform( const Vector3& vector ) const
 	return ( *this ) * vector;
 }
 
+Vector3 Matrix3x3::transformTranspose( const Vector3& vector ) const
+{
+	return Vector3(
+		vector.x * matrix[ 0 ] + vector.y * matrix[ 3 ] + vector.z * matrix[ 6 ],
+		vector.x * matrix[ 1 ] + vector.y * matrix[ 4 ] + vector.z * matrix[ 7 ],
+		vector.x * matrix[ 2 ] + vector.y * matrix[ 5 ] + vector.z * matrix[ 8 ]
+	);
+}
+
 Vector3 Matrix3x3::leftTransform(const Vector3& vector) const
 {
 	return Vector3(
@@ -90,6 +99,58 @@ Vector3 Matrix3x3::leftTransform(const Vector3& vector) const
 		vector.x * matrix[1] + vector.y * matrix[4] + vector.z * matrix[7],
 		vector.x * matrix[2] + vector.y * matrix[5] + vector.z * matrix[8]
 	);
+}
+
+void Matrix3x3::setInverse( const Matrix3x3& m )
+{
+	float t4 = m.matrix[ 0 ] * m.matrix[ 4 ];
+	float t6 = m.matrix[ 0 ] * m.matrix[ 5 ];
+	float t8 = m.matrix[ 1 ] * m.matrix[ 3 ];
+	float t10 = m.matrix[ 2 ] * m.matrix[ 3 ];
+	float t12 = m.matrix[ 1 ] * m.matrix[ 6 ];
+	float t14 = m.matrix[ 2 ] * m.matrix[ 6 ];
+
+	// Calculate the determinant
+	float t16 = ( t4 * m.matrix[ 8 ] - t6 * m.matrix[ 7 ] - t8 * m.matrix[ 8 ] +
+				 t10 * m.matrix[ 7 ] + t12 * m.matrix[ 5 ] - t14 * m.matrix[ 4 ] );
+
+	// Make sure the determinant is non-zero.
+	if( t16 == ( float ) 0.0f ) return;
+	float t17 = 1 / t16;
+
+	matrix[ 0 ] = ( m.matrix[ 4 ] * m.matrix[ 8 ] - m.matrix[ 5 ] * m.matrix[ 7 ] ) * t17;
+	matrix[ 1 ] = -( m.matrix[ 1 ] * m.matrix[ 8 ] - m.matrix[ 2 ] * m.matrix[ 7 ] ) * t17;
+	matrix[ 2 ] = ( m.matrix[ 1 ] * m.matrix[ 5 ] - m.matrix[ 2 ] * m.matrix[ 4 ] ) * t17;
+	matrix[ 3 ] = -( m.matrix[ 3 ] * m.matrix[ 8 ] - m.matrix[ 5 ] * m.matrix[ 6 ] ) * t17;
+	matrix[ 4 ] = ( m.matrix[ 0 ] * m.matrix[ 8 ] - t14 ) * t17;
+	matrix[ 5 ] = -( t6 - t10 ) * t17;
+	matrix[ 6 ] = ( m.matrix[ 3 ] * m.matrix[ 7 ] - m.matrix[ 4 ] * m.matrix[ 6 ] ) * t17;
+	matrix[ 7 ] = -( m.matrix[ 0 ] * m.matrix[ 7 ] - t12 ) * t17;
+	matrix[ 8 ] = ( t4 - t8 ) * t17;
+}
+
+void Matrix3x3::setSkewSymmetric( const Vector3& vector )
+{
+	matrix[ 0 ] = matrix[ 4 ] = matrix[ 8 ] = 0;
+	matrix[ 1 ] = -vector.z;
+	matrix[ 2 ] = vector.y;
+	matrix[ 3 ] = vector.z;
+	matrix[ 5 ] = -vector.x;
+	matrix[ 6 ] = -vector.y;
+	matrix[ 7 ] = vector.x;
+}
+
+void Matrix3x3::setComponents( const Vector3& compOne, const Vector3& compTwo, const Vector3& compThree )
+{
+	matrix[ 0 ] = compOne.x;
+	matrix[ 1 ] = compTwo.x;
+	matrix[ 2 ] = compThree.x;
+	matrix[ 3 ] = compOne.y;
+	matrix[ 4 ] = compTwo.y;
+	matrix[ 5 ] = compThree.y;
+	matrix[ 6 ] = compOne.z;
+	matrix[ 7 ] = compTwo.z;
+	matrix[ 8 ] = compThree.z;
 }
 
 float Matrix3x3::determinant() const
@@ -141,6 +202,13 @@ Matrix3x3 Matrix3x3::operator/(const float& value) const
 Matrix3x3& Matrix3x3::operator/=(const float& value)
 {
 	return *this = *this / value;
+}
+
+void Matrix3x3::operator+=( const Matrix3x3& o )
+{
+	matrix[ 0 ] += o.matrix[ 0 ]; matrix[ 1 ] += o.matrix[ 1 ]; matrix[ 2 ] += o.matrix[ 2 ];
+	matrix[ 3 ] += o.matrix[ 3 ]; matrix[ 4 ] += o.matrix[ 4 ]; matrix[ 5 ] += o.matrix[ 5 ];
+	matrix[ 6 ] += o.matrix[ 6 ]; matrix[ 7 ] += o.matrix[ 7 ]; matrix[ 8 ] += o.matrix[ 8 ];
 }
 
 

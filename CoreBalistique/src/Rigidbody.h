@@ -112,7 +112,14 @@ public:
 
     const Matrix3x3& getInverseInertiaTensor() const { return m_inverseInertiaTensor; }
     const Matrix3x3& getInverseInertiaTensorWorld() const { return m_inverseInertiaTensorWorld; }
+    void getInverseInertiaTensorWorld( Matrix3x3* inverseInertiaTensor ) const;
     void setInertiaTensor( const Matrix3x3& inertiaTensor );
+
+    void addVelocity( const Vector3& deltaVelocity );
+    void addRotation( const Vector3& deltaRotation );
+
+    void getOrientation( Quaternion* orientation ) const;
+    void getPosition( Vector3* position ) const;
 
     const BoundingSphere& getSphereCollider() const { return m_sphereCollider; }
     void setSphereCollider( const BoundingSphere& boundingSphere ) { m_sphereCollider = boundingSphere; }
