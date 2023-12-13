@@ -83,10 +83,17 @@ public:
 	Vector3 transform( const Vector3& vector ) const;
 	Vector3 transformTranspose( const Vector3& vector ) const;
 	Vector3 leftTransform(const Vector3& vector) const;
+
+	// Modifie la matrice pour qu'elle soit égale à l'inverse de m
 	void setInverse( const Matrix3x3& m );
+
+	// Calcule la matrice antisymétrique d'un vecteur
 	void setSkewSymmetric( const Vector3& vector );
+
+	// Définis la matrice selon les vecteurs colonnes passés en paramètre
 	void setComponents( const Vector3& compOne, const Vector3& compTwo,
 						const Vector3& compThree );
+
 	// division
 	Matrix3x3 operator/(const float& value) const;
 	Matrix3x3& operator/=(const float& value);

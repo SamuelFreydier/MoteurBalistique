@@ -7,35 +7,65 @@ ContactResolver::ContactResolver( unsigned iterations, float velocityEpsilon, fl
     setEpsilon( velocityEpsilon, positionEpsilon );
 }
 
-/**
- * @brief Résouds les collisions d'un ensemble de contacts entre particules (vélocité et pénétration)
- * @param contactArray 
- * @param numContacts 
- * @param duration 
-*/
 ContactResolver::ContactResolver( unsigned velocityIterations, unsigned positionIterations, float velocityEpsilon, float positionEpsilon )
 {
     setIterations( velocityIterations );
     setEpsilon( velocityEpsilon, positionEpsilon );
 }
 
+/**
+ * @brief Renvoie true si le resolver est prêt (paramètres valides)
+ * @return 
+*/
+bool ContactResolver::isValid()
+{
+    return ( velocityIterations > 0 ) &&
+        ( positionIterations > 0 ) &&
+        ( positionEpsilon >= 0.0f ) &&
+        ( positionEpsilon >= 0.0f );
+}
+
+
+/**
+ * @brief Met à jour le nombre d'itérations pour chaque étape de la résolution
+ * @param velocityIterations 
+ * @param positionIterations 
+*/
 void ContactResolver::setIterations( unsigned velocityIterations, unsigned positionIterations )
 {
     ContactResolver::velocityIterations = velocityIterations;
     ContactResolver::positionIterations = positionIterations;
 }
 
+
+/**
+ * @brief Met à jour le nombre d'itérations qui est le même pour toutes les étapes
+ * @param iterations 
+*/
 void ContactResolver::setIterations( unsigned iterations )
 {
     setIterations( iterations, iterations );
 }
 
+
+/**
+ * @brief Met à jour la valeur charnière pour toutes les étapes
+ * @param velocityEpsilon 
+ * @param positionEpsilon 
+*/
 void ContactResolver::setEpsilon( float velocityEpsilon, float positionEpsilon )
 {
     ContactResolver::velocityEpsilon = velocityEpsilon;
     ContactResolver::positionEpsilon = positionEpsilon;
 }
 
+
+/**
+ * @brief Résout les collisions de contactArray
+ * @param contactArray 
+ * @param numContacts 
+ * @param duration 
+*/
 void ContactResolver::resolveContacts( std::vector<Contact>& contactArray, const int& numContacts, const float& duration )
 {
     if( numContacts == 0 ) return;
@@ -51,9 +81,15 @@ void ContactResolver::resolveContacts( std::vector<Contact>& contactArray, const
     adjustVelocities( contactArray, numContacts, duration );
 }
 
+
+/**
+ * @brief Prépare les collisions et des données internes pertinentes
+ * @param contacts 
+ * @param numContacts 
+ * @param duration 
+*/
 void ContactResolver::prepareContacts( std::vector<Contact>& contacts, unsigned numContacts, float duration )
 {
-    // Génère la vélocité de la collision
     Contact* lastContact = &contacts[ numContacts ];
     for( Contact* contact = &contacts[0]; contact < lastContact; contact++ )
     {
@@ -62,6 +98,13 @@ void ContactResolver::prepareContacts( std::vector<Contact>& contacts, unsigned 
     }
 }
 
+
+/**
+ * @brief Résolution de la vélocité des collisions
+ * @param c 
+ * @param numContacts 
+ * @param duration 
+*/
 void ContactResolver::adjustVelocities( std::vector<Contact>& c, unsigned numContacts, float duration )
 {
     Vector3 velocityChange[ 2 ], rotationChange[ 2 ];
@@ -114,6 +157,13 @@ void ContactResolver::adjustVelocities( std::vector<Contact>& c, unsigned numCon
     }
 }
 
+
+/**
+ * @brief Résolution de l'interpénétration des collisions
+ * @param c 
+ * @param numContacts 
+ * @param duration 
+*/
 void ContactResolver::adjustPositions( std::vector<Contact>& c, unsigned numContacts, float duration )
 {
     unsigned i, index;

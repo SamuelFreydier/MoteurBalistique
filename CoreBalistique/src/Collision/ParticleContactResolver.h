@@ -48,13 +48,7 @@ public:
                      float positionEpsilon = ( float ) 0.01 );
     
     // Renvoie true si le resolver est prêt (paramètres valides)
-    bool isValid()
-    {
-        return ( velocityIterations > 0 ) &&
-            ( positionIterations > 0 ) &&
-            ( positionEpsilon >= 0.0f ) &&
-            ( positionEpsilon >= 0.0f );
-    }
+    bool isValid();
 
     // Met à jour le nombre d'itérations pour chaque étape de la résolution
     void setIterations( unsigned velocityIterations,
@@ -71,27 +65,16 @@ public:
     void resolveContacts( std::vector<Contact>& contactArray, const int& numContacts, const float& duration );
 
 protected:
-    /**
-        * Sets up contacts ready for processing. This makes sure their
-        * internal data is configured correctly and the correct set of bodies
-        * is made alive.
-        */
     // Prépare les collisions et leurs données
     void prepareContacts( std::vector<Contact>& contactArray, unsigned numContacts,
                           float duration );
 
-    /**
-     * Resolves the velocity issues with the given array of constraints,
-     * using the given number of iterations.
-     */
+    // Résolution de la vélocité des collisions
     void adjustVelocities( std::vector<Contact>& contactArray,
                            unsigned numContacts,
                            float duration );
 
-    /**
-     * Resolves the positional issues with the given array of constraints,
-     * using the given number of iterations.
-     */
+    // Résolution de l'interpénétration des collisions
     void adjustPositions( std::vector<Contact>& contacts,
                           unsigned numContacts,
                           float duration );

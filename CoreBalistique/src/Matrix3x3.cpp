@@ -110,13 +110,13 @@ void Matrix3x3::setInverse( const Matrix3x3& m )
 	float t12 = m.matrix[ 1 ] * m.matrix[ 6 ];
 	float t14 = m.matrix[ 2 ] * m.matrix[ 6 ];
 
-	// Calculate the determinant
-	float t16 = ( t4 * m.matrix[ 8 ] - t6 * m.matrix[ 7 ] - t8 * m.matrix[ 8 ] +
+	// Déterminant
+	float det = ( t4 * m.matrix[ 8 ] - t6 * m.matrix[ 7 ] - t8 * m.matrix[ 8 ] +
 				 t10 * m.matrix[ 7 ] + t12 * m.matrix[ 5 ] - t14 * m.matrix[ 4 ] );
 
-	// Make sure the determinant is non-zero.
-	if( t16 == ( float ) 0.0f ) return;
-	float t17 = 1 / t16;
+	// Déterminant != 0
+	if( det == ( float ) 0.0f ) return;
+	float t17 = 1 / det;
 
 	matrix[ 0 ] = ( m.matrix[ 4 ] * m.matrix[ 8 ] - m.matrix[ 5 ] * m.matrix[ 7 ] ) * t17;
 	matrix[ 1 ] = -( m.matrix[ 1 ] * m.matrix[ 8 ] - m.matrix[ 2 ] * m.matrix[ 7 ] ) * t17;
